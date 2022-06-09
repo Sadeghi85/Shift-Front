@@ -1,4 +1,10 @@
 <template>
+  <div class="p-grid">
+    <div class="p-col-6">6</div>
+    <div class="p-col-6">6</div>
+    <div class="p-col-6">6</div>
+    <div class="p-col-6">6</div>
+  </div>
   <div class="p-fluid p-formgrid p-grid">
     <div class="p-field p-col">
       <label for="firstname1">نام لوکیشن</label>
@@ -17,23 +23,38 @@
     <Button label="ذخیره" @click.prevent="submitLocation($event)" />
   </div>
 
-  <Dialog header="Header" footer="Footer" v-model:visible="displayModal">
+  <Dialog
+    header="Header"
+    footer="Footer"
+    v-model:visible="displaySubmitSuccessModal"
+  >
     ثبت با موفقیت انجام شد
+  </Dialog>
+
+  <Dialog
+    header="Header"
+    footer="Footer"
+    v-model:visible="displaySelectPortalModal"
+  >
+    شبکه را انتخاب کنید
   </Dialog>
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue";
+import { defineComponent, PropType } from "vue";
 import axios from "axios";
+import { PortalModel } from "@/models/PortalModel";
+import { ShiftLocationModel } from "@/models/ShifLocationModel";
 
 export default defineComponent({
   name: "ShiftLocation",
   data() {
     return {
       locationName: null,
-      selectedPortal: null,
+      selectedPortal: null as PortalModel | null,
       portals: [],
-      displayModal: false,
+      displaySubmitSuccessModal: false,
+      displaySelectPortalModal: false,
     };
   },
   mounted() {
@@ -41,20 +62,28 @@ export default defineComponent({
   },
 
   methods: {
-    submitLocation(event) {
-      axios
-        .post("http://localhost:26379/api/ShiftLocation", {
-          id: 0,
-          title: this.locationName,
-          portalId: this.selectedPortal.id,
-        })
-        .then((response) => {
-          //console.log(response);
-          this.displayModal = true;
-        })
-        .catch((error) => {
-          console.log(error);
-        });
+    submitLocation(event: Event) {
+      if (this.selectedPortal == null) {
+        this.displaySelectPortalModal = true;
+        return;
+      } else {
+        axios
+          .post<ShiftLocationModel>(
+            "http://localhost:26379/api/ShiftLocation",
+            {
+              id: 0,
+              title: this.locationName,
+              portalId: this.selectedPortal.id,
+            }
+          )
+          .then((response) => {
+            //console.log(response);
+            this.displaySubmitSuccessModal = true;
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+      }
     },
     getPortals() {
       axios
