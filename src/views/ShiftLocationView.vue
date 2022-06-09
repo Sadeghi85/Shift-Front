@@ -1,43 +1,47 @@
 <template>
-  <div class="p-grid">
-    <div class="p-col-6">6</div>
-    <div class="p-col-6">6</div>
-    <div class="p-col-6">6</div>
-    <div class="p-col-6">6</div>
-  </div>
-  <div class="p-fluid p-formgrid p-grid">
-    <div class="p-field p-col">
-      <label for="firstname1">نام لوکیشن</label>
-      <InputText id="locationName" type="text" v-model="locationName" />
+  <div class="form">
+    <div class="flex justify-content-center">
+      <div class="card">
+        <div class="field">
+          <div class="p-float-label">
+            <InputText id="locationName" type="text" v-model="locationName" />
+            <label for="locationName">نام لوکیشن</label>
+          </div>
+        </div>
+
+        <div class="field">
+          <div class="p-float-label">
+            <Dropdown
+              id="portal"
+              v-model="selectedPortal"
+              :options="portals"
+              optionLabel="title"
+              placeholder="شبکه را انتخاب کنید"
+            />
+            <label for="portal">شبکه</label>
+          </div>
+        </div>
+
+        <Button label="ذخیره" @click.prevent="submitLocation($event)" />
+      </div>
     </div>
 
-    <div class="p-field p-col">
-      <label for="firstname1">شبکه</label>
-      <Dropdown
-        v-model="selectedPortal"
-        :options="portals"
-        optionLabel="title"
-        placeholder="شبکه را انتخاب کنید"
-      />
-    </div>
-    <Button label="ذخیره" @click.prevent="submitLocation($event)" />
+    <Dialog
+      header="Header"
+      footer="Footer"
+      v-model:visible="displaySubmitSuccessModal"
+    >
+      ثبت با موفقیت انجام شد
+    </Dialog>
+
+    <Dialog
+      header="Header"
+      footer="Footer"
+      v-model:visible="displaySelectPortalModal"
+    >
+      شبکه را انتخاب کنید
+    </Dialog>
   </div>
-
-  <Dialog
-    header="Header"
-    footer="Footer"
-    v-model:visible="displaySubmitSuccessModal"
-  >
-    ثبت با موفقیت انجام شد
-  </Dialog>
-
-  <Dialog
-    header="Header"
-    footer="Footer"
-    v-model:visible="displaySelectPortalModal"
-  >
-    شبکه را انتخاب کنید
-  </Dialog>
 </template>
 
 <script lang="ts">
@@ -101,18 +105,23 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-.sizes {
-  .p-inputtext {
-    display: block;
-    margin-bottom: 0.5rem;
+.form {
+  .card {
+    min-width: 450px;
 
-    &:last-child {
-      margin-bottom: 0;
+    form {
+      margin-top: 2rem;
+    }
+
+    .field {
+      margin-bottom: 1.5rem;
     }
   }
-}
 
-.field * {
-  display: block;
+  @media screen and (max-width: 960px) {
+    .card {
+      width: 80%;
+    }
+  }
 }
 </style>
