@@ -16,6 +16,14 @@ const routes: Array<RouteRecordRaw> = [
     component: () =>
       import(/* webpackChunkName: "about" */ "../views/AboutView.vue"),
   },
+  {
+    path: "/shift-location",
+    name: "shift-location",
+    component: () =>
+      import(
+        /* webpackChunkName: "shift-location" */ "../views/ShiftLocationView.vue"
+      ),
+  },
 ];
 
 const router = createRouter({
