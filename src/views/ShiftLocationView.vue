@@ -46,9 +46,12 @@
 
 <script lang="ts">
 import { defineComponent, PropType } from "vue";
-import axios from "axios";
+import { Api } from "@/http-client/api";
 import { PortalModel } from "@/models/PortalModel";
 import { ShiftLocationModel } from "@/models/ShifLocationModel";
+import { ApiResponseModel } from "@/models/ApiResponseModel";
+
+const api = Api.getInstance();
 
 export default defineComponent({
   name: "ShiftLocation",
@@ -56,7 +59,7 @@ export default defineComponent({
     return {
       locationName: null,
       selectedPortal: null as PortalModel | null,
-      portals: [],
+      portals: [] as PortalModel[],
       displaySubmitSuccessModal: false,
       displaySelectPortalModal: false,
     };
@@ -67,21 +70,24 @@ export default defineComponent({
 
   methods: {
     submitLocation(event: Event) {
-      if (this.selectedPortal == null) {
+      if (this.selectedPortal == null || this.locationName == null) {
         this.displaySelectPortalModal = true;
         return;
       } else {
-        axios
-          .post<ShiftLocationModel>(
-            "http://localhost:26379/api/ShiftLocation",
-            {
-              id: 0,
-              title: this.locationName,
-              portalId: this.selectedPortal.id,
-            }
-          )
+        api
+          .createShiftLocation({
+            id: 0,
+            title: this.locationName,
+            portalId: this.selectedPortal.id,
+          })
           .then((response) => {
             //console.log(response);
+            if (!response.data.success) {
+              throw new Error(
+                "Failed api call: [" + response.data.failureMessage + "]"
+              );
+            }
+
             this.displaySubmitSuccessModal = true;
           })
           .catch((error) => {
@@ -90,10 +96,16 @@ export default defineComponent({
       }
     },
     getPortals() {
-      axios
-        .get("http://localhost:26379/api/Portal")
+      api
+        .getPortals()
         .then((response) => {
-          //console.log(response.data);
+          //console.log(response);
+          if (!response.data.success) {
+            throw new Error(
+              "Failed api call: [" + response.data.failureMessage + "]"
+            );
+          }
+
           this.portals = response.data.data;
         })
         .catch((error) => {
