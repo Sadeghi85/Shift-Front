@@ -1,75 +1,83 @@
 <template>
-  <div class="form">
-    <div class="flex justify-content-center">
-      <div class="card">
-        <div class="field">
-          <div class="p-float-label">
-            <InputText id="locationName" type="text" v-model="locationName" />
-            <label for="locationName">نام لوکیشن</label>
+  <div class="layout-content">
+    <div class="grid">
+      <div class="col-6 md:col-6 col-offset-3 p-fluid">
+        <div class="card">
+          <h5>نام لوکیشن</h5>
+          <div class="grid">
+            <div class="col-12 mb-2 lg:col-12 lg:mb-0">
+              <InputText id="locationName" type="text" v-model="locationName" />
+            </div>
+          </div>
+          <h5>شبکه</h5>
+          <div class="grid">
+            <div class="col-12 mb-2 lg:col-12 lg:mb-0">
+              <Dropdown
+                id="portal"
+                v-model="selectedPortal"
+                :options="portals"
+                optionLabel="title"
+                placeholder="شبکه را انتخاب کنید"
+              />
+            </div>
+          </div>
+          <div class="grid">
+            <div class="col-2 mb-2 lg:col-2 lg:mb-0 mt-2">
+              <Button label="ذخیره" @click.prevent="submitLocation($event)" />
+            </div>
           </div>
         </div>
-
-        <div class="field">
-          <div class="p-float-label">
-            <Dropdown
-              id="portal"
-              v-model="selectedPortal"
-              :options="portals"
-              optionLabel="title"
-              placeholder="شبکه را انتخاب کنید"
-            />
-            <label for="portal">شبکه</label>
-          </div>
-        </div>
-
-        <Button label="ذخیره" @click.prevent="submitLocation($event)" />
       </div>
     </div>
-
-    <Dialog
-      header="Header"
-      footer="Footer"
-      v-model:visible="displaySubmitSuccessModal"
-    >
-      ثبت با موفقیت انجام شد
-    </Dialog>
-
-    <Dialog
-      header="Header"
-      footer="Footer"
-      v-model:visible="displaySelectPortalModal"
-    >
-      شبکه را انتخاب کنید
-    </Dialog>
   </div>
+  <Toast position="top-center" group="br" />
 </template>
 
 <script lang="ts" setup>
 import { ref, onMounted, onBeforeMount } from "vue";
-import { InitialCalls } from "@/http-client/initial-calls";
-import { Api } from "@/http-client/api";
+import PortalService from "@/services/PortalService";
+
+import ShiftLocationService from "@/services/ShiftLocationService";
 import { usePortalStore } from "@/stores/portal";
 import { PortalModel } from "@/models/PortalModel";
-import { ShiftLocationModel } from "@/models/ShifLocationModel";
-import { ApiResponseModel } from "@/models/ApiResponseModel";
+import { useToast } from "primevue/usetoast";
 
-const api = Api.getInstance();
+const portalService = ref(new PortalService());
+const shiftLocationService = ref(new ShiftLocationService());
 const portalStore = usePortalStore();
+
+const toast = useToast();
+const showSuccess = () => {
+  toast.add({
+    severity: "success",
+    summary: "پیغام",
+    detail: "ثبت با موفقیت انجام شد",
+    life: 3000,
+    group: "br",
+  });
+};
+const showInputError = () => {
+  toast.add({
+    severity: "error",
+    summary: "پیغام",
+    detail: "فیلدها را پر کنید",
+    life: 3000,
+    group: "br",
+  });
+};
 
 // reactive state
 const locationName = ref("");
 const selectedPortal = ref<PortalModel>();
 const portals = ref<PortalModel[]>();
-const displaySubmitSuccessModal = ref(false);
-const displaySelectPortalModal = ref(false);
 
 // functions that mutate state and trigger updates
 function submitLocation(event: Event) {
   if (selectedPortal.value == null || locationName.value == null) {
-    displaySelectPortalModal.value = true;
+    showInputError();
     return;
   } else {
-    api
+    shiftLocationService.value
       .createShiftLocation({
         id: 0,
         title: locationName.value,
@@ -83,7 +91,7 @@ function submitLocation(event: Event) {
           );
         }
 
-        displaySubmitSuccessModal.value = true;
+        showSuccess();
       })
       .catch((error) => {
         console.log(error);
@@ -96,7 +104,7 @@ onBeforeMount(() => {
   //console.log(`The initial count is ${count.value}.`);
   //new InitialCalls();
   if (portalStore.portals.length == 0) {
-    api
+    portalService.value
       .getPortals()
       .then((response) => {
         //console.log(response);
@@ -118,24 +126,4 @@ onBeforeMount(() => {
 });
 </script>
 
-<style lang="scss" scoped>
-.form {
-  .card {
-    min-width: 450px;
-
-    form {
-      margin-top: 2rem;
-    }
-
-    .field {
-      margin-bottom: 1.5rem;
-    }
-  }
-
-  @media screen and (max-width: 960px) {
-    .card {
-      width: 80%;
-    }
-  }
-}
-</style>
+<style lang="scss" scoped></style>

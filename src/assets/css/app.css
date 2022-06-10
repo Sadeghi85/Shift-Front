@@ -1,0 +1,14 @@
+body {
+  direction: rtl;
+}
+.layout-content {
+  padding: 2rem 2rem 2rem 2rem;
+  background-color: var(--surface-ground);
+}
+.card {
+  background: var(--surface-card);
+  color: var(--text-color);
+  padding: 2rem;
+  border-radius: 10px;
+  margin-bottom: 2rem;
+}
