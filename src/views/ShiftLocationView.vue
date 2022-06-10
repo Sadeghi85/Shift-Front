@@ -50,8 +50,10 @@ import { Api } from "@/http-client/api";
 import { PortalModel } from "@/models/PortalModel";
 import { ShiftLocationModel } from "@/models/ShifLocationModel";
 import { ApiResponseModel } from "@/models/ApiResponseModel";
+import { usePortalStore } from "@/stores/portal";
 
 const api = Api.getInstance();
+const portalStore = usePortalStore();
 
 export default defineComponent({
   name: "ShiftLocation",
@@ -96,7 +98,7 @@ export default defineComponent({
       }
     },
     getPortals() {
-      api
+      /* api
         .getPortals()
         .then((response) => {
           //console.log(response);
@@ -110,7 +112,9 @@ export default defineComponent({
         })
         .catch((error) => {
           console.log(error);
-        });
+        }); */
+
+      this.portals = portalStore.portals;
     },
   },
 });

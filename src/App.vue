@@ -12,6 +12,46 @@
   <router-view />
 </template>
 
+<script lang="ts" setup>
+import { ref, onMounted, onBeforeMount } from "vue";
+import { InitialCalls } from "@/http-client/initial-calls";
+import { Api } from "./http-client/api";
+import { usePortalStore } from "./stores/portal";
+
+const api = Api.getInstance();
+const portalStore = usePortalStore();
+
+// reactive state
+const count = ref(0);
+
+// functions that mutate state and trigger updates
+function increment() {
+  count.value++;
+}
+
+// lifecycle hooks
+onBeforeMount(() => {
+  //console.log(`The initial count is ${count.value}.`);
+  //new InitialCalls();
+
+  api
+    .getPortals()
+    .then((response) => {
+      //console.log(response);
+      if (!response.data.success) {
+        throw new Error(
+          "Failed api call: [" + response.data.failureMessage + "]"
+        );
+      }
+
+      portalStore.setPortals(response.data.data);
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+});
+</script>
+
 <style>
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
