@@ -44,79 +44,77 @@
   </div>
 </template>
 
-<script lang="ts">
-import { defineComponent, PropType } from "vue";
+<script lang="ts" setup>
+import { ref, onMounted, onBeforeMount } from "vue";
+import { InitialCalls } from "@/http-client/initial-calls";
 import { Api } from "@/http-client/api";
+import { usePortalStore } from "@/stores/portal";
 import { PortalModel } from "@/models/PortalModel";
 import { ShiftLocationModel } from "@/models/ShifLocationModel";
 import { ApiResponseModel } from "@/models/ApiResponseModel";
-import { usePortalStore } from "@/stores/portal";
 
 const api = Api.getInstance();
 const portalStore = usePortalStore();
 
-export default defineComponent({
-  name: "ShiftLocation",
-  data() {
-    return {
-      locationName: null,
-      selectedPortal: null as PortalModel | null,
-      portals: [] as PortalModel[],
-      displaySubmitSuccessModal: false,
-      displaySelectPortalModal: false,
-    };
-  },
-  mounted() {
-    this.getPortals();
-  },
+// reactive state
+const locationName = ref("");
+const selectedPortal = ref<PortalModel>();
+const portals = ref<PortalModel[]>();
+const displaySubmitSuccessModal = ref(false);
+const displaySelectPortalModal = ref(false);
 
-  methods: {
-    submitLocation(event: Event) {
-      if (this.selectedPortal == null || this.locationName == null) {
-        this.displaySelectPortalModal = true;
-        return;
-      } else {
-        api
-          .createShiftLocation({
-            id: 0,
-            title: this.locationName,
-            portalId: this.selectedPortal.id,
-          })
-          .then((response) => {
-            //console.log(response);
-            if (!response.data.success) {
-              throw new Error(
-                "Failed api call: [" + response.data.failureMessage + "]"
-              );
-            }
+// functions that mutate state and trigger updates
+function submitLocation(event: Event) {
+  if (selectedPortal.value == null || locationName.value == null) {
+    displaySelectPortalModal.value = true;
+    return;
+  } else {
+    api
+      .createShiftLocation({
+        id: 0,
+        title: locationName.value,
+        portalId: selectedPortal.value.id,
+      })
+      .then((response) => {
+        //console.log(response);
+        if (!response.data.success) {
+          throw new Error(
+            "Failed api call: [" + response.data.failureMessage + "]"
+          );
+        }
 
-            this.displaySubmitSuccessModal = true;
-          })
-          .catch((error) => {
-            console.log(error);
-          });
-      }
-    },
-    getPortals() {
-      /* api
-        .getPortals()
-        .then((response) => {
-          //console.log(response);
-          if (!response.data.success) {
-            throw new Error(
-              "Failed api call: [" + response.data.failureMessage + "]"
-            );
-          }
+        displaySubmitSuccessModal.value = true;
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }
+}
 
-          this.portals = response.data.data;
-        })
-        .catch((error) => {
-          console.log(error);
-        }); */
+// lifecycle hooks
+onBeforeMount(() => {
+  //console.log(`The initial count is ${count.value}.`);
+  //new InitialCalls();
+  if (portalStore.portals.length == 0) {
+    api
+      .getPortals()
+      .then((response) => {
+        //console.log(response);
+        if (!response.data.success) {
+          throw new Error(
+            "Failed api call: [" + response.data.failureMessage + "]"
+          );
+        }
 
-      this.portals = portalStore.portals;
-    },
-  },
+        portalStore.setPortals(response.data.data);
+        portals.value = portalStore.portals;
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  } else {
+    portals.value = portalStore.portals;
+  }
 });
 </script>
 
