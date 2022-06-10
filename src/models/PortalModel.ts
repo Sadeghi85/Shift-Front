@@ -1,9 +1,4 @@
-export class PortalModel {
-  public id!: number;
-  public title!: string;
-
-  constructor(id: number, title: string) {
-    this.id = id;
-    this.title = title;
-  }
+export interface PortalModel {
+  id: number;
+  title: string;
 }

@@ -1,0 +1,47 @@
+import { AxiosRequestConfig } from "axios";
+import { HttpClient } from "./http-client";
+import { PortalModel } from "@/models/PortalModel";
+import { ApiResponseModel } from "@/models/ApiResponseModel";
+import { ShiftLocationModel } from "@/models/ShifLocationModel";
+
+export class Api extends HttpClient {
+  private static classInstance?: Api;
+
+  private constructor() {
+    super("http://localhost:26379/api");
+
+    this._initializeRequestInterceptor();
+  }
+
+  public static getInstance() {
+    if (!this.classInstance) {
+      this.classInstance = new Api();
+    }
+
+    return this.classInstance;
+  }
+
+  private _initializeRequestInterceptor = () => {
+    this.instance.interceptors.request.use(
+      this._handleRequest,
+      this._handleError
+    );
+  };
+
+  private _handleRequest = (config: AxiosRequestConfig) => {
+    if (config.headers) {
+      config.headers["Authorization"] = "Bearer ...";
+    }
+
+    return config;
+  };
+
+  public getPortals = () =>
+    this.instance.get<ApiResponseModel<PortalModel>>("/Portal");
+
+  public getPortal = (id: string) =>
+    this.instance.get<ApiResponseModel<PortalModel>>(`/Portal/${id}`);
+
+  public createShiftLocation = (body: ShiftLocationModel) =>
+    this.instance.post("/ShiftLocation", body);
+}
