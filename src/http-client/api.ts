@@ -1,8 +1,8 @@
 import { AxiosRequestConfig } from "axios";
 import { HttpClient } from "./http-client";
-import { PortalModel } from "@/models/PortalModel";
+/* import { PortalModel } from "@/models/PortalModel";
 import { ApiResponseModel } from "@/models/ApiResponseModel";
-import { ShiftLocationModel } from "@/models/ShifLocationModel";
+import { ShiftLocationModel } from "@/models/ShifLocationModel"; */
 
 export class Api extends HttpClient {
   private static classInstance?: Api;
@@ -18,7 +18,8 @@ export class Api extends HttpClient {
       this.classInstance = new Api();
     }
 
-    return this.classInstance;
+    //return this.classInstance;
+    return this.classInstance.instance;
   }
 
   private _initializeRequestInterceptor = () => {
@@ -36,12 +37,12 @@ export class Api extends HttpClient {
     return config;
   };
 
-  public getPortals = () =>
+  /* public getPortals = () =>
     this.instance.get<ApiResponseModel<PortalModel>>("/Portal");
 
   public getPortal = (id: string) =>
     this.instance.get<ApiResponseModel<PortalModel>>(`/Portal/${id}`);
 
   public createShiftLocation = (body: ShiftLocationModel) =>
-    this.instance.post("/ShiftLocation", body);
+    this.instance.post("/ShiftLocation", body); */
 }
