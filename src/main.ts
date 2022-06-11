@@ -18,13 +18,14 @@ import Column from "primevue/column";
 import ColumnGroup from "primevue/columngroup"; //optional for column grouping
 import Row from "primevue/row"; //optional for row
 
-import "primevue/resources/themes/saga-blue/theme.css";
+//import "primevue/resources/themes/bootstrap4-light-blue/theme.css";
 import "primevue/resources/primevue.min.css";
 import "primeicons/primeicons.css";
 
 import "primeflex/primeflex.css";
 
 import "@/assets/css/app.css";
+import "@/assets/css/theme-rtl.css";
 
 const app = createApp(App);
 const pinia = createPinia();
