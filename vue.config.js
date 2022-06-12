@@ -5,14 +5,25 @@ module.exports = defineConfig({
       webSocketURL: "ws://0.0.0.0:8080/ws",
     },
     allowedHosts: "all",
+
     /* proxy: {
-      "/api": {
-        target: "http://localhost:8080",
-        ws: true,
+      "^/connect": {
+        target: "https://sama.irib.ir/identity",
+        changeOrigin: true,
+      },
+      "^/api": {
+        target: "https://sama.irib.ir/webapi",
+        changeOrigin: true,
+      },
+      "^/organizationchart": {
+        target: "https//sama.irib.ir/organizationchart",
         changeOrigin: true,
       },
     }, */
   },
 
   transpileDependencies: true,
+
+  publicPath:
+    process.env.NODE_ENV === "production" ? "/production-sub-path/" : "/",
 });
