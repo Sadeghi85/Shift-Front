@@ -55,9 +55,13 @@
     url("./fonts/ir/ttf/IRANSansWeb.ttf") format("truetype");
 }
 
+html {
+  font-size: 14px; /* the rest of elements are sized relative to this */
+}
+
 body {
   font-family: IRANSans;
-  /* font-size: 14px; */
+
   /* line-height: 29px; */
   /* font-weight: 500; */
   color: #999;
