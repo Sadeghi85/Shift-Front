@@ -26,7 +26,7 @@
                 :options="portals"
                 optionLabel="title"
                 :class="{ 'p-invalid': v$.portal.$invalid && submitted }"
-                placeholder="شبکه را انتخاب کنید"
+                :placeholder="$t('dropdown.placeholder.portal')"
               />
             </div>
           </div>
