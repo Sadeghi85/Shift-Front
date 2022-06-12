@@ -1,5 +1,6 @@
 import { AxiosRequestConfig } from "axios";
 import { HttpClient } from "./http-client";
+import { URL } from "@/config";
 /* import { PortalModel } from "@/models/PortalModel";
 import { ApiResponseModel } from "@/models/ApiResponseModel";
 import { ShiftLocationModel } from "@/models/ShifLocationModel"; */
@@ -8,7 +9,7 @@ export class Api extends HttpClient {
   private static classInstance?: Api;
 
   private constructor() {
-    super("http://localhost:26379/api");
+    super(URL.API_URL);
 
     this._initializeRequestInterceptor();
   }
