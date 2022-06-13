@@ -19,15 +19,17 @@ import DataTable from "primevue/datatable";
 import Column from "primevue/column";
 import ColumnGroup from "primevue/columngroup"; //optional for column grouping
 import Row from "primevue/row"; //optional for row
+import Paginator from "primevue/paginator"; //optional for row grouping
 
 //import "primevue/resources/themes/bootstrap4-light-blue/theme.css";
+//import "primevue/resources/themes/lara-light-blue/theme.css";
+import "@/assets/css/lara-light-blue-rtl.css";
 import "primevue/resources/primevue.min.css";
 import "primeicons/primeicons.css";
 
 import "primeflex/primeflex.css";
 
 import "@/assets/css/app.css";
-import "@/assets/css/theme-rtl.css";
 
 const app = createApp(App);
 const pinia = createPinia();
@@ -35,7 +37,17 @@ const pinia = createPinia();
 app.use(router);
 app.use(i18n);
 app.use(pinia);
-app.use(PrimeVue);
+app.use(PrimeVue, {
+  ripple: true,
+  inputStyle: "filled",
+  zIndex: {
+    modal: 10100, //dialog, sidebar
+    overlay: 10100, //dropdown, overlaypanel
+    menu: 10100, //overlay menus
+    tooltip: 10100, //tooltip
+    toast: 10100, //toast
+  },
+});
 app.use(ToastService);
 
 app.component("InputText", InputText);
@@ -47,5 +59,6 @@ app.component("DataTable", DataTable);
 app.component("Column", Column);
 app.component("ColumnGroup", ColumnGroup);
 app.component("Row", Row);
+app.component("Paginator", Paginator);
 
 app.mount("#app");
