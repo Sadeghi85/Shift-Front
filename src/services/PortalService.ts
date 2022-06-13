@@ -1,6 +1,6 @@
 import { Api } from "@/http-client/api";
 import { ApiResponseModel } from "@/models/ApiResponseModel";
-import { PortalModel } from "@/models/PortalModel";
+import { PortalViewModel } from "@/models/PortalViewModel";
 import { AxiosInstance } from "axios";
 
 export default class PortalService {
@@ -10,10 +10,10 @@ export default class PortalService {
   }
 
   public getPortals() {
-    return this.api.get<ApiResponseModel<PortalModel>>("/Portal");
+    return this.api.get<ApiResponseModel<PortalViewModel>>("/Portal");
   }
 
   public getPortal(id: string) {
-    return this.api.get<ApiResponseModel<PortalModel>>(`/Portal/${id}`);
+    return this.api.get<ApiResponseModel<PortalViewModel>>(`/Portal/${id}`);
   }
 }

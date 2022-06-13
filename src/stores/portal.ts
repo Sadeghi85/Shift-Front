@@ -1,18 +1,18 @@
 import { defineStore } from "pinia";
 import { useStorage } from "@vueuse/core";
-import { PortalModel } from "@/models/PortalModel";
+import { PortalViewModel } from "@/models/PortalViewModel";
 import { ref } from "vue";
 
 export const usePortalStore = defineStore({
   id: "portal",
   state: () => ({
-    portals: useStorage<PortalModel[]>("portals", []),
+    portals: useStorage<PortalViewModel[]>("portals", []),
   }),
   getters: {
     getPortals: (state) => state.portals,
   },
   actions: {
-    setPortals(portals: PortalModel[]) {
+    setPortals(portals: PortalViewModel[]) {
       this.portals = portals;
     },
     removePortals() {
