@@ -77,12 +77,16 @@ body {
 }
 
 nav {
-  padding: 30px;
+  padding: 1rem;
+  display: flex;
+  justify-content: center;
+  text-align: center;
 }
 
 nav a {
   font-weight: bold;
   color: #2c3e50;
+  padding: 0 1rem;
 }
 
 nav a.router-link-exact-active {
@@ -90,8 +94,11 @@ nav a.router-link-exact-active {
 }
 
 .layout-content {
-  padding: 2rem 2rem 2rem 2rem;
+  padding: 2rem;
   background-color: var(--surface-ground);
+}
+.layout-content .content-section {
+  padding: 0;
 }
 .card {
   background: var(--surface-card);
@@ -99,4 +106,11 @@ nav a.router-link-exact-active {
   padding: 2rem;
   border-radius: 10px;
   margin-bottom: 2rem;
+}
+
+.p-paginator .p-paginator-first,
+.p-paginator .p-paginator-prev,
+.p-paginator .p-paginator-next,
+.p-paginator .p-paginator-last {
+  transform: rotate(180deg);
 }

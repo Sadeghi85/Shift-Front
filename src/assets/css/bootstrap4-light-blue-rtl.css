@@ -2529,7 +2529,7 @@
   border-width: 1px 0 2px 0;
   font-weight: 600;
   color: #212529;
-  background: #ffffff;
+  background: #f8f9fa;
   transition: box-shadow 0.15s;
 }
 .p-datatable .p-datatable-tfoot > tr > td {
