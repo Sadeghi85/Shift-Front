@@ -1,82 +1,99 @@
 <template>
-  <div class="form-demo">
-    <div class="flex justify-content-center">
-      <div class="card">
-        <h5 class="text-center">Register</h5>
-        <form @submit.prevent="handleSubmit(!v$.$invalid)" class="p-fluid">
-          <div class="field">
-            <div class="p-float-label">
-              <InputText
-                id="locationName"
-                v-model="v$.locationName.$model"
-                :class="{ 'p-invalid': v$.locationName.$invalid && submitted }"
-              />
-              <label
-                for="locationName"
-                :class="{ 'p-error': v$.locationName.$invalid && submitted }"
-                >نام لوکیشن*</label
-              >
-            </div>
-          </div>
-          <div class="field">
-            <div class="p-float-label">
-              <Dropdown
-                id="portal"
-                v-model="v$.portal.$model"
-                :options="portals"
-                optionLabel="title"
-                :class="{ 'p-invalid': v$.portal.$invalid && submitted }"
-                :placeholder="$t('dropdown.placeholder.portal')"
-              />
-            </div>
-          </div>
-          <Button type="submit" label="Submit" class="mt-2" />
-        </form>
-      </div>
-    </div>
-  </div>
+  <div class="layout-content">
+    <div class="content-section">
+      <div class="grid">
+        <div class="col-12 md:col-12 p-fluid">
+          <div class="card">
+            <form
+              @submit.prevent="handleSubmit(!v$.$invalid)"
+              class="p-fluid"
+              autocomplete="off"
+            >
+              <div class="grid formgrid">
+                <div class="col-12 mb-2 md:col-4 md:mb-0">
+                  <div class="p-float-label">
+                    <InputText
+                      id="locationName"
+                      v-model="v$.locationName.$model"
+                      :class="{
+                        'p-invalid': v$.locationName.$invalid && submitted,
+                      }"
+                    />
+                    <label
+                      for="locationName"
+                      :class="{
+                        'p-error': v$.locationName.$invalid && submitted,
+                      }"
+                      >نام لوکیشن<span :style="{ color: 'var(--red-500)' }"
+                        >*</span
+                      ></label
+                    >
+                  </div>
+                </div>
+                <div class="field col-12 mb-2 md:col-4 md:mb-0">
+                  <div class="p-float-label">
+                    <Dropdown
+                      id="portal"
+                      v-model="v$.portal.$model"
+                      :options="portals"
+                      optionLabel="title"
+                      :class="{ 'p-invalid': v$.portal.$invalid && submitted }"
+                    />
 
-  <!-- <div class="layout-content">
-    <div class="grid">
-      <div class="col-6 md:col-6 col-offset-3 p-fluid">
-        <div class="card">
-          <h5>نام لوکیشن</h5>
-          <div class="grid">
-            <div class="col-12 mb-2 lg:col-12 lg:mb-0">
-              <InputText id="locationName" type="text" v-model="locationName" />
-            </div>
-          </div>
-          <h5>شبکه</h5>
-          <div class="grid">
-            <div class="col-12 mb-2 lg:col-12 lg:mb-0">
-              <Dropdown
-                id="portal"
-                v-model="selectedPortal"
-                :options="portals"
-                optionLabel="title"
-                placeholder="شبکه را انتخاب کنید"
-              />
-            </div>
-          </div>
-          <div class="grid">
-            <div class="col-2 mb-2 lg:col-2 lg:mb-0 mt-2">
-              <Button label="ذخیره" @click.prevent="submitLocation($event)" />
-            </div>
+                    <label
+                      for="portal"
+                      :class="{
+                        'p-error': v$.portal.$invalid && submitted,
+                      }"
+                      >شبکه<span :style="{ color: 'var(--red-500)' }"
+                        >*</span
+                      ></label
+                    >
+                  </div>
+                </div>
+              </div>
+
+              <div class="grid formgrid">
+                <div class="col-12 mb-2 md:col-1 md:mb-0">
+                  <Button type="submit" label="ثبت" class="mt-4" />
+                </div>
+              </div>
+            </form>
           </div>
         </div>
       </div>
     </div>
-  </div> -->
 
-  <div class="layout-content">
-    <div class="grid">
-      <div class="col-12">
-        <div class="card">
-          <DataTable :value="shiftLocations" :loading="loading">
-            <Column field="id" header="Id"></Column>
-            <Column field="title" header="Title"></Column>
-            <Column field="portalId" header="PortalId"></Column>
-          </DataTable>
+    <div class="content-section">
+      <div class="grid">
+        <div class="col-12 md:col-12 p-fluid">
+          <div class="card">
+            <DataTable
+              :value="shiftLocations"
+              :rows="10"
+              dataKey="id"
+              :loading="loading"
+              showGridlines
+              responsiveLayout="scroll"
+            >
+              <Column header="ردیف">
+                <template #body="slotProps">
+                  <div>
+                    {{ (pageNumber - 1) * pageSize + slotProps.index + 1 }}
+                  </div>
+                </template></Column
+              >
+
+              <Column field="title" header="لوکیشن"></Column>
+              <Column field="portalTitle" header="شبکه"></Column>
+            </DataTable>
+
+            <Paginator
+              :rows="10"
+              :totalRecords="totalRecords"
+              @page="onPage($event)"
+            ></Paginator>
+          </div>
         </div>
       </div>
     </div>
@@ -92,22 +109,55 @@ import { useVuelidate } from "@vuelidate/core";
 import PortalService from "@/services/PortalService";
 import ShiftLocationService from "@/services/ShiftLocationService";
 import { usePortalStore } from "@/stores/portal";
-import { PortalModel } from "@/models/PortalModel";
+import { PortalViewModel } from "@/models/PortalViewModel";
 import { useToast } from "primevue/usetoast";
-import { ShiftLocationModel } from "@/models/ShifLocationModel";
+import { ShiftLocationViewModel } from "@/models/ShifLocationViewModel";
 
 // reactive state
 //const locationName = ref("");
 //const selectedPortal = ref<PortalModel>();
 
+const pageSize = ref(10);
+const pageNumber = ref(1);
+
+const loading = ref(false);
+const totalRecords = ref(0);
 const submitted = ref(false);
-const portals = ref<PortalModel[]>();
-const shiftLocations = ref<ShiftLocationModel[]>();
-const loading = ref(true);
+
+const shiftLocations = ref<ShiftLocationViewModel[]>();
+const portals = ref<PortalViewModel[]>();
+
+function loadShiftLocations(pageNumber: number, pageSize: number) {
+  loading.value = true;
+
+  shiftLocationService.value
+    .getShiftLocations(pageNumber, pageSize)
+    .then((response) => {
+      //console.log(response);
+      if (!response.data.success) {
+        throw new Error(
+          "Failed api call: [" + response.data.failureMessage + "]"
+        );
+      }
+
+      shiftLocations.value = response.data.data;
+      totalRecords.value = response.data.totalCount;
+      loading.value = false;
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+}
+
+const onPage = (event: any) => {
+  pageNumber.value = event.page + 1;
+  loadShiftLocations(pageNumber.value, pageSize.value);
+};
 
 const state = reactive({
   locationName: "",
-  portal: {} as PortalModel,
+  //portal: {} as PortalModel,
+  portal: ref<PortalViewModel>(),
 });
 
 const rules = {
@@ -131,15 +181,6 @@ const showSuccess = () => {
     group: "br",
   });
 };
-/* const showInputError = () => {
-  toast.add({
-    severity: "error",
-    summary: "پیغام",
-    detail: "فیلدها را پر کنید",
-    life: 3000,
-    group: "br",
-  });
-}; */
 
 // functions that mutate state and trigger updates
 const handleSubmit = (isFormValid: boolean) => {
@@ -150,7 +191,6 @@ const handleSubmit = (isFormValid: boolean) => {
   } else {
     shiftLocationService.value
       .createShiftLocation({
-        id: 0,
         title: v$.value.locationName.$model,
         portalId: v$.value.portal.$model!.id,
       })
@@ -162,7 +202,7 @@ const handleSubmit = (isFormValid: boolean) => {
           );
         }
 
-        loadShiftLocations();
+        loadShiftLocations(pageNumber.value, pageSize.value);
         showSuccess();
         resetForm();
       })
@@ -174,56 +214,10 @@ const handleSubmit = (isFormValid: boolean) => {
 
 const resetForm = () => {
   state.locationName = "";
-  state.portal = {} as PortalModel;
+  //state.portal = {} as PortalModel;
+  state.portal = ref<PortalViewModel>();
   submitted.value = false;
 };
-
-/* function submitLocation(event: Event) {
-  if (selectedPortal.value == null || locationName.value == null) {
-    showInputError();
-    return;
-  } else {
-    shiftLocationService.value
-      .createShiftLocation({
-        id: 0,
-        title: locationName.value,
-        portalId: selectedPortal.value.id,
-      })
-      .then((response) => {
-        //console.log(response);
-        if (!response.data.success) {
-          throw new Error(
-            "Failed api call: [" + response.data.failureMessage + "]"
-          );
-        }
-
-        showSuccess();
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  }
-} */
-
-function loadShiftLocations() {
-  loading.value = true;
-  shiftLocationService.value
-    .getShiftLocations()
-    .then((response) => {
-      //console.log(response);
-      if (!response.data.success) {
-        throw new Error(
-          "Failed api call: [" + response.data.failureMessage + "]"
-        );
-      }
-
-      shiftLocations.value = response.data.data;
-      loading.value = false;
-    })
-    .catch((error) => {
-      console.log(error);
-    });
-}
 
 function loadPortals() {
   if (portalStore.portals.length == 0) {
@@ -253,11 +247,11 @@ onMounted(() => {
   //console.log(`The initial count is ${count.value}.`);
   //new InitialCalls();
 
-  // shiftLocations
-  loadShiftLocations();
-
   // portals
   loadPortals();
+
+  // shiftLocations
+  loadShiftLocations(pageNumber.value, pageSize.value);
 });
 </script>
 
