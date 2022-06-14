@@ -31,7 +31,18 @@ const routes: Array<RouteRecordRaw> = [
     // which is lazy-loaded when the route is visited.
     component: () =>
       import(
-        /* webpackChunkName: "shift-location" */ "../views/ShiftProductionTypeView.vue"
+        /* webpackChunkName: "shift-production-type" */ "../views/ShiftProductionTypeView.vue"
+      ),
+  },
+  {
+    path: "/shift-definition",
+    name: "shift-definition",
+    // route level code-splitting
+    // this generates a separate chunk (about.[hash].js) for this route
+    // which is lazy-loaded when the route is visited.
+    component: () =>
+      import(
+        /* webpackChunkName: "shift-definition" */ "../views/ShiftDefinitionView.vue"
       ),
   },
 ];

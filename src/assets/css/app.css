@@ -56,7 +56,7 @@
 }
 
 html {
-  font-size: 14px; /* the rest of elements are sized relative to this */
+  font-size: 12px; /* the rest of elements are sized relative to this */
 }
 
 body {
@@ -87,6 +87,7 @@ nav a {
   font-weight: bold;
   color: #2c3e50;
   padding: 0 1rem;
+  text-decoration: none;
 }
 
 nav a.router-link-exact-active {

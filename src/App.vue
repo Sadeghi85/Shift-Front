@@ -13,6 +13,13 @@
       }"
       >تعریف نوع تولید شیفت</router-link
     >
+    |
+    <router-link
+      :to="{
+        name: 'shift-definition',
+      }"
+      >تعریف شیفت</router-link
+    >
   </nav>
   <router-view />
 </template>
