@@ -24,7 +24,8 @@
                       :class="{
                         'p-error': v$.locationName.$invalid && submitted,
                       }"
-                      >نام لوکیشن<span :style="{ color: 'var(--red-500)' }"
+                      >{{ t("location.name")
+                      }}<span :style="{ color: 'var(--red-500)' }"
                         >*</span
                       ></label
                     >
@@ -45,7 +46,8 @@
                       :class="{
                         'p-error': v$.portal.$invalid && submitted,
                       }"
-                      >شبکه<span :style="{ color: 'var(--red-500)' }"
+                      >{{ t("portal.name")
+                      }}<span :style="{ color: 'var(--red-500)' }"
                         >*</span
                       ></label
                     >
@@ -55,7 +57,11 @@
 
               <div class="grid formgrid">
                 <div class="col-12 mb-2 md:col-1 md:mb-0">
-                  <Button type="submit" label="ثبت" class="mt-4" />
+                  <Button
+                    type="submit"
+                    :label="t('button.submit')"
+                    class="mt-4"
+                  />
                 </div>
               </div>
             </form>
@@ -76,16 +82,22 @@
               showGridlines
               responsiveLayout="scroll"
             >
-              <Column header="ردیف">
+              <Column :header="t('grid.header.index')">
                 <template #body="slotProps">
                   <div>
-                    {{ (pageNumber - 1) * pageSize + slotProps.index + 1 }}
+                    {{ pageNumber * pageSize + slotProps.index + 1 }}
                   </div>
                 </template></Column
               >
 
-              <Column field="title" header="لوکیشن"></Column>
-              <Column field="portalTitle" header="شبکه"></Column>
+              <Column
+                field="title"
+                :header="t('grid.header.location')"
+              ></Column>
+              <Column
+                field="portalTitle"
+                :header="t('grid.header.portal')"
+              ></Column>
             </DataTable>
 
             <Paginator
@@ -104,21 +116,23 @@
 
 <script lang="ts" setup>
 import { reactive, ref, onMounted, onBeforeMount } from "vue";
+import { useI18n } from "vue-i18n";
 import { required } from "@vuelidate/validators";
 import { useVuelidate } from "@vuelidate/core";
 import PortalService from "@/services/PortalService";
 import ShiftLocationService from "@/services/ShiftLocationService";
 import { usePortalStore } from "@/stores/portal";
-import { PortalViewModel } from "@/models/PortalViewModel";
+import { PortalViewModel } from "@/models/portal/PortalViewModel";
 import { useToast } from "primevue/usetoast";
-import { ShiftLocationViewModel } from "@/models/ShifLocationViewModel";
+import { ShiftLocationViewModel } from "@/models/shift-location/ShiftLocationViewModel";
+import { ShiftLocationInputModel } from "@/models/shift-location/ShiftLocationInputModel";
 
 // reactive state
 //const locationName = ref("");
 //const selectedPortal = ref<PortalModel>();
 
 const pageSize = ref(10);
-const pageNumber = ref(1);
+const pageNumber = ref(0);
 
 const loading = ref(false);
 const totalRecords = ref(0);
@@ -131,7 +145,13 @@ function loadShiftLocations(pageNumber: number, pageSize: number) {
   loading.value = true;
 
   shiftLocationService.value
-    .getShiftLocations(pageNumber, pageSize)
+    .getShiftLocations({
+      pageNo: pageNumber,
+      pageSize: pageSize,
+      portalId: 0,
+      title: "",
+      orderKey: "",
+    } as ShiftLocationInputModel)
     .then((response) => {
       //console.log(response);
       if (!response.data.success) {
@@ -150,7 +170,7 @@ function loadShiftLocations(pageNumber: number, pageSize: number) {
 }
 
 const onPage = (event: any) => {
-  pageNumber.value = event.page + 1;
+  pageNumber.value = event.page;
   loadShiftLocations(pageNumber.value, pageSize.value);
 };
 
@@ -166,6 +186,7 @@ const rules = {
 };
 
 ////////
+const { t } = useI18n();
 const v$ = useVuelidate(rules, state);
 const portalService = ref(new PortalService());
 const shiftLocationService = ref(new ShiftLocationService());
@@ -175,8 +196,8 @@ const toast = useToast();
 const showSuccess = () => {
   toast.add({
     severity: "success",
-    summary: "پیغام",
-    detail: "ثبت با موفقیت انجام شد",
+    summary: t("toast.header.general"),
+    detail: t("toast.success.create"),
     life: 3000,
     group: "br",
   });
@@ -193,7 +214,7 @@ const handleSubmit = (isFormValid: boolean) => {
       .createShiftLocation({
         title: v$.value.locationName.$model,
         portalId: v$.value.portal.$model!.id,
-      })
+      } as ShiftLocationInputModel)
       .then((response) => {
         //console.log(response);
         if (!response.data.success) {
