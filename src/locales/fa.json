@@ -1,3 +1,25 @@
 {
-  "dropdown.placeholder.portal": "شبکه را انتخاب کنید"
+  "_": "elements",
+  "dropdown.placeholder.portal": "شبکه را انتخاب کنید",
+  "button.submit": "ثبت",
+
+  "_": "entities",
+  "portal.name": "شبکه",
+  "location.name": "نام لوکیشن",
+  "productionType.title": "نوع تولید",
+
+  "_": "grid",
+  "grid.header.index": "ردیف",
+  "grid.header.portal": "شبکه",
+  "grid.header.location": "لوکیشن",
+  "grid.header.productionType": "نوع تولید",
+
+  "_": "toast",
+  "toast.success.create": "ثبت با موفقیت انجام شد",
+  "toast.success.update": "بروزرسانی با موفقیت انجام شد",
+  "toast.success.delete": "حذف با موفقیت انجام شد",
+  "toast.general.error": "خطایی رخ داده است",
+  "toast.header.general": "پیغام",
+  "toast.header.success": "موفقیت",
+  "toast.header.error": "خطا"
 }
