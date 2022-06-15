@@ -12,65 +12,48 @@
               <div class="grid formgrid">
                 <div class="field col-12 mb-4 md:col-4">
                   <div class="p-float-label">
-                    <InputText
-                      id="shiftTitle"
-                      v-model="v$.shiftTitle.$model"
+                    <Dropdown
+                      id="shiftDefinition"
+                      v-model="v$.shiftDefinition.$model"
+                      :options="shiftDefinitions"
+                      optionLabel="title"
                       :class="{
-                        'p-invalid': v$.shiftTitle.$invalid && submitted,
+                        'p-invalid': v$.shiftDefinition.$invalid && submitted,
                       }"
                     />
+
                     <label
-                      for="shiftTitle"
+                      for="shiftDefinition"
                       :class="{
-                        'p-error': v$.shiftTitle.$invalid && submitted,
+                        'p-error': v$.shiftDefinition.$invalid && submitted,
                       }"
-                      >{{ t("shift.title")
+                      >{{ t("shiftDefinition.title")
                       }}<span :style="{ color: 'var(--red-500)' }"
                         >*</span
                       ></label
                     >
                   </div>
                 </div>
+
                 <div class="field col-12 mb-4 md:col-4">
                   <div class="p-float-label">
                     <Dropdown
-                      id="portal"
-                      v-model="v$.portal.$model"
-                      :options="portals"
-                      optionLabel="title"
-                      :class="{ 'p-invalid': v$.portal.$invalid && submitted }"
-                    />
-
-                    <label
-                      for="portal"
-                      :class="{
-                        'p-error': v$.portal.$invalid && submitted,
-                      }"
-                      >{{ t("portal.name")
-                      }}<span :style="{ color: 'var(--red-500)' }"
-                        >*</span
-                      ></label
-                    >
-                  </div>
-                </div>
-                <div class="field col-12 mb-4 md:col-4">
-                  <div class="p-float-label">
-                    <Dropdown
-                      id="shiftType"
-                      v-model="v$.shiftType.$model"
-                      :options="shiftTypes"
+                      id="shiftProductionType"
+                      v-model="v$.shiftProductionType.$model"
+                      :options="shiftProductionTypes"
                       optionLabel="title"
                       :class="{
-                        'p-invalid': v$.shiftType.$invalid && submitted,
+                        'p-invalid':
+                          v$.shiftProductionType.$invalid && submitted,
                       }"
                     />
 
                     <label
-                      for="shiftType"
+                      for="shiftProductionType"
                       :class="{
-                        'p-error': v$.shiftType.$invalid && submitted,
+                        'p-error': v$.shiftProductionType.$invalid && submitted,
                       }"
-                      >{{ t("shiftType.title")
+                      >{{ t("productionType.title")
                       }}<span :style="{ color: 'var(--red-500)' }"
                         >*</span
                       ></label
@@ -81,39 +64,40 @@
                 <div class="field col-12 mb-4 md:col-4">
                   <div class="p-float-label">
                     <InputText
-                      id="startTime"
-                      v-model="v$.startTime.$model"
+                      id="shiftDate"
+                      v-model="v$.shiftDate.$model"
                       :class="{
-                        'p-invalid': v$.startTime.$invalid && submitted,
+                        'p-invalid': v$.shiftDate.$invalid && submitted,
                       }"
                     />
                     <label
-                      for="startTime"
+                      for="shiftDate"
                       :class="{
-                        'p-error': v$.startTime.$invalid && submitted,
+                        'p-error': v$.shiftDate.$invalid && submitted,
                       }"
-                      >{{ t("shift.startTime")
+                      >{{ t("shiftDate.title")
                       }}<span :style="{ color: 'var(--red-500)' }"
                         >*</span
                       ></label
                     >
                   </div>
                 </div>
+
                 <div class="field col-12 mb-4 md:col-4">
                   <div class="p-float-label">
                     <InputText
-                      id="endTime"
-                      v-model="v$.endTime.$model"
+                      id="shiftWorthPercent"
+                      v-model="v$.shiftWorthPercent.$model"
                       :class="{
-                        'p-invalid': v$.endTime.$invalid && submitted,
+                        'p-invalid': v$.shiftWorthPercent.$invalid && submitted,
                       }"
                     />
                     <label
-                      for="endTime"
+                      for="shiftWorthPercent"
                       :class="{
-                        'p-error': v$.endTime.$invalid && submitted,
+                        'p-error': v$.shiftWorthPercent.$invalid && submitted,
                       }"
-                      >{{ t("shift.endTime")
+                      >{{ t("shiftWorthPercent.title")
                       }}<span :style="{ color: 'var(--red-500)' }"
                         >*</span
                       ></label
@@ -138,7 +122,7 @@
         <div class="col-12 md:col-12 p-fluid">
           <div class="card">
             <DataTable
-              :value="shiftDefinitions"
+              :value="shiftTablets"
               :rows="10"
               dataKey="id"
               :loading="loading"
@@ -154,24 +138,20 @@
               >
 
               <Column
-                field="title"
+                field="shiftTitle"
                 :header="t('grid.header.shiftTitle')"
               ></Column>
               <Column
-                field="portalTitle"
-                :header="t('grid.header.portal')"
+                field="productionTypeTitle"
+                :header="t('grid.header.productionTypeTitle')"
               ></Column>
               <Column
-                field="startTime"
-                :header="t('grid.header.startTime')"
+                field="shiftDate"
+                :header="t('grid.header.shiftDate')"
               ></Column>
               <Column
-                field="endTime"
-                :header="t('grid.header.endTime')"
-              ></Column>
-              <Column
-                field="shiftTypeTitle"
-                :header="t('grid.header.shiftTypeTitle')"
+                field="shiftWorthPercent"
+                :header="t('grid.header.shiftWorthPercent')"
               ></Column>
             </DataTable>
 
@@ -194,14 +174,16 @@ import { reactive, ref, onMounted } from "vue";
 import { useI18n } from "vue-i18n";
 import { required } from "@vuelidate/validators";
 import { useVuelidate } from "@vuelidate/core";
-import PortalService from "@/services/PortalService";
-import ShiftDefinitionService from "@/services/ShiftDefinitionService";
-import { usePortalStore } from "@/stores/portal";
-import { PortalViewModel } from "@/models/portal/PortalViewModel";
+import ShiftTabletService from "@/services/ShiftTabletService";
 import { useToast } from "primevue/usetoast";
+import { ShiftTabletViewModel } from "@/models/shift-tablet/ShiftTabletViewModel";
+import { ShiftTabletInputModel } from "@/models/shift-tablet/ShiftTabletInputModel";
+import { ShiftProductionTypeViewModel } from "@/models/shift-production-type/ShiftProductionTypeViewModel";
 import { ShiftDefinitionViewModel } from "@/models/shift-definition/ShiftDefinitionViewModel";
+import ShiftProductionTypeService from "@/services/ShiftProductionTypeService";
+import ShiftDefinitionService from "@/services/ShiftDefinitionService";
 import { ShiftDefinitionInputModel } from "@/models/shift-definition/ShiftDefinitionInputModel";
-import { ShiftTypeViewModel } from "@/models/shift-type/ShiftTypeViewModel";
+import { ShiftProductionTypeInputModel } from "@/models/shift-production-type/ShiftProductionTypeInputModel";
 
 const { t } = useI18n();
 const pageSize = ref(10);
@@ -211,24 +193,22 @@ const loading = ref(false);
 const totalRecords = ref(0);
 const submitted = ref(false);
 
+const shiftTablets = ref<ShiftTabletViewModel[]>();
+const shiftProductionTypes = ref<ShiftProductionTypeViewModel[]>();
 const shiftDefinitions = ref<ShiftDefinitionViewModel[]>();
-const portals = ref<PortalViewModel[]>();
-const shiftTypes = ref<ShiftTypeViewModel[]>([
-  { id: 1, title: t("shift.type.regie") },
-  { id: 2, title: t("shift.type.coordinator") },
-]);
 
-function loadShiftDefinitions(pageNumber: number, pageSize: number) {
+function loadShiftTablets(pageNumber: number, pageSize: number) {
   loading.value = true;
 
-  shiftDefinitionService.value
-    .getShiftDefinitions({
+  shiftTabletService.value
+    .getShiftTablets({
       pageNo: pageNumber,
       pageSize: pageSize,
-      portalId: 0,
-      title: "",
       orderKey: "",
-    } as ShiftDefinitionInputModel)
+      shiftId: 0,
+      shiftDate: "",
+      productionTypeId: 0,
+    } as ShiftTabletInputModel)
     .then((response) => {
       //console.log(response);
       if (!response.data.success) {
@@ -237,7 +217,7 @@ function loadShiftDefinitions(pageNumber: number, pageSize: number) {
         );
       }
 
-      shiftDefinitions.value = response.data.data;
+      shiftTablets.value = response.data.data;
       totalRecords.value = response.data.totalCount;
       loading.value = false;
     })
@@ -248,30 +228,27 @@ function loadShiftDefinitions(pageNumber: number, pageSize: number) {
 
 const onPage = (event: any) => {
   pageNumber.value = event.page;
-  loadShiftDefinitions(pageNumber.value, pageSize.value);
+  loadShiftTablets(pageNumber.value, pageSize.value);
 };
 
 const state = reactive({
-  shiftTitle: "",
-  //portal: {} as PortalModel,
-  portal: ref<PortalViewModel>(),
-  startTime: "",
-  endTime: "",
-  shiftType: ref<ShiftTypeViewModel>(),
+  shiftDefinition: ref<ShiftDefinitionViewModel>(),
+  shiftProductionType: ref<ShiftProductionTypeViewModel>(),
+  shiftDate: ref<string>(),
+  shiftWorthPercent: ref<number>(),
 });
 
 const rules = {
-  shiftTitle: { required },
-  portal: { required },
-  startTime: { required },
-  endTime: { required },
-  shiftType: { required },
+  shiftDefinition: { required },
+  shiftProductionType: { required },
+  shiftDate: { required },
+  shiftWorthPercent: { required },
 };
 
 const v$ = useVuelidate(rules, state);
-const portalService = ref(new PortalService());
+const shiftTabletService = ref(new ShiftTabletService());
+const shiftProductionTypeService = ref(new ShiftProductionTypeService());
 const shiftDefinitionService = ref(new ShiftDefinitionService());
-const portalStore = usePortalStore();
 
 const toast = useToast();
 const showSuccess = () => {
@@ -290,14 +267,15 @@ const handleSubmit = (isFormValid: boolean) => {
   if (!isFormValid) {
     return;
   } else {
-    shiftDefinitionService.value
-      .createShiftDefinition({
-        title: v$.value.shiftTitle.$model,
-        portalId: v$.value.portal.$model!.id,
-        startTime: v$.value.startTime.$model,
-        endTime: v$.value.endTime.$model,
-        shiftType: v$.value.shiftType.$model!.id,
-      } as ShiftDefinitionInputModel)
+    shiftTabletService.value
+      .createShiftTablet({
+        shiftId: v$.value.shiftDefinition.$model!.id,
+        productionTypeId: v$.value.shiftProductionType.$model!.id,
+        shiftDate: v$.value.shiftDate.$model,
+        shiftWorthPercent: v$.value.shiftWorthPercent.$model,
+        shiftTime: "00:00:00",
+        id: 0,
+      } as ShiftTabletInputModel)
       .then((response) => {
         //console.log(response);
         if (!response.data.success) {
@@ -306,7 +284,7 @@ const handleSubmit = (isFormValid: boolean) => {
           );
         }
 
-        loadShiftDefinitions(pageNumber.value, pageSize.value);
+        loadShiftTablets(pageNumber.value, pageSize.value);
         showSuccess();
         resetForm();
       })
@@ -317,44 +295,69 @@ const handleSubmit = (isFormValid: boolean) => {
 };
 
 const resetForm = () => {
-  state.shiftTitle = ref<string>();
-  //state.portal = {} as PortalModel;
-  state.portal = ref<PortalViewModel>();
-  state.startTime = ref<string>();
-  state.endTime = ref<string>();
-  state.shiftType = ref<ShiftTypeViewModel>();
+  state.shiftProductionType = ref<ShiftProductionTypeViewModel>();
+  state.shiftDate = ref<string>();
+  state.shiftWorthPercent = ref<number>();
+  state.shiftDefinition = ref<ShiftDefinitionViewModel>();
   submitted.value = false;
 };
 
-function loadPortals() {
-  if (portalStore.portals.length == 0) {
-    portalService.value
-      .getPortals()
-      .then((response) => {
-        //console.log(response);
-        if (!response.data.success) {
-          throw new Error(
-            "Failed api call: [" + response.data.failureMessage + "]"
-          );
-        }
+function loadShiftProductionTypes() {
+  shiftProductionTypeService.value
+    .getShiftProductionTypes({
+      pageNo: 0,
+      pageSize: 10,
+      orderKey: "",
+      id: 0,
+      title: "",
+    } as ShiftProductionTypeInputModel)
+    .then((response) => {
+      //console.log(response);
+      if (!response.data.success) {
+        throw new Error(
+          "Failed api call: [" + response.data.failureMessage + "]"
+        );
+      }
 
-        portalStore.setPortals(response.data.data);
-        portals.value = portalStore.portals;
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  } else {
-    portals.value = portalStore.portals;
-  }
+      shiftProductionTypes.value = response.data.data;
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+}
+
+function loadShiftDefinitions() {
+  shiftDefinitionService.value
+    .getShiftDefinitions({
+      pageNo: 0,
+      pageSize: 10,
+      orderKey: "",
+      id: 0,
+      title: "",
+    } as ShiftDefinitionInputModel)
+    .then((response) => {
+      //console.log(response);
+      if (!response.data.success) {
+        throw new Error(
+          "Failed api call: [" + response.data.failureMessage + "]"
+        );
+      }
+
+      shiftDefinitions.value = response.data.data;
+    })
+    .catch((error) => {
+      console.log(error);
+    });
 }
 
 // lifecycle hooks
 onMounted(() => {
-  // portals
-  loadPortals();
+  // load shift production types
+  loadShiftProductionTypes();
+  // load shift definitions
+  loadShiftDefinitions();
 
-  // shiftDefinitions
-  loadShiftDefinitions(pageNumber.value, pageSize.value);
+  // shiftTablets
+  loadShiftTablets(pageNumber.value, pageSize.value);
 });
 </script>

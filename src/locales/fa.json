@@ -13,6 +13,9 @@
   "shift.endTime": "ساعت پایان",
   "shift.type.regie": "رژی",
   "shift.type.coordinator": "هماهنگی",
+  "shiftDefinition.title": "شیفت",
+  "shiftDate.title": "تاریخ شیفت",
+  "shiftWorthPercent.title": "درصد ارزش شیفت",
 
   "_": "grid",
   "grid.header.index": "ردیف",
@@ -23,6 +26,15 @@
   "grid.header.startTime": "ساعت شروع",
   "grid.header.endTime": "ساعت پایان",
   "grid.header.shiftTypeTitle": "نوع شیفت",
+  "grid.header.productionTypeTitle": "نوع تولید",
+  "grid.header.shiftDate": "تاریخ شیفت",
+  "grid.header.shiftWorthPercent": "درصد ارزش شیفت",
+
+  "_": "routes",
+  "route.shift-location": "تعریف لوکیشن",
+  "route.shift-production-type": "تعریف نوع تولید شیفت",
+  "route.shift-definition": "تعریف شیفت",
+  "route.shift-tablet": "لوح شیفت",
 
   "_": "toast",
   "toast.success.create": "ثبت با موفقیت انجام شد",

@@ -4,21 +4,28 @@
       :to="{
         name: 'shift-location',
       }"
-      >تعریف لوکیشن</router-link
+      >{{ t("route.shift-location") }}</router-link
     >
     |
     <router-link
       :to="{
         name: 'shift-production-type',
       }"
-      >تعریف نوع تولید شیفت</router-link
+      >{{ t("route.shift-production-type") }}</router-link
     >
     |
     <router-link
       :to="{
         name: 'shift-definition',
       }"
-      >تعریف شیفت</router-link
+      >{{ t("route.shift-definition") }}</router-link
+    >
+    |
+    <router-link
+      :to="{
+        name: 'shift-tablet',
+      }"
+      >{{ t("route.shift-tablet") }}</router-link
     >
   </nav>
   <router-view />

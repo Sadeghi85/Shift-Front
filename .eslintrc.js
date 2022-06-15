@@ -19,6 +19,6 @@ module.exports = {
     "@typescript-eslint/no-empty-interface": "off",
     "@typescript-eslint/no-explicit-any": "off",
     "linebreak-style": ["error", "windows"],
-    "max-len": ["warn", { code: 80 }],
+    "max-len": ["off", { code: 80 }],
   },
 };
