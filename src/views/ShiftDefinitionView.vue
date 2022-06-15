@@ -10,7 +10,7 @@
               autocomplete="off"
             >
               <div class="grid formgrid">
-                <div class="col-12 mb-2 md:col-4 md:mb-0">
+                <div class="field col-12 mb-4 md:col-4">
                   <div class="p-float-label">
                     <InputText
                       id="shiftTitle"
@@ -31,7 +31,7 @@
                     >
                   </div>
                 </div>
-                <div class="field col-12 mb-2 md:col-4 md:mb-0">
+                <div class="field col-12 mb-4 md:col-4">
                   <div class="p-float-label">
                     <Dropdown
                       id="portal"
@@ -53,15 +53,78 @@
                     >
                   </div>
                 </div>
+                <div class="field col-12 mb-4 md:col-4">
+                  <div class="p-float-label">
+                    <Dropdown
+                      id="shiftType"
+                      v-model="v$.shiftType.$model"
+                      :options="shiftTypes"
+                      optionLabel="title"
+                      :class="{
+                        'p-invalid': v$.shiftType.$invalid && submitted,
+                      }"
+                    />
+
+                    <label
+                      for="shiftType"
+                      :class="{
+                        'p-error': v$.shiftType.$invalid && submitted,
+                      }"
+                      >{{ t("shiftType.title")
+                      }}<span :style="{ color: 'var(--red-500)' }"
+                        >*</span
+                      ></label
+                    >
+                  </div>
+                </div>
+
+                <div class="field col-12 mb-4 md:col-4">
+                  <div class="p-float-label">
+                    <InputText
+                      id="startTime"
+                      v-model="v$.startTime.$model"
+                      :class="{
+                        'p-invalid': v$.startTime.$invalid && submitted,
+                      }"
+                    />
+                    <label
+                      for="startTime"
+                      :class="{
+                        'p-error': v$.startTime.$invalid && submitted,
+                      }"
+                      >{{ t("shift.startTime")
+                      }}<span :style="{ color: 'var(--red-500)' }"
+                        >*</span
+                      ></label
+                    >
+                  </div>
+                </div>
+                <div class="field col-12 mb-4 md:col-4">
+                  <div class="p-float-label">
+                    <InputText
+                      id="endTime"
+                      v-model="v$.endTime.$model"
+                      :class="{
+                        'p-invalid': v$.endTime.$invalid && submitted,
+                      }"
+                    />
+                    <label
+                      for="endTime"
+                      :class="{
+                        'p-error': v$.endTime.$invalid && submitted,
+                      }"
+                      >{{ t("shift.endTime")
+                      }}<span :style="{ color: 'var(--red-500)' }"
+                        >*</span
+                      ></label
+                    >
+                  </div>
+                </div>
               </div>
 
-              <div class="grid formgrid">
-                <div class="col-12 mb-2 md:col-1 md:mb-0">
-                  <Button
-                    type="submit"
-                    :label="t('button.submit')"
-                    class="mt-4"
-                  />
+              <div class="grid">
+                <div class="col-12 mb-4 md:col-1">
+                  <Button type="submit" :label="t('button.submit')" class="" />
                 </div>
               </div>
             </form>
@@ -98,6 +161,18 @@
                 field="portalTitle"
                 :header="t('grid.header.portal')"
               ></Column>
+              <Column
+                field="startTime"
+                :header="t('grid.header.startTime')"
+              ></Column>
+              <Column
+                field="endTime"
+                :header="t('grid.header.endTime')"
+              ></Column>
+              <Column
+                field="shiftTypeTitle"
+                :header="t('grid.header.shiftTypeTitle')"
+              ></Column>
             </DataTable>
 
             <Paginator
@@ -126,7 +201,9 @@ import { PortalViewModel } from "@/models/portal/PortalViewModel";
 import { useToast } from "primevue/usetoast";
 import { ShiftDefinitionViewModel } from "@/models/shift-location/ShiftDefinitionViewModel";
 import { ShiftDefinitionInputModel } from "@/models/shift-location/ShiftDefinitionInputModel";
+import { ShiftTypeViewModel } from "@/models/shift-type/ShiftTypeViewModel";
 
+const { t } = useI18n();
 const pageSize = ref(10);
 const pageNumber = ref(0);
 
@@ -136,6 +213,10 @@ const submitted = ref(false);
 
 const shiftDefinitions = ref<ShiftDefinitionViewModel[]>();
 const portals = ref<PortalViewModel[]>();
+const shiftTypes = ref<ShiftTypeViewModel[]>([
+  { id: 1, title: t("shift.type.regie") },
+  { id: 2, title: t("shift.type.coordinator") },
+]);
 
 function loadShiftDefinitions(pageNumber: number, pageSize: number) {
   loading.value = true;
@@ -174,14 +255,19 @@ const state = reactive({
   shiftTitle: "",
   //portal: {} as PortalModel,
   portal: ref<PortalViewModel>(),
+  startTime: "",
+  endTime: "",
+  shiftType: ref<ShiftTypeViewModel>(),
 });
 
 const rules = {
   shiftTitle: { required },
   portal: { required },
+  startTime: { required },
+  endTime: { required },
+  shiftType: { required },
 };
 
-const { t } = useI18n();
 const v$ = useVuelidate(rules, state);
 const portalService = ref(new PortalService());
 const shiftDefinitionService = ref(new ShiftDefinitionService());
@@ -208,6 +294,9 @@ const handleSubmit = (isFormValid: boolean) => {
       .createShiftDefinition({
         title: v$.value.shiftTitle.$model,
         portalId: v$.value.portal.$model!.id,
+        startTime: v$.value.startTime.$model,
+        endTime: v$.value.endTime.$model,
+        shiftType: v$.value.shiftType.$model!.id,
       } as ShiftDefinitionInputModel)
       .then((response) => {
         //console.log(response);
@@ -231,6 +320,9 @@ const resetForm = () => {
   state.shiftTitle = "";
   //state.portal = {} as PortalModel;
   state.portal = ref<PortalViewModel>();
+  state.startTime = "";
+  state.endTime = "";
+  state.shiftType = ref<ShiftTypeViewModel>();
   submitted.value = false;
 };
 

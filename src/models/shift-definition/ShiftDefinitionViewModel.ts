@@ -3,4 +3,7 @@ export interface ShiftDefinitionViewModel {
   title: string;
   portalId: number;
   portalTitle: string;
+  startTime: string;
+  endTime: string;
+  shiftTypeTitle: string;
 }
