@@ -1,6 +1,6 @@
 import { Api } from "@/http-client/api";
 import { ApiResponseModel } from "@/models/ApiResponseModel";
-import { PortalViewModel } from "@/models/portal/PortalViewModel";
+import { PortalViewModel } from "@/models/PortalModels";
 import { AxiosInstance } from "axios";
 
 export default class PortalService {

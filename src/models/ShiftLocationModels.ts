@@ -5,3 +5,10 @@ export interface ShiftLocationInputModel {
   pageSize?: number;
   orderKey?: string;
 }
+
+export interface ShiftLocationViewModel {
+  id: number;
+  title: string;
+  portalId: number;
+  portalTitle: string;
+}

@@ -7,3 +7,8 @@ export interface AgentInputModel {
   pageSize?: number;
   orderKey?: string;
 }
+
+export interface AgentViewModel {
+  id: number;
+  fullName: string;
+}

@@ -1,7 +1,9 @@
 import { Api } from "@/http-client/api";
 import { ApiResponseModel } from "@/models/ApiResponseModel";
-import { ShiftTabletCrewInputModel } from "@/models/shift-tablet-crew/ShiftTabletCrewInputModel";
-import { ShiftTabletCrewViewModel } from "@/models/shift-tablet-crew/ShiftTabletCrewViewModel";
+import {
+  ShiftTabletCrewViewModel,
+  ShiftTabletCrewInputModel,
+} from "@/models/ShiftTabletCrewModels";
 import { AxiosInstance } from "axios";
 
 export default class ShiftTabletCrewService {

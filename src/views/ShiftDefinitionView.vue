@@ -197,11 +197,13 @@ import { useVuelidate } from "@vuelidate/core";
 import PortalService from "@/services/PortalService";
 import ShiftDefinitionService from "@/services/ShiftDefinitionService";
 import { usePortalStore } from "@/stores/portal";
-import { PortalViewModel } from "@/models/portal/PortalViewModel";
+import { PortalViewModel } from "@/models/PortalModels";
 import { useToast } from "primevue/usetoast";
-import { ShiftDefinitionViewModel } from "@/models/shift-definition/ShiftDefinitionViewModel";
-import { ShiftDefinitionInputModel } from "@/models/shift-definition/ShiftDefinitionInputModel";
-import { ShiftTypeViewModel } from "@/models/shift-type/ShiftTypeViewModel";
+import {
+  ShiftDefinitionViewModel,
+  ShiftDefinitionInputModel,
+} from "@/models/ShiftDefinitionModels";
+import { ShiftTypeViewModel } from "@/models/ShiftTypeModels";
 
 const { t } = useI18n();
 const pageSize = ref(10);

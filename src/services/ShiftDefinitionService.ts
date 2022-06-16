@@ -1,7 +1,9 @@
 import { Api } from "@/http-client/api";
 import { ApiResponseModel } from "@/models/ApiResponseModel";
-import { ShiftDefinitionInputModel } from "@/models/shift-definition/ShiftDefinitionInputModel";
-import { ShiftDefinitionViewModel } from "@/models/shift-definition/ShiftDefinitionViewModel";
+import {
+  ShiftDefinitionViewModel,
+  ShiftDefinitionInputModel,
+} from "@/models/ShiftDefinitionModels";
 import { AxiosInstance } from "axios";
 
 export default class ShiftDefinitionService {

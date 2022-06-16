@@ -122,15 +122,14 @@ import { useVuelidate } from "@vuelidate/core";
 import PortalService from "@/services/PortalService";
 import ShiftLocationService from "@/services/ShiftLocationService";
 import { usePortalStore } from "@/stores/portal";
-import { PortalViewModel } from "@/models/portal/PortalViewModel";
+import { PortalViewModel } from "@/models/PortalModels";
 import { useToast } from "primevue/usetoast";
-import { ShiftLocationViewModel } from "@/models/shift-location/ShiftLocationViewModel";
-import { ShiftLocationInputModel } from "@/models/shift-location/ShiftLocationInputModel";
+import {
+  ShiftLocationViewModel,
+  ShiftLocationInputModel,
+} from "@/models/ShiftLocationModels";
 
 // reactive state
-//const locationName = ref("");
-//const selectedPortal = ref<PortalModel>();
-
 const pageSize = ref(10);
 const pageNumber = ref(0);
 

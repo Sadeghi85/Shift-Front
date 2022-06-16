@@ -1,7 +1,9 @@
 import { Api } from "@/http-client/api";
 import { ApiResponseModel } from "@/models/ApiResponseModel";
-import { ShiftLocationInputModel } from "@/models/shift-location/ShiftLocationInputModel";
-import { ShiftLocationViewModel } from "@/models/shift-location/ShiftLocationViewModel";
+import {
+  ShiftLocationViewModel,
+  ShiftLocationInputModel,
+} from "@/models/ShiftLocationModels";
 import { AxiosInstance } from "axios";
 
 export default class ShiftLocationService {

@@ -6,3 +6,9 @@ export interface ResourceTypeInputModel {
   pageSize?: number;
   orderKey?: string;
 }
+
+export interface ResourceTypeViewModel {
+  id: number;
+  parentId: number;
+  title: string;
+}

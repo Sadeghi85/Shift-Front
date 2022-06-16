@@ -1,7 +1,9 @@
 import { Api } from "@/http-client/api";
 import { ApiResponseModel } from "@/models/ApiResponseModel";
-import { ShiftProductionTypeInputModel } from "@/models/shift-production-type/ShiftProductionTypeInputModel";
-import { ShiftProductionTypeViewModel } from "@/models/shift-production-type/ShiftProductionTypeViewModel";
+import {
+  ShiftProductionTypeViewModel,
+  ShiftProductionTypeInputModel,
+} from "@/models/ShiftProductionTypeModels";
 import { AxiosInstance } from "axios";
 
 export default class ShiftProductionTypeService {

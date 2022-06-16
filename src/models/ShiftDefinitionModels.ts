@@ -10,3 +10,13 @@ export interface ShiftDefinitionInputModel {
   pageSize?: number;
   orderKey?: string;
 }
+
+export interface ShiftDefinitionViewModel {
+  id: number;
+  title: string;
+  portalId: number;
+  portalTitle: string;
+  startTime: string;
+  endTime: string;
+  shiftTypeTitle: string;
+}

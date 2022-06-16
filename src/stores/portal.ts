@@ -1,6 +1,6 @@
 import { defineStore } from "pinia";
 import { useStorage } from "@vueuse/core";
-import { PortalViewModel } from "@/models/portal/PortalViewModel";
+import { PortalViewModel } from "@/models/PortalModels";
 import { ref } from "vue";
 
 export const usePortalStore = defineStore({

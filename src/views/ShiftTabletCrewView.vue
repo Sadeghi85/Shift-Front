@@ -225,17 +225,19 @@ import ShiftTabletService from "@/services/ShiftTabletService";
 import ResourceTypeService from "@/services/ResourceTypeService";
 import AgentService from "@/services/AgentService";
 import { useToast } from "primevue/usetoast";
-import { ShiftTabletCrewViewModel } from "@/models/shift-tablet-crew/ShiftTabletCrewViewModel";
-import { ShiftTabletCrewInputModel } from "@/models/shift-tablet-crew/ShiftTabletCrewInputModel";
-
-import { ShiftTabletViewModel } from "@/models/shift-tablet/ShiftTabletViewModel";
-import { ShiftTabletInputModel } from "@/models/shift-tablet/ShiftTabletInputModel";
-
-import { AgentViewModel } from "@/models/agent/AgentViewModel";
-import { ResourceTypeViewModel } from "@/models/resource-type/ResourceTypeViewModel";
-import { AgentInputModel } from "@/models/agent/AgentInputModel";
-import { ResourceTypeInputModel } from "@/models/resource-type/ResourceTypeInputModel";
-import { number } from "@intlify/core-base";
+import {
+  ShiftTabletCrewViewModel,
+  ShiftTabletCrewInputModel,
+} from "@/models/ShiftTabletCrewModels";
+import {
+  ShiftTabletViewModel,
+  ShiftTabletInputModel,
+} from "@/models/ShiftTabletModels";
+import { AgentViewModel, AgentInputModel } from "@/models/AgentModels";
+import {
+  ResourceTypeViewModel,
+  ResourceTypeInputModel,
+} from "@/models/ResourceTypeModels";
 
 const { t } = useI18n();
 const pageSize = ref(10);
@@ -452,13 +454,6 @@ const getExcel = () => {
     } as ShiftTabletCrewInputModel)
     .then((response) => {
       //console.log(response);
-      // if (!response.data.success) {
-      //   throw new Error(
-      //     "Failed api call: [" + response.data.failureMessage + "]"
-      //   );
-      // }
-
-      //shiftTabletCrews.value = response.data.data;
 
       const blob = new Blob([response.data], {
         type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",

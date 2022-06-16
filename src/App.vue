@@ -39,23 +39,23 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, onMounted, onBeforeMount } from "vue";
+//import { ref, onMounted, onBeforeMount } from "vue";
 import { useI18n } from "vue-i18n";
 
 const { t } = useI18n();
 
 // reactive state
-const count = ref(0);
+//const count = ref(0);
 
 // functions that mutate state and trigger updates
-function increment() {
-  count.value++;
-}
+// function increment() {
+//   count.value++;
+// }
 
 // lifecycle hooks
-onBeforeMount(() => {
-  //console.log(`The initial count is ${count.value}.`);
-});
+// onMounted(() => {
+//   //console.log(`The initial count is ${count.value}.`);
+// });
 </script>
 
 <style></style>

@@ -95,10 +95,11 @@ import { useI18n } from "vue-i18n";
 import { required } from "@vuelidate/validators";
 import { useVuelidate } from "@vuelidate/core";
 import ShiftProductionTypeService from "@/services/ShiftProductionTypeService";
-
 import { useToast } from "primevue/usetoast";
-import { ShiftProductionTypeViewModel } from "@/models/shift-production-type/ShiftProductionTypeViewModel";
-import { ShiftProductionTypeInputModel } from "@/models/shift-production-type/ShiftProductionTypeInputModel";
+import {
+  ShiftProductionTypeViewModel,
+  ShiftProductionTypeInputModel,
+} from "@/models/ShiftProductionTypeModels";
 
 // reactive state
 

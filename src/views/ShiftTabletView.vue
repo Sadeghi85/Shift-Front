@@ -176,14 +176,20 @@ import { required } from "@vuelidate/validators";
 import { useVuelidate } from "@vuelidate/core";
 import ShiftTabletService from "@/services/ShiftTabletService";
 import { useToast } from "primevue/usetoast";
-import { ShiftTabletViewModel } from "@/models/shift-tablet/ShiftTabletViewModel";
-import { ShiftTabletInputModel } from "@/models/shift-tablet/ShiftTabletInputModel";
-import { ShiftProductionTypeViewModel } from "@/models/shift-production-type/ShiftProductionTypeViewModel";
-import { ShiftDefinitionViewModel } from "@/models/shift-definition/ShiftDefinitionViewModel";
+import {
+  ShiftTabletViewModel,
+  ShiftTabletInputModel,
+} from "@/models/ShiftTabletModels";
+import {
+  ShiftProductionTypeViewModel,
+  ShiftProductionTypeInputModel,
+} from "@/models/ShiftProductionTypeModels";
+import {
+  ShiftDefinitionViewModel,
+  ShiftDefinitionInputModel,
+} from "@/models/ShiftDefinitionModels";
 import ShiftProductionTypeService from "@/services/ShiftProductionTypeService";
 import ShiftDefinitionService from "@/services/ShiftDefinitionService";
-import { ShiftDefinitionInputModel } from "@/models/shift-definition/ShiftDefinitionInputModel";
-import { ShiftProductionTypeInputModel } from "@/models/shift-production-type/ShiftProductionTypeInputModel";
 
 const { t } = useI18n();
 const pageSize = ref(10);

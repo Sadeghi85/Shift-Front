@@ -1,8 +1,10 @@
 import { Api } from "@/http-client/api";
 import { ApiResponseModel } from "@/models/ApiResponseModel";
-import { ResourceTypeViewModel } from "@/models/resource-type/ResourceTypeViewModel";
+import {
+  ResourceTypeViewModel,
+  ResourceTypeInputModel,
+} from "@/models/ResourceTypeModels";
 import { AxiosInstance } from "axios";
-import { ResourceTypeInputModel } from "@/models/resource-type/ResourceTypeInputModel";
 
 export default class ResourceTypeService {
   private api: AxiosInstance;
