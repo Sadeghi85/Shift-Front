@@ -40,6 +40,9 @@
   "grid.header.entranceTime": "ساعت ورود",
   "grid.header.exitTime": "ساعت خروج",
 
+  "_": "buttons",
+  "button.excel": "اکسل",
+
   "_": "routes",
   "route.shift-location": "تعریف لوکیشن",
   "route.shift-production-type": "تعریف نوع تولید شیفت",

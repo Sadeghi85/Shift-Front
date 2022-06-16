@@ -143,7 +143,7 @@
 
     <div class="content-section">
       <div class="grid">
-        <div class="col-12 md:col-12 p-fluid">
+        <div class="col-12 md:col-12">
           <div class="card">
             <DataTable
               :value="shiftTabletCrews"
@@ -153,6 +153,18 @@
               showGridlines
               responsiveLayout="scroll"
             >
+              <template #header>
+                <div class="flex justify-content-end">
+                  <Button
+                    type="button"
+                    icon="pi pi-file-excel"
+                    :label="t('button.excel')"
+                    class="p-button-outlined"
+                    @click.prevent="getExcel()"
+                  />
+                </div>
+              </template>
+
               <Column :header="t('grid.header.index')">
                 <template #body="slotProps">
                   <div>
@@ -161,10 +173,8 @@
                 </template></Column
               >
 
-              <Column
-                field="portalName"
-                :header="t('grid.header.portal')"
-              ></Column>
+              <Column field="portalName" :header="t('grid.header.portal')">
+              </Column>
               <Column
                 field="shiftTitle"
                 :header="t('grid.header.shiftTitle')"
@@ -222,9 +232,10 @@ import { ShiftTabletViewModel } from "@/models/shift-tablet/ShiftTabletViewModel
 import { ShiftTabletInputModel } from "@/models/shift-tablet/ShiftTabletInputModel";
 
 import { AgentViewModel } from "@/models/agent/AgentViewModel";
-import { ResourceTypeViewModel } from "@/models/resourceType/ResourceTypeViewModel";
+import { ResourceTypeViewModel } from "@/models/resource-type/ResourceTypeViewModel";
 import { AgentInputModel } from "@/models/agent/AgentInputModel";
-import { ResourceTypeInputModel } from "@/models/resourceType/ResourceTypeInputModel";
+import { ResourceTypeInputModel } from "@/models/resource-type/ResourceTypeInputModel";
+import { number } from "@intlify/core-base";
 
 const { t } = useI18n();
 const pageSize = ref(10);
@@ -248,10 +259,13 @@ function loadShiftTabletCrews(pageNumber: number, pageSize: number) {
       pageSize: pageSize,
       orderKey: "",
       agentId: 0,
-      startTime: "",
-      endTime: "",
+      entranceTime: "",
+      exitTime: "",
       resourceTypeId: 0,
       agentName: "",
+      shiftTabletDate: "",
+      shiftTabletId: 0,
+      id: 0,
       shiftTitle: "",
     } as ShiftTabletCrewInputModel)
     .then((response) => {
@@ -422,6 +436,43 @@ function loadShiftTablets() {
       console.log(error);
     });
 }
+
+const getExcel = () => {
+  shiftTabletCrewService.value
+    .getShiftTabletCrewExcel({
+      pageNo: 0,
+      pageSize: 2147483647, // Int32.MaxValue
+      orderKey: "",
+      agentId: 0,
+      entranceTime: "",
+      exitTime: "",
+      resourceTypeId: 0,
+      agentName: "",
+      shiftTitle: "",
+    } as ShiftTabletCrewInputModel)
+    .then((response) => {
+      //console.log(response);
+      // if (!response.data.success) {
+      //   throw new Error(
+      //     "Failed api call: [" + response.data.failureMessage + "]"
+      //   );
+      // }
+
+      //shiftTabletCrews.value = response.data.data;
+
+      const blob = new Blob([response.data], {
+        type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+      });
+      const link = document.createElement("a");
+      link.href = URL.createObjectURL(blob);
+      link.setAttribute("download", "ShiftTabletCrew.xlsx");
+      link.click();
+      URL.revokeObjectURL(link.href);
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+};
 
 // lifecycle hooks
 onMounted(() => {

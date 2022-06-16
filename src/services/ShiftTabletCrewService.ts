@@ -17,6 +17,12 @@ export default class ShiftTabletCrewService {
     );
   }
 
+  public getShiftTabletCrewExcel(body: ShiftTabletCrewInputModel) {
+    return this.api.post("/ShiftTabletCrew/GetGeExcel", body, {
+      responseType: "blob",
+    });
+  }
+
   /* public getShiftLocation(id: string) {
     return this.api.get<ApiResponseModel<ShiftLocationViewModel>>(
       `/ShiftLocation/${id}`

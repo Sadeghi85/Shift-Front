@@ -135,7 +135,7 @@
 
     <div class="content-section">
       <div class="grid">
-        <div class="col-12 md:col-12 p-fluid">
+        <div class="col-12 md:col-12">
           <div class="card">
             <DataTable
               :value="shiftDefinitions"

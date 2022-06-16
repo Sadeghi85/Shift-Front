@@ -6,11 +6,11 @@ export interface ShiftTabletCrewInputModel {
   exitTime: string;
   shiftTabletId: number;
 
-  isReplaced: boolean;
-  agentName: string;
+  isReplaced?: boolean;
+  agentName?: string;
   shiftTitle: string;
-  fromDate: string;
-  toDate: string;
+  fromDate?: string;
+  toDate?: string;
 
   pageNo?: number;
   pageSize?: number;

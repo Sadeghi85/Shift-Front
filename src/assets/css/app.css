@@ -115,3 +115,10 @@ nav a.router-link-exact-active {
 .p-paginator .p-paginator-last {
   transform: rotate(180deg);
 }
+
+.p-button .p-button-icon-right {
+  margin-right: 0.5rem;
+}
+.p-button .p-button-icon-left {
+  margin-left: 0.5rem;
+}
