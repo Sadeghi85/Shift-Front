@@ -122,7 +122,7 @@ import { useVuelidate } from "@vuelidate/core";
 import PortalService from "@/services/PortalService";
 import ShiftLocationService from "@/services/ShiftLocationService";
 import { usePortalStore } from "@/stores/portal";
-import { PortalViewModel } from "@/models/PortalModels";
+import { PortalViewModel, PortalInputModel } from "@/models/PortalModels";
 import { useToast } from "primevue/usetoast";
 import {
   ShiftLocationViewModel,
@@ -242,7 +242,13 @@ const resetForm = () => {
 function loadPortals() {
   if (portalStore.portals.length == 0) {
     portalService.value
-      .getPortals()
+      .getPortals({
+        pageNo: 0,
+        pageSize: 2147483647, // Int32.MaxValue
+        portalId: 0,
+        title: "",
+        orderKey: "",
+      } as PortalInputModel)
       .then((response) => {
         //console.log(response);
         if (!response.data.success) {
