@@ -20,7 +20,7 @@ const routes: Array<RouteRecordRaw> = [
     // which is lazy-loaded when the route is visited.
     component: () =>
       import(
-        /* webpackChunkName: "shift-location" */ "../views/ShiftLocationView.vue"
+        /* webpackChunkName: "shift-location" */ "../views/shift-location/ShiftLocationRD.vue"
       ),
   },
   {

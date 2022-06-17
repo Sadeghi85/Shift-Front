@@ -5,9 +5,9 @@
         <div class="col-12 md:col-12 p-fluid">
           <div class="card">
             <form
-              @submit.prevent="handleSubmit(!v$.$invalid)"
               class="p-fluid"
               autocomplete="off"
+              @submit.prevent="handleSubmit(!v$.$invalid)"
             >
               <div class="grid formgrid">
                 <div class="field col-12 mb-4 md:col-4">
@@ -16,7 +16,7 @@
                       id="shiftTablet"
                       v-model="v$.shiftTablet.$model"
                       :options="shiftTablets"
-                      optionLabel="shiftTitle"
+                      option-label="shiftTitle"
                       :class="{
                         'p-invalid': v$.shiftTablet.$invalid && submitted,
                       }"
@@ -41,7 +41,7 @@
                       id="agent"
                       v-model="v$.agent.$model"
                       :options="agents"
-                      optionLabel="fullName"
+                      option-label="fullName"
                       :class="{
                         'p-invalid': v$.agent.$invalid && submitted,
                       }"
@@ -66,7 +66,7 @@
                       id="resourceType"
                       v-model="v$.resourceType.$model"
                       :options="resourceTypes"
-                      optionLabel="title"
+                      option-label="title"
                       :class="{
                         'p-invalid': v$.resourceType.$invalid && submitted,
                       }"
@@ -148,10 +148,10 @@
             <DataTable
               :value="shiftTabletCrews"
               :rows="10"
-              dataKey="id"
+              data-key="id"
               :loading="loading"
-              showGridlines
-              responsiveLayout="scroll"
+              show-gridlines
+              responsive-layout="scroll"
             >
               <template #header>
                 <div class="flex justify-content-end">
@@ -203,7 +203,7 @@
 
             <Paginator
               :rows="10"
-              :totalRecords="totalRecords"
+              :total-records="totalRecords"
               @page="onPage($event)"
             ></Paginator>
           </div>

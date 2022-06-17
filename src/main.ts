@@ -12,7 +12,9 @@ import ToastService from "primevue/toastservice";
 
 import InputText from "primevue/inputtext";
 import Dropdown from "primevue/dropdown";
+/* eslint-disable */
 import Button from "primevue/button";
+/* eslint-disable */
 import Dialog from "primevue/dialog";
 import Toast from "primevue/toast";
 import DataTable from "primevue/datatable";
@@ -20,6 +22,7 @@ import Column from "primevue/column";
 import ColumnGroup from "primevue/columngroup"; //optional for column grouping
 import Row from "primevue/row"; //optional for row
 import Paginator from "primevue/paginator"; //optional for row grouping
+import Toolbar from "primevue/toolbar";
 
 //import "primevue/resources/themes/bootstrap4-light-blue/theme.css";
 //import "primevue/resources/themes/lara-light-blue/theme.css";
@@ -60,5 +63,6 @@ app.component("Column", Column);
 app.component("ColumnGroup", ColumnGroup);
 app.component("Row", Row);
 app.component("Paginator", Paginator);
+app.component("Toolbar", Toolbar);
 
 app.mount("#app");

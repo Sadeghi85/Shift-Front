@@ -3,11 +3,11 @@ export interface PortalViewModel {
   title: string;
 }
 
-export interface PortalInputModel {
+export interface PortalSearchModel {
   portalId: number;
   title: string;
 
-  pageNo?: number;
-  pageSize?: number;
+  pageNo: number;
+  pageSize: number;
   orderKey?: string;
 }

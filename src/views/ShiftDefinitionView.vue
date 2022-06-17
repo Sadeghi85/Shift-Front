@@ -5,9 +5,9 @@
         <div class="col-12 md:col-12 p-fluid">
           <div class="card">
             <form
-              @submit.prevent="handleSubmit(!v$.$invalid)"
               class="p-fluid"
               autocomplete="off"
+              @submit.prevent="handleSubmit(!v$.$invalid)"
             >
               <div class="grid formgrid">
                 <div class="field col-12 mb-4 md:col-4">
@@ -37,7 +37,7 @@
                       id="portal"
                       v-model="v$.portal.$model"
                       :options="portals"
-                      optionLabel="title"
+                      option-label="title"
                       :class="{ 'p-invalid': v$.portal.$invalid && submitted }"
                     />
 
@@ -59,7 +59,7 @@
                       id="shiftType"
                       v-model="v$.shiftType.$model"
                       :options="shiftTypes"
-                      optionLabel="title"
+                      option-label="title"
                       :class="{
                         'p-invalid': v$.shiftType.$invalid && submitted,
                       }"
@@ -140,10 +140,10 @@
             <DataTable
               :value="shiftDefinitions"
               :rows="10"
-              dataKey="id"
+              data-key="id"
               :loading="loading"
-              showGridlines
-              responsiveLayout="scroll"
+              show-gridlines
+              responsive-layout="scroll"
             >
               <Column :header="t('grid.header.index')">
                 <template #body="slotProps">
@@ -177,7 +177,7 @@
 
             <Paginator
               :rows="10"
-              :totalRecords="totalRecords"
+              :total-records="totalRecords"
               @page="onPage($event)"
             ></Paginator>
           </div>
@@ -197,7 +197,7 @@ import { useVuelidate } from "@vuelidate/core";
 import PortalService from "@/services/PortalService";
 import ShiftDefinitionService from "@/services/ShiftDefinitionService";
 import { usePortalStore } from "@/stores/portal";
-import { PortalInputModel, PortalViewModel } from "@/models/PortalModels";
+import { PortalSearchModel, PortalViewModel } from "@/models/PortalModels";
 import { useToast } from "primevue/usetoast";
 import {
   ShiftDefinitionViewModel,
@@ -337,7 +337,7 @@ function loadPortals() {
         portalId: 0,
         title: "",
         orderKey: "",
-      } as PortalInputModel)
+      } as PortalSearchModel)
       .then((response) => {
         //console.log(response);
         if (!response.data.success) {

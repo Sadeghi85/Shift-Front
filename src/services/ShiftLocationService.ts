@@ -3,6 +3,7 @@ import { ApiResponseModel } from "@/models/ApiResponseModel";
 import {
   ShiftLocationViewModel,
   ShiftLocationInputModel,
+  ShiftLocationSearchModel,
 } from "@/models/ShiftLocationModels";
 import { AxiosInstance } from "axios";
 
@@ -12,7 +13,7 @@ export default class ShiftLocationService {
     this.api = Api.getInstance();
   }
 
-  public getShiftLocations(body: ShiftLocationInputModel) {
+  public getShiftLocations(body: ShiftLocationSearchModel) {
     return this.api.post<ApiResponseModel<ShiftLocationViewModel>>(
       "/ShiftLocation/GetAll",
       body
