@@ -86,9 +86,9 @@ const handleSearch = () => {
   loadShiftDefinitions({
     pageSize: pageSize.value,
     pageNo: pageNumber.value,
-    portalId: portal.value ? portal.value.id : 0,
-    title: shiftTitle.value ? shiftTitle.value : "",
-    shiftType: shiftType.value ? shiftType.value.id : 0,
+    portalId: portal.value?.id ?? 0,
+    title: shiftTitle.value ?? "",
+    shiftType: shiftType.value?.id ?? 0,
     orderKey: "id",
     desc: true,
   } as ShiftDefinitionSearchModel);

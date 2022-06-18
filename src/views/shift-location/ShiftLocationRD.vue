@@ -126,8 +126,8 @@ const handleSearch = () => {
   loadShiftLocations({
     pageSize: pageSize.value,
     pageNo: pageNumber.value,
-    portalId: portal.value ? portal.value.id : 0,
-    title: locationName.value ? locationName.value : "",
+    portalId: portal.value?.id ?? 0,
+    title: locationName.value ?? "",
     orderKey: "id",
     desc: true,
   } as ShiftLocationSearchModel);

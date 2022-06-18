@@ -2,6 +2,7 @@ import { Api } from "@/http-client/api";
 import { ApiResponseModel } from "@/models/ApiResponseModel";
 import {
   ShiftTabletViewModel,
+  ShiftTabletSearchModel,
   ShiftTabletInputModel,
 } from "@/models/ShiftTabletModels";
 import { AxiosInstance } from "axios";
@@ -12,7 +13,7 @@ export default class ShiftTabletService {
     this.api = Api.getInstance();
   }
 
-  public getShiftTablets(body: ShiftTabletInputModel) {
+  public getShiftTablets(body: ShiftTabletSearchModel) {
     return this.api.post<ApiResponseModel<ShiftTabletViewModel>>(
       "/ShiftTablet/GetAll",
       body

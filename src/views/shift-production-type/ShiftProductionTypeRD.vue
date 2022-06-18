@@ -88,7 +88,7 @@ const handleSearch = () => {
   loadProductionTypes({
     pageSize: pageSize.value,
     pageNo: pageNumber.value,
-    title: productionTypeTitle.value ? productionTypeTitle.value : "",
+    title: productionTypeTitle.value ?? "",
     orderKey: "id",
     desc: true,
   } as ShiftProductionTypeSearchModel);

@@ -4,10 +4,19 @@ export interface ShiftTabletInputModel {
   productionTypeId: number;
   shiftTime: string;
   shiftDate: string;
-  shiftWorthPercent: number;
-  pageNo?: number;
-  pageSize?: number;
-  orderKey?: string;
+  shiftWorthPercent: string;
+}
+
+export interface ShiftTabletSearchModel {
+  id: number;
+  shiftId: number;
+  productionTypeId: number;
+  shiftDate: string;
+  shiftWorthPercent: string;
+  pageNo: number;
+  pageSize: number;
+  orderKey: string;
+  desc: boolean;
 }
 
 export interface ShiftTabletViewModel {
@@ -17,5 +26,5 @@ export interface ShiftTabletViewModel {
   shiftDate: string;
   productionTypeId: number;
   productionTypeTitle: string;
-  shiftWorthPercent: number;
+  shiftWorthPercent: string;
 }
