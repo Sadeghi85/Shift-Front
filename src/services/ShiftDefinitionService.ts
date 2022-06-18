@@ -2,6 +2,7 @@ import { Api } from "@/http-client/api";
 import { ApiResponseModel } from "@/models/ApiResponseModel";
 import {
   ShiftDefinitionViewModel,
+  ShiftDefinitionSearchModel,
   ShiftDefinitionInputModel,
 } from "@/models/ShiftDefinitionModels";
 import { AxiosInstance } from "axios";
@@ -12,7 +13,7 @@ export default class ShiftDefinitionService {
     this.api = Api.getInstance();
   }
 
-  public getShiftDefinitions(body: ShiftDefinitionInputModel) {
+  public getShiftDefinitions(body: ShiftDefinitionSearchModel) {
     return this.api.post<ApiResponseModel<ShiftDefinitionViewModel>>(
       "/Shift/GetAll",
       body

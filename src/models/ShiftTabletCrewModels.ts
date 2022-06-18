@@ -5,16 +5,21 @@ export interface ShiftTabletCrewInputModel {
   entranceTime: string;
   exitTime: string;
   shiftTabletId: number;
+}
+
+export interface ShiftTabletCrewSearchModel {
+  id: number;
+  title?: string;
+  pageNo: number;
+  pageSize: number;
+  orderKey: string;
+  desc: boolean;
 
   isReplaced?: boolean;
   agentName?: string;
   shiftTitle: string;
   fromDate?: string;
   toDate?: string;
-
-  pageNo?: number;
-  pageSize?: number;
-  orderKey?: string;
 }
 
 export interface ShiftTabletCrewViewModel {

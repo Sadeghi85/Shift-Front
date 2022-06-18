@@ -2,7 +2,7 @@ import { Api } from "@/http-client/api";
 import { ApiResponseModel } from "@/models/ApiResponseModel";
 import {
   ResourceTypeViewModel,
-  ResourceTypeInputModel,
+  ResourceTypeSearchModel,
 } from "@/models/ResourceTypeModels";
 import { AxiosInstance } from "axios";
 
@@ -12,7 +12,7 @@ export default class ResourceTypeService {
     this.api = Api.getInstance();
   }
 
-  public getResourceTypes(body: ResourceTypeInputModel) {
+  public getResourceTypes(body: ResourceTypeSearchModel) {
     return this.api.post<ApiResponseModel<ResourceTypeViewModel>>(
       "/ResourceType/GetAll",
       body

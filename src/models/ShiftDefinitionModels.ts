@@ -5,10 +5,16 @@ export interface ShiftDefinitionInputModel {
   shiftType: number;
   startTime: string;
   endTime: string;
+}
 
-  pageNo?: number;
-  pageSize?: number;
-  orderKey?: string;
+export interface ShiftDefinitionSearchModel {
+  id: number;
+  portalId?: number;
+  title?: string;
+  pageNo: number;
+  pageSize: number;
+  orderKey: string;
+  desc: boolean;
 }
 
 export interface ShiftDefinitionViewModel {

@@ -2,6 +2,7 @@ import { Api } from "@/http-client/api";
 import { ApiResponseModel } from "@/models/ApiResponseModel";
 import {
   ShiftProductionTypeViewModel,
+  ShiftProductionTypeSearchModel,
   ShiftProductionTypeInputModel,
 } from "@/models/ShiftProductionTypeModels";
 import { AxiosInstance } from "axios";
@@ -12,7 +13,7 @@ export default class ShiftProductionTypeService {
     this.api = Api.getInstance();
   }
 
-  public getShiftProductionTypes(body: ShiftProductionTypeInputModel) {
+  public getShiftProductionTypes(body: ShiftProductionTypeSearchModel) {
     return this.api.post<ApiResponseModel<ShiftProductionTypeViewModel>>(
       "/ProductionType/GetAll",
       body
