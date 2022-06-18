@@ -31,7 +31,7 @@ const routes: Array<RouteRecordRaw> = [
     // which is lazy-loaded when the route is visited.
     component: () =>
       import(
-        /* webpackChunkName: "shift-production-type" */ "../views/ShiftProductionTypeView.vue"
+        /* webpackChunkName: "shift-production-type" */ "../views/shift-production-type/ShiftProductionTypeRD.vue"
       ),
   },
   {
