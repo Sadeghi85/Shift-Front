@@ -10,6 +10,7 @@ export interface ShiftDefinitionInputModel {
 export interface ShiftDefinitionSearchModel {
   id: number;
   portalId?: number;
+  shiftType?: number;
   title?: string;
   pageNo: number;
   pageSize: number;
