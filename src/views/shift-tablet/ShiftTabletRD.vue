@@ -298,6 +298,7 @@ onMounted(() => {
               data-key="id"
               :loading="loading"
               show-gridlines
+              striped-rows
               responsive-layout="scroll"
             >
               <Column :header="t('grid.header.index')">

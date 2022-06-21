@@ -1,8 +1,6 @@
 <script lang="ts" setup>
-import { reactive, ref, onMounted, onBeforeMount } from "vue";
+import { ref, onMounted } from "vue";
 import { useI18n } from "vue-i18n";
-import { required } from "@vuelidate/validators";
-import { useVuelidate } from "@vuelidate/core";
 import ShiftProductionTypeService from "@/services/ShiftProductionTypeService";
 import { useToast } from "primevue/usetoast";
 import {
@@ -182,6 +180,7 @@ onMounted(() => {
               data-key="id"
               :loading="loading"
               show-gridlines
+              striped-rows
               responsive-layout="scroll"
             >
               <Column :header="t('grid.header.index')">
