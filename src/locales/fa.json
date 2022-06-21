@@ -1,7 +1,13 @@
 {
   "_": "elements",
   "dropdown.placeholder.portal": "شبکه را انتخاب کنید",
-  "button.submit": "ثبت",
+
+  "_": "buttons",
+  "button.excel": "اکسل",
+  "button.create": "ثبت",
+  "button.update": "ویرایش",
+  "button.search": "جستجو",
+  "button.cancel": "لغو",
 
   "_": "entities",
   "portal.name": "شبکه",
@@ -22,7 +28,12 @@
   "entranceTime.title": "ساعت ورود",
   "exitTime.title": "ساعت خروج",
 
+  "_": "menu",
+  "menu.item.update": "ویرایش",
+  "menu.item.delete": "حذف",
+
   "_": "grid",
+  "grid.button.operation": "عملیات",
   "grid.header.index": "ردیف",
   "grid.header.portal": "شبکه",
   "grid.header.location": "لوکیشن",
@@ -40,9 +51,6 @@
   "grid.header.entranceTime": "ساعت ورود",
   "grid.header.exitTime": "ساعت خروج",
 
-  "_": "buttons",
-  "button.excel": "اکسل",
-
   "_": "routes",
   "route.shift-location": "تعریف لوکیشن",
   "route.shift-production-type": "تعریف نوع تولید شیفت",
@@ -52,10 +60,17 @@
 
   "_": "toast",
   "toast.success.create": "ثبت با موفقیت انجام شد",
-  "toast.success.update": "بروزرسانی با موفقیت انجام شد",
+  "toast.success.update": "ویرایش با موفقیت انجام شد",
   "toast.success.delete": "حذف با موفقیت انجام شد",
+  "toast.message.confirm.delete": "حذف را تایید می‌کنید؟",
   "toast.general.error": "خطایی رخ داده است",
   "toast.header.general": "پیغام",
   "toast.header.success": "موفقیت",
-  "toast.header.error": "خطا"
+  "toast.header.error": "خطا",
+
+  "_": "confirm",
+  "confirm.header.confirmation": "تایید",
+  "confirm.message.delete": "حذف را تایید می‌کنید؟",
+  "confirm.button.reject": "خیر",
+  "confirm.button.accept": "بله"
 }

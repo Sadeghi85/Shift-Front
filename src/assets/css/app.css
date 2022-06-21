@@ -122,3 +122,16 @@ nav a.router-link-exact-active {
 .p-button .p-button-icon-left {
   margin-left: 0.5rem;
 }
+
+.align-right {
+  text-align: right !important;
+}
+.align-center {
+  text-align: center !important;
+}
+.align-left {
+  text-align: left !important;
+}
+.p-datatable th[class*="align-"] .p-column-header-content {
+  display: inline-flex;
+}
