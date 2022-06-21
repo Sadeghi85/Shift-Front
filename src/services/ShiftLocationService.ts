@@ -20,13 +20,15 @@ export default class ShiftLocationService {
     );
   }
 
-  /* public getShiftLocation(id: string) {
-    return this.api.get<ApiResponseModel<ShiftLocationViewModel>>(
-      `/ShiftLocation/${id}`
-    );
-  } */
-
   public createShiftLocation(body: ShiftLocationInputModel) {
     return this.api.post("/ShiftLocation/Register", body);
+  }
+
+  public updateShiftLocation(body: ShiftLocationInputModel) {
+    return this.api.post("/ShiftLocation/Update", body);
+  }
+
+  public deleteShiftLocation(body: ShiftLocationInputModel) {
+    return this.api.post("/ShiftLocation/Delete", body);
   }
 }

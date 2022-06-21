@@ -20,7 +20,15 @@ export default class ShiftProductionTypeService {
     );
   }
 
-  public createShiftLocation(body: ShiftProductionTypeInputModel) {
+  public createShiftProductionType(body: ShiftProductionTypeInputModel) {
     return this.api.post("/ProductionType/Register", body);
+  }
+
+  public updateShiftProductionType(body: ShiftProductionTypeInputModel) {
+    return this.api.post("/ProductionType/Update", body);
+  }
+
+  public deleteShiftProductionType(body: ShiftProductionTypeInputModel) {
+    return this.api.post("/ProductionType/Delete", body);
   }
 }

@@ -18,8 +18,4 @@ export default class ResourceTypeService {
       body
     );
   }
-
-  // public getPortal(id: string) {
-  //   return this.api.get<ApiResponseModel<PortalViewModel>>(`/Portal/${id}`);
-  // }
 }

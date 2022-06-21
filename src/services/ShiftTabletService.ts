@@ -20,13 +20,15 @@ export default class ShiftTabletService {
     );
   }
 
-  /* public getShiftLocation(id: string) {
-    return this.api.get<ApiResponseModel<ShiftLocationViewModel>>(
-      `/ShiftLocation/${id}`
-    );
-  } */
-
   public createShiftTablet(body: ShiftTabletInputModel) {
     return this.api.post("/ShiftTablet/Register", body);
+  }
+
+  public updateShiftTablet(body: ShiftTabletInputModel) {
+    return this.api.post("/ShiftTablet/Update", body);
+  }
+
+  public deleteShiftTablet(body: ShiftTabletInputModel) {
+    return this.api.post("/ShiftTablet/Delete", body);
   }
 }

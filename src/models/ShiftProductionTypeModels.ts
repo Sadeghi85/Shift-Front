@@ -1,4 +1,5 @@
 export interface ShiftProductionTypeInputModel {
+  id: number;
   title: string;
 }
 

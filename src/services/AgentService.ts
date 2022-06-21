@@ -15,8 +15,4 @@ export default class AgentService {
       body
     );
   }
-
-  // public getPortal(id: string) {
-  //   return this.api.get<ApiResponseModel<PortalViewModel>>(`/Portal/${id}`);
-  // }
 }

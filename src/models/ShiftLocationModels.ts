@@ -1,4 +1,5 @@
 export interface ShiftLocationInputModel {
+  id: number;
   title: string;
   portalId: number;
 }

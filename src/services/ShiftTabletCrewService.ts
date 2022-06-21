@@ -26,13 +26,15 @@ export default class ShiftTabletCrewService {
     });
   }
 
-  /* public getShiftLocation(id: string) {
-    return this.api.get<ApiResponseModel<ShiftLocationViewModel>>(
-      `/ShiftLocation/${id}`
-    );
-  } */
-
   public createShiftTabletCrew(body: ShiftTabletCrewInputModel) {
     return this.api.post("/ShiftTabletCrew/Register", body);
+  }
+
+  public updateShiftTabletCrew(body: ShiftTabletCrewInputModel) {
+    return this.api.post("/ShiftTabletCrew/Update", body);
+  }
+
+  public deleteShiftTabletCrew(body: ShiftTabletCrewInputModel) {
+    return this.api.post("/ShiftTabletCrew/Delete", body);
   }
 }
