@@ -24,8 +24,12 @@ import ShiftProductionTypeService from "@/services/ShiftProductionTypeService";
 import ShiftDefinitionService from "@/services/ShiftDefinitionService";
 
 import ShiftTabletCU from "@/views/shift-tablet/ShiftTabletCU.vue";
+import { useConfirm } from "primevue/useconfirm";
 
 const { t } = useI18n();
+const toast = useToast();
+const confirm = useConfirm();
+
 const pageSize = ref(10);
 const pageNumber = ref(0);
 
@@ -37,18 +41,87 @@ const cuShiftTabletId = ref(0);
 const createUpdateFormIsVisible = ref(false);
 const searchFormIsVisible = ref(false);
 
-const toggleCreateUpdateForm = (id?: number) => {
-  if (id) {
-    cuShiftTabletId.value = id;
-  } else {
-    cuShiftTabletId.value = 0;
-  }
-
+const openCreateUpdateForm = () => {
+  createUpdateFormIsVisible.value = true;
+};
+const closeCreateUpdateForm = () => {
+  cuShiftTabletId.value = 0;
+  createUpdateFormIsVisible.value = false;
+};
+const toggleCreateUpdateForm = () => {
+  cuShiftTabletId.value = 0;
   createUpdateFormIsVisible.value = !createUpdateFormIsVisible.value;
 };
-
+const openSearchForm = () => {
+  searchFormIsVisible.value = true;
+};
+const closeSearchForm = () => {
+  searchFormIsVisible.value = false;
+};
 const toggleSearchForm = () => {
   searchFormIsVisible.value = !searchFormIsVisible.value;
+};
+
+const gridOperationMenu = ref();
+const gridOperationMenuItems = ref([
+  {
+    label: t("grid.button.operation"),
+    items: [
+      {
+        label: t("menu.item.update"),
+        icon: "pi pi-refresh",
+        command: () => {
+          closeSearchForm();
+          cuShiftTabletId.value = gridOperationMenu.value.dataId;
+          openCreateUpdateForm();
+        },
+      },
+      {
+        label: t("menu.item.delete"),
+        icon: "pi pi-times",
+        command: () => {
+          //showConfirmDelete();
+
+          confirm.require({
+            message: t("confirm.message.delete"),
+            header: t("confirm.header.confirmation"),
+            icon: "pi pi-exclamation-triangle",
+            acceptClass: "p-button-danger",
+            acceptLabel: t("confirm.button.accept"),
+            rejectLabel: t("confirm.button.reject"),
+            defaultFocus: "reject",
+            accept: () => {
+              // shiftLocationService.value
+              //   .deleteShiftLocation({
+              //     id: gridOperationMenu.value.dataId,
+              //   } as ShiftLocationInputModel)
+              //   .then((response) => {
+              //     //console.log(response);
+              //     if (!response.data.success) {
+              //       throw new Error(
+              //         "Failed api call: [" + response.data.failureMessage + "]"
+              //       );
+              //     }
+              //     showSuccess(t("toast.success.delete"));
+              //   })
+              //   .catch((error) => {
+              //     console.log(error);
+              //   });
+            },
+            reject: () => {
+              //console.log("reject");
+            },
+          });
+        },
+      },
+    ],
+  },
+]);
+
+const toggleGridOperationMenu = (event: any, id: number) => {
+  //cuShiftLocationId.value = id;
+  gridOperationMenu.value.dataId = id;
+  gridOperationMenu.value.toggle(event);
 };
 
 const shiftDefinition = ref<ShiftDefinitionViewModel>();
@@ -104,8 +177,6 @@ const onPage = (event: any) => {
 const shiftTabletService = ref(new ShiftTabletService());
 const shiftProductionTypeService = ref(new ShiftProductionTypeService());
 const shiftDefinitionService = ref(new ShiftDefinitionService());
-
-const toast = useToast();
 
 function loadShiftProductionTypes() {
   shiftProductionTypeService.value
@@ -188,13 +259,19 @@ onMounted(() => {
           <template #end>
             <Button
               icon="pi pi-search"
-              class="ml-2"
-              @click.prevent="toggleSearchForm()"
+              class="p-button-rounded ml-2"
+              @click.prevent="
+                closeCreateUpdateForm();
+                toggleSearchForm();
+              "
             />
             <Button
               icon="pi pi-plus"
-              class="p-button-success"
-              @click.prevent="toggleCreateUpdateForm()"
+              class="p-button-rounded p-button-success"
+              @click.prevent="
+                closeSearchForm();
+                toggleCreateUpdateForm();
+              "
             />
           </template>
         </Toolbar>
@@ -206,6 +283,7 @@ onMounted(() => {
         <ShiftTabletCU
           :shift-tablet-id="cuShiftTabletId"
           @reload-grid="handleSearch()"
+          @close-form="closeCreateUpdateForm()"
         >
         </ShiftTabletCU>
       </div>
@@ -301,7 +379,12 @@ onMounted(() => {
               striped-rows
               responsive-layout="scroll"
             >
-              <Column :header="t('grid.header.index')">
+              <Column
+                :header="t('grid.header.index')"
+                header-style="width: 8em;"
+                header-class="align-center"
+                body-style="text-align: center;"
+              >
                 <template #body="slotProps">
                   <div>
                     {{ pageNumber * pageSize + slotProps.index + 1 }}
@@ -325,6 +408,25 @@ onMounted(() => {
                 field="shiftWorthPercent"
                 :header="t('grid.header.shiftWorthPercent')"
               ></Column>
+              <Column
+                header-style="width: 8em;"
+                header-class="align-center"
+                body-style="text-align: center;"
+              >
+                <template #header>
+                  <span>{{ t("grid.button.operation") }}</span>
+                </template>
+                <template #body="slotProps">
+                  <Button
+                    type="button"
+                    class="p-button-rounded p-button-secondary"
+                    icon="pi pi-cog"
+                    aria-haspopup="true"
+                    aria-controls="grid_operation_menu"
+                    @click="toggleGridOperationMenu($event, slotProps.data.id)"
+                  />
+                </template>
+              </Column>
             </DataTable>
 
             <Paginator
@@ -338,13 +440,21 @@ onMounted(() => {
     </div>
   </div>
 
+  <Menu
+    id="grid_operation_menu"
+    ref="gridOperationMenu"
+    :model="gridOperationMenuItems"
+    :popup="true"
+  />
+
   <Toast position="top-center" group="br" />
+  <ConfirmDialog position="top-center"></ConfirmDialog>
 </template>
 
 <style lang="scss" scoped>
 .v-enter-active,
 .v-leave-active {
-  transition: opacity 0.5s ease;
+  transition: opacity 0.2s ease-out;
 }
 
 .v-enter-from,

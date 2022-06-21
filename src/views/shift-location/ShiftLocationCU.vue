@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { reactive, ref, onMounted, watch } from "vue";
+import { reactive, ref, onMounted, watch, computed } from "vue";
 import { useI18n } from "vue-i18n";
 import { required } from "@vuelidate/validators";
 import { useVuelidate } from "@vuelidate/core";
@@ -27,7 +27,7 @@ const props = defineProps({
     default: 0,
   },
 });
-const emit = defineEmits(["reloadGrid"]);
+const emit = defineEmits(["reloadGrid", "closeForm"]);
 
 // reactive state
 const submitted = ref(false);
@@ -53,11 +53,11 @@ const shiftLocationService = ref(new ShiftLocationService());
 const portalStore = usePortalStore();
 
 const toast = useToast();
-const showSuccess = () => {
+const showSuccess = (detail: string) => {
   toast.add({
     severity: "success",
     summary: t("toast.header.general"),
-    detail: t("toast.success.create"),
+    detail: detail,
     life: 3000,
     group: "br",
   });
@@ -70,29 +70,59 @@ const handleSubmit = (isFormValid: boolean) => {
   if (!isFormValid) {
     return;
   } else {
-    shiftLocationService.value
-      .createShiftLocation({
-        title: v$.value.locationName.$model,
-        portalId: v$.value.portal.$model!.id,
-      } as ShiftLocationInputModel)
-      .then((response) => {
-        //console.log(response);
-        if (!response.data.success) {
-          throw new Error(
-            "Failed api call: [" + response.data.failureMessage + "]"
-          );
-        }
+    if (props.shiftLocationId == 0) {
+      shiftLocationService.value
+        .createShiftLocation({
+          id: 0,
+          title: v$.value.locationName.$model,
+          portalId: v$.value.portal.$model!.id,
+        } as ShiftLocationInputModel)
+        .then((response) => {
+          //console.log(response);
+          if (!response.data.success) {
+            throw new Error(
+              "Failed api call: [" + response.data.failureMessage + "]"
+            );
+          }
 
-        //handleSearch();
-        emit("reloadGrid");
-        //emit('eventB', params)
+          //handleSearch();
+          emit("reloadGrid");
+          //emit('eventB', params)
 
-        showSuccess();
-        resetForm();
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+          showSuccess(t("toast.success.create"));
+          resetForm();
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    } else {
+      shiftLocationService.value
+        .updateShiftLocation({
+          id: props.shiftLocationId,
+          title: v$.value.locationName.$model,
+          portalId: v$.value.portal.$model!.id,
+        } as ShiftLocationInputModel)
+        .then((response) => {
+          //console.log(response);
+          if (!response.data.success) {
+            throw new Error(
+              "Failed api call: [" + response.data.failureMessage + "]"
+            );
+          }
+
+          //handleSearch();
+          emit("closeForm");
+          emit("reloadGrid");
+
+          //emit('eventB', params)
+
+          showSuccess(t("toast.success.update"));
+          resetForm();
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    }
   }
 };
 
@@ -103,16 +133,14 @@ const resetForm = () => {
   submitted.value = false;
 };
 
-const fillForm = (shiftLocationId: number) => {
-  if (shiftLocationId == 0) {
+const fillForm = () => {
+  if (props.shiftLocationId == 0) {
     resetForm();
   } else {
-    resetForm();
-
     const searchParams = {
       pageSize: 1,
       pageNo: 0,
-      id: shiftLocationId,
+      id: props.shiftLocationId,
       orderKey: "id",
     } as ShiftLocationSearchModel;
 
@@ -166,10 +194,25 @@ function loadPortals() {
   }
 }
 
+const btnSubmitLabel = computed(() => {
+  if (props.shiftLocationId == 0) {
+    return t("button.create");
+  } else {
+    return t("button.update");
+  }
+});
+const btnSubmitClass = computed(() => {
+  if (props.shiftLocationId == 0) {
+    return "p-button-primary";
+  } else {
+    return "p-button-warning";
+  }
+});
+
 watch(
   () => props.shiftLocationId,
   (shiftLocationId, prevShiftLocationId) => {
-    fillForm(shiftLocationId);
+    fillForm();
   },
   { immediate: true }
 );
@@ -239,8 +282,17 @@ onMounted(() => {
               <div class="col-12 mb-2 md:col-1 md:mb-0">
                 <Button
                   type="submit"
-                  :label="t('button.submit')"
+                  :label="btnSubmitLabel"
                   class="mt-4"
+                  :class="btnSubmitClass"
+                />
+              </div>
+              <div class="col-12 mb-2 md:col-1 md:mb-0">
+                <Button
+                  type="button"
+                  :label="t('button.cancel')"
+                  class="mt-4 p-button-secondary"
+                  @click="emit('closeForm')"
                 />
               </div>
             </div>

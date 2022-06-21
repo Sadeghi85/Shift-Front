@@ -6,6 +6,7 @@ import ShiftLocationService from "@/services/ShiftLocationService";
 import { usePortalStore } from "@/stores/portal";
 import { PortalViewModel, PortalSearchModel } from "@/models/PortalModels";
 import { useToast } from "primevue/usetoast";
+import { useConfirm } from "primevue/useconfirm";
 import {
   ShiftLocationViewModel,
   ShiftLocationInputModel,
@@ -15,6 +16,10 @@ import {
 import ShiftLocationCU from "@/views/shift-location/ShiftLocationCU.vue";
 
 // reactive state
+const { t } = useI18n();
+const toast = useToast();
+const confirm = useConfirm();
+
 const pageSize = ref(10);
 const pageNumber = ref(0);
 const loading = ref(false);
@@ -25,18 +30,87 @@ const cuShiftLocationId = ref(0);
 const createUpdateFormIsVisible = ref(false);
 const searchFormIsVisible = ref(false);
 
-const toggleCreateUpdateForm = (id?: number) => {
-  if (id) {
-    cuShiftLocationId.value = id;
-  } else {
-    cuShiftLocationId.value = 0;
-  }
-
+const openCreateUpdateForm = () => {
+  createUpdateFormIsVisible.value = true;
+};
+const closeCreateUpdateForm = () => {
+  cuShiftLocationId.value = 0;
+  createUpdateFormIsVisible.value = false;
+};
+const toggleCreateUpdateForm = () => {
+  cuShiftLocationId.value = 0;
   createUpdateFormIsVisible.value = !createUpdateFormIsVisible.value;
 };
-
+const openSearchForm = () => {
+  searchFormIsVisible.value = true;
+};
+const closeSearchForm = () => {
+  searchFormIsVisible.value = false;
+};
 const toggleSearchForm = () => {
   searchFormIsVisible.value = !searchFormIsVisible.value;
+};
+
+const gridOperationMenu = ref();
+const gridOperationMenuItems = ref([
+  {
+    label: t("grid.button.operation"),
+    items: [
+      {
+        label: t("menu.item.update"),
+        icon: "pi pi-refresh",
+        command: () => {
+          closeSearchForm();
+          cuShiftLocationId.value = gridOperationMenu.value.dataId;
+          openCreateUpdateForm();
+        },
+      },
+      {
+        label: t("menu.item.delete"),
+        icon: "pi pi-times",
+        command: () => {
+          //showConfirmDelete();
+
+          confirm.require({
+            message: t("confirm.message.delete"),
+            header: t("confirm.header.confirmation"),
+            icon: "pi pi-exclamation-triangle",
+            acceptClass: "p-button-danger",
+            acceptLabel: t("confirm.button.accept"),
+            rejectLabel: t("confirm.button.reject"),
+            defaultFocus: "reject",
+            accept: () => {
+              // shiftLocationService.value
+              //   .deleteShiftLocation({
+              //     id: gridOperationMenu.value.dataId,
+              //   } as ShiftLocationInputModel)
+              //   .then((response) => {
+              //     //console.log(response);
+              //     if (!response.data.success) {
+              //       throw new Error(
+              //         "Failed api call: [" + response.data.failureMessage + "]"
+              //       );
+              //     }
+              //     showSuccess(t("toast.success.delete"));
+              //   })
+              //   .catch((error) => {
+              //     console.log(error);
+              //   });
+            },
+            reject: () => {
+              //console.log("reject");
+            },
+          });
+        },
+      },
+    ],
+  },
+]);
+
+const toggleGridOperationMenu = (event: any, id: number) => {
+  //cuShiftLocationId.value = id;
+  gridOperationMenu.value.dataId = id;
+  gridOperationMenu.value.toggle(event);
 };
 
 const shiftLocations = ref<ShiftLocationViewModel[]>();
@@ -83,13 +157,10 @@ const locationName = ref("");
 const portal = ref<PortalViewModel>();
 
 ////////
-const { t } = useI18n();
 
 const portalService = ref(new PortalService());
 const shiftLocationService = ref(new ShiftLocationService());
 const portalStore = usePortalStore();
-
-const toast = useToast();
 
 // functions that mutate state and trigger updates
 
@@ -151,13 +222,19 @@ onMounted(() => {
           <template #end>
             <Button
               icon="pi pi-search"
-              class="ml-2"
-              @click.prevent="toggleSearchForm()"
+              class="p-button-rounded ml-2"
+              @click.prevent="
+                closeCreateUpdateForm();
+                toggleSearchForm();
+              "
             />
             <Button
               icon="pi pi-plus"
-              class="p-button-success"
-              @click.prevent="toggleCreateUpdateForm()"
+              class="p-button-rounded p-button-success"
+              @click.prevent="
+                closeSearchForm();
+                toggleCreateUpdateForm();
+              "
             />
           </template>
         </Toolbar>
@@ -169,6 +246,7 @@ onMounted(() => {
         <ShiftLocationCU
           :shift-location-id="cuShiftLocationId"
           @reload-grid="handleSearch()"
+          @close-form="closeCreateUpdateForm()"
         >
         </ShiftLocationCU>
       </div>
@@ -234,7 +312,12 @@ onMounted(() => {
               striped-rows
               responsive-layout="scroll"
             >
-              <Column :header="t('grid.header.index')">
+              <Column
+                :header="t('grid.header.index')"
+                header-style="width: 8em;"
+                header-class="align-center"
+                body-style="text-align: center;"
+              >
                 <template #body="slotProps">
                   <div>
                     {{ pageNumber * pageSize + slotProps.index + 1 }}
@@ -250,6 +333,25 @@ onMounted(() => {
                 field="portalTitle"
                 :header="t('grid.header.portal')"
               ></Column>
+              <Column
+                header-style="width: 8em;"
+                header-class="align-center"
+                body-style="text-align: center;"
+              >
+                <template #header>
+                  <span>{{ t("grid.button.operation") }}</span>
+                </template>
+                <template #body="slotProps">
+                  <Button
+                    type="button"
+                    class="p-button-rounded p-button-secondary"
+                    icon="pi pi-cog"
+                    aria-haspopup="true"
+                    aria-controls="grid_operation_menu"
+                    @click="toggleGridOperationMenu($event, slotProps.data.id)"
+                  />
+                </template>
+              </Column>
             </DataTable>
 
             <Paginator
@@ -263,13 +365,21 @@ onMounted(() => {
     </div>
   </div>
 
+  <Menu
+    id="grid_operation_menu"
+    ref="gridOperationMenu"
+    :model="gridOperationMenuItems"
+    :popup="true"
+  />
+
   <Toast position="top-center" group="br" />
+  <ConfirmDialog position="top-center"></ConfirmDialog>
 </template>
 
 <style lang="scss" scoped>
 .v-enter-active,
 .v-leave-active {
-  transition: opacity 0.5s ease;
+  transition: opacity 0.2s ease-out;
 }
 
 .v-enter-from,

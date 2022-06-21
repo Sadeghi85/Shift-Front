@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { reactive, ref, onMounted, watch } from "vue";
+import { reactive, ref, onMounted, watch, computed } from "vue";
 import { useI18n } from "vue-i18n";
 import { required } from "@vuelidate/validators";
 import { useVuelidate } from "@vuelidate/core";
@@ -36,7 +36,7 @@ const props = defineProps({
     default: 0,
   },
 });
-const emit = defineEmits(["reloadGrid"]);
+const emit = defineEmits(["reloadGrid", "closeForm"]);
 
 // reactive state
 const submitted = ref(false);
@@ -68,11 +68,11 @@ const shiftProductionTypeService = ref(new ShiftProductionTypeService());
 const shiftDefinitionService = ref(new ShiftDefinitionService());
 
 const toast = useToast();
-const showSuccess = () => {
+const showSuccess = (detail: string) => {
   toast.add({
     severity: "success",
     summary: t("toast.header.general"),
-    detail: t("toast.success.create"),
+    detail: detail,
     life: 3000,
     group: "br",
   });
@@ -133,30 +133,58 @@ const handleSubmit = (isFormValid: boolean) => {
   if (!isFormValid) {
     return;
   } else {
-    shiftTabletService.value
-      .createShiftTablet({
-        shiftId: v$.value.shiftDefinition.$model!.id,
-        productionTypeId: v$.value.shiftProductionType.$model!.id,
-        shiftDate: v$.value.shiftDate.$model,
-        shiftWorthPercent: v$.value.shiftWorthPercent.$model,
-        shiftTime: "00:00:00",
-        id: 0,
-      } as ShiftTabletInputModel)
-      .then((response) => {
-        //console.log(response);
-        if (!response.data.success) {
-          throw new Error(
-            "Failed api call: [" + response.data.failureMessage + "]"
-          );
-        }
+    if (props.shiftTabletId == 0) {
+      shiftTabletService.value
+        .createShiftTablet({
+          id: 0,
+          shiftId: v$.value.shiftDefinition.$model!.id,
+          productionTypeId: v$.value.shiftProductionType.$model!.id,
+          shiftDate: v$.value.shiftDate.$model,
+          shiftWorthPercent: v$.value.shiftWorthPercent.$model,
+          shiftTime: "00:00:00",
+        } as ShiftTabletInputModel)
+        .then((response) => {
+          //console.log(response);
+          if (!response.data.success) {
+            throw new Error(
+              "Failed api call: [" + response.data.failureMessage + "]"
+            );
+          }
 
-        emit("reloadGrid");
-        showSuccess();
-        resetForm();
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+          emit("reloadGrid");
+          showSuccess(t("toast.success.create"));
+          resetForm();
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    } else {
+      shiftTabletService.value
+        .updateShiftTablet({
+          id: props.shiftTabletId,
+          shiftId: v$.value.shiftDefinition.$model!.id,
+          productionTypeId: v$.value.shiftProductionType.$model!.id,
+          shiftDate: v$.value.shiftDate.$model,
+          shiftWorthPercent: v$.value.shiftWorthPercent.$model,
+          shiftTime: "00:00:00",
+        } as ShiftTabletInputModel)
+        .then((response) => {
+          //console.log(response);
+          if (!response.data.success) {
+            throw new Error(
+              "Failed api call: [" + response.data.failureMessage + "]"
+            );
+          }
+
+          emit("closeForm");
+          emit("reloadGrid");
+          showSuccess(t("toast.success.update"));
+          resetForm();
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    }
   }
 };
 
@@ -169,16 +197,14 @@ const resetForm = () => {
   submitted.value = false;
 };
 
-const fillForm = (shiftTabletId: number) => {
-  if (shiftTabletId == 0) {
+const fillForm = () => {
+  if (props.shiftTabletId == 0) {
     resetForm();
   } else {
-    resetForm();
-
     const searchParams = {
       pageSize: 1,
       pageNo: 0,
-      id: shiftTabletId,
+      id: props.shiftTabletId,
       orderKey: "id",
     } as ShiftTabletSearchModel;
 
@@ -192,13 +218,33 @@ const fillForm = (shiftTabletId: number) => {
           );
         }
 
+        shiftProductionTypeService.value
+          .getShiftProductionTypes({
+            pageSize: 1,
+            pageNo: 0,
+            id: response.data.data[0].productionTypeId,
+            orderKey: "id",
+          } as ShiftProductionTypeSearchModel)
+          .then((response) => {
+            //console.log(response);
+            if (!response.data.success) {
+              throw new Error(
+                "Failed api call: [" + response.data.failureMessage + "]"
+              );
+            }
+
+            shiftProductionTypes.value = response.data.data;
+            state.shiftProductionType = response.data.data[0];
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+
         state.shiftDate = response.data.data[0].shiftDate;
-        state.shiftDefinition = shiftDefinitions.value!.find(
-          (p) => p.id == response.data.data[0].shiftId
+        state.shiftDefinition = getShiftDefinition(
+          response.data.data[0].shiftId
         );
-        state.shiftProductionType = shiftProductionTypes.value!.find(
-          (p) => p.id == response.data.data[0].productionTypeId
-        );
+        //state.shiftProductionType = shiftProductionType;
         state.shiftWorthPercent = response.data.data[0].shiftWorthPercent;
       })
       .catch((error) => {
@@ -207,10 +253,81 @@ const fillForm = (shiftTabletId: number) => {
   }
 };
 
+const getShiftDefinition = (id: number) => {
+  const searchParams = {
+    pageSize: 1,
+    pageNo: 0,
+    id: id,
+    orderKey: "id",
+  } as ShiftDefinitionSearchModel;
+
+  shiftDefinitionService.value
+    .getShiftDefinitions(searchParams)
+    .then((response) => {
+      //console.log(response);
+      if (!response.data.success) {
+        throw new Error(
+          "Failed api call: [" + response.data.failureMessage + "]"
+        );
+      }
+
+      return response.data.data[0];
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+
+  return undefined;
+};
+
+const getShiftProductionType = (id: number) => {
+  let ret = undefined;
+
+  const searchParams = {
+    pageSize: 1,
+    pageNo: 0,
+    id: id,
+    orderKey: "id",
+  } as ShiftProductionTypeSearchModel;
+
+  shiftProductionTypeService.value
+    .getShiftProductionTypes(searchParams)
+    .then((response) => {
+      //console.log(response);
+      if (!response.data.success) {
+        throw new Error(
+          "Failed api call: [" + response.data.failureMessage + "]"
+        );
+      }
+
+      ret = response.data.data[0];
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+
+  return ret;
+};
+
+const btnSubmitLabel = computed(() => {
+  if (props.shiftTabletId == 0) {
+    return t("button.create");
+  } else {
+    return t("button.update");
+  }
+});
+const btnSubmitClass = computed(() => {
+  if (props.shiftTabletId == 0) {
+    return "p-button-primary";
+  } else {
+    return "p-button-warning";
+  }
+});
+
 watch(
   () => props.shiftTabletId,
   (shiftTabletId, prevShiftTabletId) => {
-    fillForm(shiftTabletId);
+    fillForm();
   },
   { immediate: true }
 );
@@ -324,7 +441,20 @@ onMounted(() => {
 
             <div class="grid">
               <div class="col-12 mb-4 md:col-1">
-                <Button type="submit" :label="t('button.submit')" class="" />
+                <Button
+                  type="submit"
+                  :label="btnSubmitLabel"
+                  class="mt-4"
+                  :class="btnSubmitClass"
+                />
+              </div>
+              <div class="col-12 mb-2 md:col-1 md:mb-0">
+                <Button
+                  type="button"
+                  :label="t('button.cancel')"
+                  class="mt-4 p-button-secondary"
+                  @click="emit('closeForm')"
+                />
               </div>
             </div>
           </form>

@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { reactive, ref, onMounted, watch } from "vue";
+import { reactive, ref, onMounted, watch, computed } from "vue";
 import { useI18n } from "vue-i18n";
 import { required } from "@vuelidate/validators";
 import { useVuelidate } from "@vuelidate/core";
@@ -18,7 +18,7 @@ const props = defineProps({
     default: 0,
   },
 });
-const emit = defineEmits(["reloadGrid"]);
+const emit = defineEmits(["reloadGrid", "closeForm"]);
 
 // reactive state
 const submitted = ref(false);
@@ -38,11 +38,11 @@ const v$ = useVuelidate(rules, state);
 const shiftProductionTypeService = ref(new ShiftProductionTypeService());
 
 const toast = useToast();
-const showSuccess = () => {
+const showSuccess = (detail: string) => {
   toast.add({
     severity: "success",
     summary: t("toast.header.general"),
-    detail: t("toast.success.create"),
+    detail: detail,
     life: 3000,
     group: "br",
   });
@@ -56,25 +56,50 @@ const handleSubmit = (isFormValid: boolean) => {
   if (!isFormValid) {
     return;
   } else {
-    shiftProductionTypeService.value
-      .createShiftLocation({
-        title: v$.value.productionTypeTitle.$model,
-      } as ShiftProductionTypeInputModel)
-      .then((response) => {
-        //console.log(response);
-        if (!response.data.success) {
-          throw new Error(
-            "Failed api call: [" + response.data.failureMessage + "]"
-          );
-        }
+    if (props.shiftProductionTypeId == 0) {
+      shiftProductionTypeService.value
+        .createShiftProductionType({
+          id: 0,
+          title: v$.value.productionTypeTitle.$model,
+        } as ShiftProductionTypeInputModel)
+        .then((response) => {
+          //console.log(response);
+          if (!response.data.success) {
+            throw new Error(
+              "Failed api call: [" + response.data.failureMessage + "]"
+            );
+          }
 
-        emit("reloadGrid");
-        showSuccess();
-        resetForm();
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+          emit("reloadGrid");
+          showSuccess(t("toast.success.create"));
+          resetForm();
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    } else {
+      shiftProductionTypeService.value
+        .updateShiftProductionType({
+          id: props.shiftProductionTypeId,
+          title: v$.value.productionTypeTitle.$model,
+        } as ShiftProductionTypeInputModel)
+        .then((response) => {
+          //console.log(response);
+          if (!response.data.success) {
+            throw new Error(
+              "Failed api call: [" + response.data.failureMessage + "]"
+            );
+          }
+
+          emit("closeForm");
+          emit("reloadGrid");
+          showSuccess(t("toast.success.update"));
+          resetForm();
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    }
   }
 };
 
@@ -83,16 +108,14 @@ const resetForm = () => {
   submitted.value = false;
 };
 
-const fillForm = (shiftProductionTypeId: number) => {
-  if (shiftProductionTypeId == 0) {
+const fillForm = () => {
+  if (props.shiftProductionTypeId == 0) {
     resetForm();
   } else {
-    resetForm();
-
     const searchParams = {
       pageSize: 1,
       pageNo: 0,
-      id: shiftProductionTypeId,
+      id: props.shiftProductionTypeId,
       orderKey: "id",
     } as ShiftProductionTypeSearchModel;
 
@@ -114,10 +137,25 @@ const fillForm = (shiftProductionTypeId: number) => {
   }
 };
 
+const btnSubmitLabel = computed(() => {
+  if (props.shiftProductionTypeId == 0) {
+    return t("button.create");
+  } else {
+    return t("button.update");
+  }
+});
+const btnSubmitClass = computed(() => {
+  if (props.shiftProductionTypeId == 0) {
+    return "p-button-primary";
+  } else {
+    return "p-button-warning";
+  }
+});
+
 watch(
   () => props.shiftProductionTypeId,
   (shiftProductionTypeId, prevShiftProductionTypeId) => {
-    fillForm(shiftProductionTypeId);
+    fillForm();
   },
   { immediate: true }
 );
@@ -162,8 +200,17 @@ watch(
               <div class="col-12 mb-2 md:col-1 md:mb-0">
                 <Button
                   type="submit"
-                  :label="t('button.submit')"
+                  :label="btnSubmitLabel"
                   class="mt-4"
+                  :class="btnSubmitClass"
+                />
+              </div>
+              <div class="col-12 mb-2 md:col-1 md:mb-0">
+                <Button
+                  type="button"
+                  :label="t('button.cancel')"
+                  class="mt-4 p-button-secondary"
+                  @click="emit('closeForm')"
                 />
               </div>
             </div>
