@@ -4,6 +4,7 @@ import { useI18n } from "vue-i18n";
 import { required } from "@vuelidate/validators";
 import { useVuelidate } from "@vuelidate/core";
 import ShiftProductionTypeService from "@/services/ShiftProductionTypeService";
+import useApiErrorStore from "@/stores/api-error";
 import { useToast } from "primevue/usetoast";
 import {
   ShiftProductionTypeViewModel,
@@ -19,6 +20,8 @@ const props = defineProps({
   },
 });
 const emit = defineEmits(["reloadGrid", "closeForm"]);
+
+const apiErrorStore = useApiErrorStore();
 
 // reactive state
 const submitted = ref(false);
@@ -108,32 +111,28 @@ const resetForm = () => {
   submitted.value = false;
 };
 
-const fillForm = () => {
-  if (props.shiftProductionTypeId == 0) {
-    resetForm();
-  } else {
-    const searchParams = {
-      pageSize: 1,
-      pageNo: 0,
-      id: props.shiftProductionTypeId,
-      orderKey: "id",
-    } as ShiftProductionTypeSearchModel;
+const fillForm = async () => {
+  try {
+    if (props.shiftProductionTypeId == 0) {
+      resetForm();
+    } else {
+      const shiftProductionType = (
+        await shiftProductionTypeService.value.getShiftProductionTypes({
+          pageSize: 1,
+          pageNo: 0,
+          id: props.shiftProductionTypeId,
+          orderKey: "id",
+        } as ShiftProductionTypeSearchModel)
+      ).data[0];
 
-    shiftProductionTypeService.value
-      .getShiftProductionTypes(searchParams)
-      .then((response) => {
-        //console.log(response);
-        if (!response.data.success) {
-          throw new Error(
-            "Failed api call: [" + response.data.failureMessage + "]"
-          );
-        }
-
-        state.productionTypeTitle = response.data.data[0].title;
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+      state.productionTypeTitle = shiftProductionType.title;
+    }
+  } catch (error: any) {
+    if (typeof error.message === "object") {
+      apiErrorStore.setApiErrorMessage(error.message.failureMessage);
+    } else {
+      console.log(error.message);
+    }
   }
 };
 

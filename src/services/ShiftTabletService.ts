@@ -14,10 +14,18 @@ export default class ShiftTabletService {
   }
 
   public getShiftTablets(body: ShiftTabletSearchModel) {
-    return this.api.post<ApiResponseModel<ShiftTabletViewModel>>(
-      "/ShiftTablet/GetAll",
-      body
-    );
+    return this.api
+      .post<ApiResponseModel<ShiftTabletViewModel>>("/ShiftTablet/GetAll", body)
+      .then((response) => {
+        if (response.data.success == false) {
+          throw {
+            message: response.data,
+          };
+          //throw new Error("test");
+        }
+
+        return response.data;
+      });
   }
 
   public createShiftTablet(body: ShiftTabletInputModel) {

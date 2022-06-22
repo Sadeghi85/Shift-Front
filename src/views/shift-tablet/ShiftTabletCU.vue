@@ -4,6 +4,7 @@ import { useI18n } from "vue-i18n";
 import { required } from "@vuelidate/validators";
 import { useVuelidate } from "@vuelidate/core";
 import ShiftTabletService from "@/services/ShiftTabletService";
+import useApiErrorStore from "@/stores/api-error";
 import { useToast } from "primevue/usetoast";
 import {
   ShiftTabletViewModel,
@@ -29,6 +30,7 @@ import ShiftDefinitionService from "@/services/ShiftDefinitionService";
 // const props = withDefaults(defineProps<Props>(), {
 //   shiftLocationId: 0,
 // });
+
 const props = defineProps({
   shiftTabletId: {
     type: Number,
@@ -37,6 +39,8 @@ const props = defineProps({
   },
 });
 const emit = defineEmits(["reloadGrid", "closeForm"]);
+
+const apiErrorStore = useApiErrorStore();
 
 // reactive state
 const submitted = ref(false);
@@ -79,54 +83,6 @@ const showSuccess = (detail: string) => {
 };
 
 // functions that mutate state and trigger updates
-
-function loadShiftDefinitions() {
-  shiftDefinitionService.value
-    .getShiftDefinitions({
-      pageNo: 0,
-      pageSize: 10,
-      orderKey: "",
-      id: 0,
-      title: "",
-    } as ShiftDefinitionSearchModel)
-    .then((response) => {
-      //console.log(response);
-      if (!response.data.success) {
-        throw new Error(
-          "Failed api call: [" + response.data.failureMessage + "]"
-        );
-      }
-
-      shiftDefinitions.value = response.data.data;
-    })
-    .catch((error) => {
-      console.log(error);
-    });
-}
-function loadShiftProductionTypes() {
-  shiftProductionTypeService.value
-    .getShiftProductionTypes({
-      pageNo: 0,
-      pageSize: 10,
-      orderKey: "",
-      id: 0,
-      title: "",
-    } as ShiftProductionTypeSearchModel)
-    .then((response) => {
-      //console.log(response);
-      if (!response.data.success) {
-        throw new Error(
-          "Failed api call: [" + response.data.failureMessage + "]"
-        );
-      }
-
-      shiftProductionTypes.value = response.data.data;
-    })
-    .catch((error) => {
-      console.log(error);
-    });
-}
-
 const handleSubmit = (isFormValid: boolean) => {
   submitted.value = true;
 
@@ -197,116 +153,68 @@ const resetForm = () => {
   submitted.value = false;
 };
 
-const fillForm = () => {
-  if (props.shiftTabletId == 0) {
-    resetForm();
-  } else {
-    const searchParams = {
-      pageSize: 1,
-      pageNo: 0,
-      id: props.shiftTabletId,
-      orderKey: "id",
-    } as ShiftTabletSearchModel;
+const fillForm = async () => {
+  try {
+    // load shift production types
+    shiftProductionTypes.value = (
+      await shiftProductionTypeService.value.getShiftProductionTypes({
+        pageNo: 0,
+        pageSize: 2147483647, // Int32.MaxValue
+        orderKey: "",
+        id: 0,
+        title: "",
+      } as ShiftProductionTypeSearchModel)
+    ).data;
 
-    shiftTabletService.value
-      .getShiftTablets(searchParams)
-      .then((response) => {
-        //console.log(response);
-        if (!response.data.success) {
-          throw new Error(
-            "Failed api call: [" + response.data.failureMessage + "]"
-          );
-        }
+    // load shift definitions
+    shiftDefinitions.value = (
+      await shiftDefinitionService.value.getShiftDefinitions({
+        pageNo: 0,
+        pageSize: 2147483647, // Int32.MaxValue
+        orderKey: "",
+        id: 0,
+        title: "",
+        desc: true,
+        portalId: 0,
+        shiftType: 0,
+      } as ShiftDefinitionSearchModel)
+    ).data;
 
-        shiftProductionTypeService.value
-          .getShiftProductionTypes({
-            pageSize: 1,
-            pageNo: 0,
-            id: response.data.data[0].productionTypeId,
-            orderKey: "id",
-          } as ShiftProductionTypeSearchModel)
-          .then((response) => {
-            //console.log(response);
-            if (!response.data.success) {
-              throw new Error(
-                "Failed api call: [" + response.data.failureMessage + "]"
-              );
-            }
+    if (props.shiftTabletId == 0) {
+      resetForm();
+    } else {
+      const shiftTablet = (
+        await shiftTabletService.value.getShiftTablets({
+          pageSize: 1,
+          pageNo: 0,
+          id: props.shiftTabletId,
+          orderKey: "id",
+          desc: true,
+          productionTypeId: 0,
+          shiftDate: "",
+          shiftId: 0,
+          shiftWorthPercent: "",
+        } as ShiftTabletSearchModel)
+      ).data[0];
 
-            shiftProductionTypes.value = response.data.data;
-            state.shiftProductionType = response.data.data[0];
-          })
-          .catch((error) => {
-            console.log(error);
-          });
+      state.shiftProductionType = shiftProductionTypes.value!.find(
+        (p) => p.id == shiftTablet.productionTypeId
+      );
 
-        state.shiftDate = response.data.data[0].shiftDate;
-        state.shiftDefinition = getShiftDefinition(
-          response.data.data[0].shiftId
-        );
-        //state.shiftProductionType = shiftProductionType;
-        state.shiftWorthPercent = response.data.data[0].shiftWorthPercent;
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+      state.shiftDefinition = shiftDefinitions.value!.find(
+        (p) => p.id == shiftTablet.shiftId
+      );
+
+      state.shiftDate = shiftTablet.shiftDate;
+      state.shiftWorthPercent = shiftTablet.shiftWorthPercent;
+    }
+  } catch (error: any) {
+    if (typeof error.message === "object") {
+      apiErrorStore.setApiErrorMessage(error.message.failureMessage);
+    } else {
+      console.log(error.message);
+    }
   }
-};
-
-const getShiftDefinition = (id: number) => {
-  const searchParams = {
-    pageSize: 1,
-    pageNo: 0,
-    id: id,
-    orderKey: "id",
-  } as ShiftDefinitionSearchModel;
-
-  shiftDefinitionService.value
-    .getShiftDefinitions(searchParams)
-    .then((response) => {
-      //console.log(response);
-      if (!response.data.success) {
-        throw new Error(
-          "Failed api call: [" + response.data.failureMessage + "]"
-        );
-      }
-
-      return response.data.data[0];
-    })
-    .catch((error) => {
-      console.log(error);
-    });
-
-  return undefined;
-};
-
-const getShiftProductionType = (id: number) => {
-  let ret = undefined;
-
-  const searchParams = {
-    pageSize: 1,
-    pageNo: 0,
-    id: id,
-    orderKey: "id",
-  } as ShiftProductionTypeSearchModel;
-
-  shiftProductionTypeService.value
-    .getShiftProductionTypes(searchParams)
-    .then((response) => {
-      //console.log(response);
-      if (!response.data.success) {
-        throw new Error(
-          "Failed api call: [" + response.data.failureMessage + "]"
-        );
-      }
-
-      ret = response.data.data[0];
-    })
-    .catch((error) => {
-      console.log(error);
-    });
-
-  return ret;
 };
 
 const btnSubmitLabel = computed(() => {
@@ -326,8 +234,8 @@ const btnSubmitClass = computed(() => {
 
 watch(
   () => props.shiftTabletId,
-  (shiftTabletId, prevShiftTabletId) => {
-    fillForm();
+  async (shiftTabletId, prevShiftTabletId) => {
+    await fillForm();
   },
   { immediate: true }
 );
@@ -335,9 +243,9 @@ watch(
 // lifecycle hooks
 onMounted(() => {
   // load shift production types
-  loadShiftProductionTypes();
+  //loadShiftProductionTypes();
   // load shift definitions
-  loadShiftDefinitions();
+  //loadShiftDefinitions();
 });
 </script>
 

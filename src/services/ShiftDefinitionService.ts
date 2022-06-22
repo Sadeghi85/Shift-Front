@@ -14,10 +14,18 @@ export default class ShiftDefinitionService {
   }
 
   public getShiftDefinitions(body: ShiftDefinitionSearchModel) {
-    return this.api.post<ApiResponseModel<ShiftDefinitionViewModel>>(
-      "/Shift/GetAll",
-      body
-    );
+    return this.api
+      .post<ApiResponseModel<ShiftDefinitionViewModel>>("/Shift/GetAll", body)
+      .then((response) => {
+        if (response.data.success == false) {
+          throw {
+            message: response.data,
+          };
+          //throw new Error("test");
+        }
+
+        return response.data;
+      });
   }
 
   public createShiftDefinition(body: ShiftDefinitionInputModel) {

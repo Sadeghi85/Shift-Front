@@ -1,8 +1,7 @@
 <script lang="ts" setup>
 import { reactive, ref, onMounted } from "vue";
 import { useI18n } from "vue-i18n";
-import { required } from "@vuelidate/validators";
-import { useVuelidate } from "@vuelidate/core";
+import useApiErrorStore from "@/stores/api-error";
 import ShiftTabletService from "@/services/ShiftTabletService";
 import { useToast } from "primevue/usetoast";
 import {
@@ -29,6 +28,8 @@ import { useConfirm } from "primevue/useconfirm";
 const { t } = useI18n();
 const toast = useToast();
 const confirm = useConfirm();
+
+const apiErrorStore = useApiErrorStore();
 
 const pageSize = ref(10);
 const pageNumber = ref(0);
@@ -144,101 +145,51 @@ const shiftTablets = ref<ShiftTabletViewModel[]>();
 const shiftProductionTypes = ref<ShiftProductionTypeViewModel[]>();
 const shiftDefinitions = ref<ShiftDefinitionViewModel[]>();
 
-function loadShiftTablets(searchParams?: ShiftTabletSearchModel) {
-  loading.value = true;
+async function loadShiftTablets(searchParams?: ShiftTabletSearchModel) {
+  try {
+    loading.value = true;
 
-  if (!searchParams) {
-    searchParams = {
-      pageNo: pageNumber.value,
-      pageSize: pageSize.value,
-      orderKey: "id",
-      desc: true,
-      shiftId: 0,
-      shiftDate: "",
-      productionTypeId: 0,
-      id: 0,
-      shiftWorthPercent: "",
-    } as ShiftTabletSearchModel;
+    if (!searchParams) {
+      searchParams = {
+        pageNo: pageNumber.value,
+        pageSize: pageSize.value,
+        orderKey: "id",
+        desc: true,
+        shiftId: 0,
+        shiftDate: "",
+        productionTypeId: 0,
+        id: 0,
+        shiftWorthPercent: "",
+      } as ShiftTabletSearchModel;
+    }
+
+    const shiftTabletResponse = await shiftTabletService.value.getShiftTablets(
+      searchParams
+    );
+
+    shiftTablets.value = shiftTabletResponse.data;
+    totalRecords.value = shiftTabletResponse.totalCount;
+    loading.value = false;
+  } catch (error: any) {
+    if (typeof error.message === "object") {
+      apiErrorStore.setApiErrorMessage(error.message.failureMessage);
+    } else {
+      console.log(error.message);
+    }
   }
-
-  shiftTabletService.value
-    .getShiftTablets(searchParams)
-    .then((response) => {
-      //console.log(response);
-      if (!response.data.success) {
-        throw new Error(
-          "Failed api call: [" + response.data.failureMessage + "]"
-        );
-      }
-
-      shiftTablets.value = response.data.data;
-      totalRecords.value = response.data.totalCount;
-      loading.value = false;
-    })
-    .catch((error) => {
-      console.log(error);
-    });
 }
 
-const onPage = (event: any) => {
+const onPage = async (event: any) => {
   pageNumber.value = event.page;
-  handleSearch();
+  await handleSearch();
 };
 
 const shiftTabletService = ref(new ShiftTabletService());
 const shiftProductionTypeService = ref(new ShiftProductionTypeService());
 const shiftDefinitionService = ref(new ShiftDefinitionService());
 
-function loadShiftProductionTypes() {
-  shiftProductionTypeService.value
-    .getShiftProductionTypes({
-      pageNo: 0,
-      pageSize: 10,
-      orderKey: "",
-      id: 0,
-      title: "",
-    } as ShiftProductionTypeSearchModel)
-    .then((response) => {
-      //console.log(response);
-      if (!response.data.success) {
-        throw new Error(
-          "Failed api call: [" + response.data.failureMessage + "]"
-        );
-      }
-
-      shiftProductionTypes.value = response.data.data;
-    })
-    .catch((error) => {
-      console.log(error);
-    });
-}
-
-function loadShiftDefinitions() {
-  shiftDefinitionService.value
-    .getShiftDefinitions({
-      pageNo: 0,
-      pageSize: 10,
-      orderKey: "",
-      id: 0,
-      title: "",
-    } as ShiftDefinitionSearchModel)
-    .then((response) => {
-      //console.log(response);
-      if (!response.data.success) {
-        throw new Error(
-          "Failed api call: [" + response.data.failureMessage + "]"
-        );
-      }
-
-      shiftDefinitions.value = response.data.data;
-    })
-    .catch((error) => {
-      console.log(error);
-    });
-}
-
-const handleSearch = () => {
-  loadShiftTablets({
+const handleSearch = async () => {
+  await loadShiftTablets({
     pageSize: pageSize.value,
     pageNo: pageNumber.value,
 
@@ -250,15 +201,47 @@ const handleSearch = () => {
   } as ShiftTabletSearchModel);
 };
 
-// lifecycle hooks
-onMounted(() => {
-  // load shift production types
-  loadShiftProductionTypes();
-  // load shift definitions
-  loadShiftDefinitions();
+const loadEssentials = async () => {
+  try {
+    // shiftProductionTypes
+    shiftProductionTypes.value = (
+      await shiftProductionTypeService.value.getShiftProductionTypes({
+        pageSize: 2147483647, // Int32.MaxValue
+        pageNo: 0,
+        title: "",
+        orderKey: "id",
+        desc: true,
+      } as ShiftProductionTypeSearchModel)
+    ).data;
 
-  // shiftTablets
-  handleSearch();
+    // shiftDefinitions
+    shiftDefinitions.value = (
+      await shiftDefinitionService.value.getShiftDefinitions({
+        pageSize: 2147483647, // Int32.MaxValue
+        pageNo: 0,
+        title: "",
+        orderKey: "id",
+        desc: true,
+        id: 0,
+        portalId: 0,
+        shiftType: 0,
+      } as ShiftDefinitionSearchModel)
+    ).data;
+
+    // shiftTablets
+    await handleSearch();
+  } catch (error: any) {
+    if (typeof error.message === "object") {
+      apiErrorStore.setApiErrorMessage(error.message.failureMessage);
+    } else {
+      console.log(error.message);
+    }
+  }
+};
+
+// lifecycle hooks
+onMounted(async () => {
+  await loadEssentials();
 });
 </script>
 

@@ -2,6 +2,7 @@
 import { ref, onMounted } from "vue";
 import { useI18n } from "vue-i18n";
 import ShiftProductionTypeService from "@/services/ShiftProductionTypeService";
+import useApiErrorStore from "@/stores/api-error";
 import { useToast } from "primevue/usetoast";
 import {
   ShiftProductionTypeViewModel,
@@ -15,6 +16,8 @@ import { useConfirm } from "primevue/useconfirm";
 const { t } = useI18n();
 const toast = useToast();
 const confirm = useConfirm();
+
+const apiErrorStore = useApiErrorStore();
 
 const pageSize = ref(10);
 const pageNumber = ref(0);
@@ -133,40 +136,41 @@ const onPage = (event: any) => {
   pageNumber.value = event.page;
   handleSearch();
 };
-function loadProductionTypes(searchParams?: ShiftProductionTypeSearchModel) {
-  loading.value = true;
+async function loadProductionTypes(
+  searchParams?: ShiftProductionTypeSearchModel
+) {
+  try {
+    loading.value = true;
 
-  if (!searchParams) {
-    searchParams = {
-      pageSize: pageSize.value,
-      pageNo: pageNumber.value,
-      title: "",
-      orderKey: "id",
-      desc: true,
-    } as ShiftProductionTypeSearchModel;
+    if (!searchParams) {
+      searchParams = {
+        pageSize: pageSize.value,
+        pageNo: pageNumber.value,
+        title: "",
+        orderKey: "id",
+        desc: true,
+      } as ShiftProductionTypeSearchModel;
+    }
+
+    const shiftProductionTypesResponse =
+      await shiftProductionTypeService.value.getShiftProductionTypes(
+        searchParams
+      );
+
+    productionTypes.value = shiftProductionTypesResponse.data;
+    totalRecords.value = shiftProductionTypesResponse.totalCount;
+    loading.value = false;
+  } catch (error: any) {
+    if (typeof error.message === "object") {
+      apiErrorStore.setApiErrorMessage(error.message.failureMessage);
+    } else {
+      console.log(error.message);
+    }
   }
-
-  shiftProductionTypeService.value
-    .getShiftProductionTypes(searchParams)
-    .then((response) => {
-      //console.log(response);
-      if (!response.data.success) {
-        throw new Error(
-          "Failed api call: [" + response.data.failureMessage + "]"
-        );
-      }
-
-      productionTypes.value = response.data.data;
-      totalRecords.value = response.data.totalCount;
-      loading.value = false;
-    })
-    .catch((error) => {
-      console.log(error);
-    });
 }
 
-const handleSearch = () => {
-  loadProductionTypes({
+const handleSearch = async () => {
+  await loadProductionTypes({
     pageSize: pageSize.value,
     pageNo: pageNumber.value,
     title: productionTypeTitle.value ?? "",
@@ -176,9 +180,9 @@ const handleSearch = () => {
 };
 
 // lifecycle hooks
-onMounted(() => {
+onMounted(async () => {
   // productionTypes
-  handleSearch();
+  await handleSearch();
 });
 </script>
 

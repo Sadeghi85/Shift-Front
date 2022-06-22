@@ -4,6 +4,7 @@ import { useI18n } from "vue-i18n";
 import PortalService from "@/services/PortalService";
 import ShiftDefinitionService from "@/services/ShiftDefinitionService";
 import { usePortalStore } from "@/stores/portal";
+import useApiErrorStore from "@/stores/api-error";
 import { PortalSearchModel, PortalViewModel } from "@/models/PortalModels";
 import { useToast } from "primevue/usetoast";
 import {
@@ -19,6 +20,8 @@ import { useConfirm } from "primevue/useconfirm";
 const { t } = useI18n();
 const toast = useToast();
 const confirm = useConfirm();
+
+const apiErrorStore = useApiErrorStore();
 
 const pageSize = ref(10);
 const pageNumber = ref(0);
@@ -131,43 +134,40 @@ const shiftTypes = ref<ShiftTypeViewModel[]>([
   { id: 2, title: t("shift.type.coordinator") },
 ]);
 
-function loadShiftDefinitions(searchParams?: ShiftDefinitionSearchModel) {
-  loading.value = true;
+async function loadShiftDefinitions(searchParams?: ShiftDefinitionSearchModel) {
+  try {
+    loading.value = true;
 
-  if (!searchParams) {
-    searchParams = {
-      pageSize: pageSize.value,
-      pageNo: pageNumber.value,
-      title: "",
-    } as ShiftDefinitionSearchModel;
+    if (!searchParams) {
+      searchParams = {
+        pageSize: pageSize.value,
+        pageNo: pageNumber.value,
+        title: "",
+      } as ShiftDefinitionSearchModel;
+    }
+
+    const shiftDefinitionsResponse =
+      await shiftDefinitionService.value.getShiftDefinitions(searchParams);
+
+    shiftDefinitions.value = shiftDefinitionsResponse.data;
+    totalRecords.value = shiftDefinitionsResponse.totalCount;
+    loading.value = false;
+  } catch (error: any) {
+    if (typeof error.message === "object") {
+      apiErrorStore.setApiErrorMessage(error.message.failureMessage);
+    } else {
+      console.log(error.message);
+    }
   }
-
-  shiftDefinitionService.value
-    .getShiftDefinitions(searchParams)
-    .then((response) => {
-      //console.log(response);
-      if (!response.data.success) {
-        throw new Error(
-          "Failed api call: [" + response.data.failureMessage + "]"
-        );
-      }
-
-      shiftDefinitions.value = response.data.data;
-      totalRecords.value = response.data.totalCount;
-      loading.value = false;
-    })
-    .catch((error) => {
-      console.log(error);
-    });
 }
 
-const onPage = (event: any) => {
+const onPage = async (event: any) => {
   pageNumber.value = event.page;
-  handleSearch();
+  await handleSearch();
 };
 
-const handleSearch = () => {
-  loadShiftDefinitions({
+const handleSearch = async () => {
+  await loadShiftDefinitions({
     pageSize: pageSize.value,
     pageNo: pageNumber.value,
     portalId: portal.value?.id ?? 0,
@@ -214,13 +214,16 @@ function loadPortals() {
   }
 }
 
-// lifecycle hooks
-onMounted(() => {
+const loadEssentials = async () => {
   // portals
   loadPortals();
-
   // shiftDefinitions
-  handleSearch();
+  await handleSearch();
+};
+
+// lifecycle hooks
+onMounted(async () => {
+  await loadEssentials();
 });
 </script>
 

@@ -6,6 +6,7 @@ import { useVuelidate } from "@vuelidate/core";
 import PortalService from "@/services/PortalService";
 import ShiftDefinitionService from "@/services/ShiftDefinitionService";
 import { usePortalStore } from "@/stores/portal";
+import useApiErrorStore from "@/stores/api-error";
 import { PortalViewModel, PortalSearchModel } from "@/models/PortalModels";
 import { useToast } from "primevue/usetoast";
 import {
@@ -33,6 +34,8 @@ const emit = defineEmits(["reloadGrid", "closeForm"]);
 // reactive state
 const { t } = useI18n();
 const submitted = ref(false);
+
+const apiErrorStore = useApiErrorStore();
 
 const portals = ref<PortalViewModel[]>();
 const shiftTypes = ref<ShiftTypeViewModel[]>([
@@ -92,9 +95,8 @@ const handleSubmit = (isFormValid: boolean) => {
         .then((response) => {
           //console.log(response);
           if (!response.data.success) {
-            throw new Error(
-              "Failed api call: [" + response.data.failureMessage + "]"
-            );
+            apiErrorStore.setApiErrorMessage(response.data.failureMessage);
+            return;
           }
 
           //handleSearch();
@@ -120,9 +122,8 @@ const handleSubmit = (isFormValid: boolean) => {
         .then((response) => {
           //console.log(response);
           if (!response.data.success) {
-            throw new Error(
-              "Failed api call: [" + response.data.failureMessage + "]"
-            );
+            apiErrorStore.setApiErrorMessage(response.data.failureMessage);
+            return;
           }
 
           emit("closeForm");
@@ -148,40 +149,40 @@ const resetForm = () => {
   submitted.value = false;
 };
 
-const fillForm = () => {
-  if (props.shiftDefinitionId == 0) {
-    resetForm();
-  } else {
-    const searchParams = {
-      pageSize: 1,
-      pageNo: 0,
-      id: props.shiftDefinitionId,
-      orderKey: "id",
-    } as ShiftDefinitionSearchModel;
+const fillForm = async () => {
+  try {
+    if (props.shiftDefinitionId == 0) {
+      resetForm();
+    } else {
+      const shiftDefinition = (
+        await shiftDefinitionService.value.getShiftDefinitions({
+          pageSize: 1,
+          pageNo: 0,
+          id: props.shiftDefinitionId,
+          orderKey: "id",
+          desc: true,
+          portalId: 0,
+          shiftType: 0,
+          title: "",
+        } as ShiftDefinitionSearchModel)
+      ).data[0];
 
-    shiftDefinitionService.value
-      .getShiftDefinitions(searchParams)
-      .then((response) => {
-        //console.log(response);
-        if (!response.data.success) {
-          throw new Error(
-            "Failed api call: [" + response.data.failureMessage + "]"
-          );
-        }
-
-        state.shiftTitle = response.data.data[0].title;
-        state.portal = portals.value!.find(
-          (p) => p.id == response.data.data[0].portalId
-        );
-        state.startTime = response.data.data[0].startTime;
-        state.endTime = response.data.data[0].endTime;
-        state.shiftType = shiftTypes.value!.find(
-          (s) => s.title == response.data.data[0].shiftTypeTitle
-        );
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+      state.shiftTitle = shiftDefinition.title;
+      state.portal = portals.value!.find(
+        (p) => p.id == shiftDefinition.portalId
+      );
+      state.startTime = shiftDefinition.startTime;
+      state.endTime = shiftDefinition.endTime;
+      state.shiftType = shiftTypes.value!.find(
+        (s) => s.title == shiftDefinition.shiftTypeTitle
+      );
+    }
+  } catch (error: any) {
+    if (typeof error.message === "object") {
+      apiErrorStore.setApiErrorMessage(error.message.failureMessage);
+    } else {
+      console.log(error.message);
+    }
   }
 };
 
@@ -231,8 +232,8 @@ const btnSubmitClass = computed(() => {
 
 watch(
   () => props.shiftDefinitionId,
-  (shiftDefinitionId, prevShiftDefinitionId) => {
-    fillForm();
+  async (shiftDefinitionId, prevShiftDefinitionId) => {
+    await fillForm();
   },
   { immediate: true }
 );

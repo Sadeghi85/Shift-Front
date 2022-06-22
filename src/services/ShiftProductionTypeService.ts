@@ -14,10 +14,21 @@ export default class ShiftProductionTypeService {
   }
 
   public getShiftProductionTypes(body: ShiftProductionTypeSearchModel) {
-    return this.api.post<ApiResponseModel<ShiftProductionTypeViewModel>>(
-      "/ProductionType/GetAll",
-      body
-    );
+    return this.api
+      .post<ApiResponseModel<ShiftProductionTypeViewModel>>(
+        "/ProductionType/GetAll",
+        body
+      )
+      .then((response) => {
+        if (response.data.success == false) {
+          throw {
+            message: response.data,
+          };
+          //throw new Error("test");
+        }
+
+        return response.data;
+      });
   }
 
   public createShiftProductionType(body: ShiftProductionTypeInputModel) {
