@@ -261,6 +261,7 @@ onMounted(() => {
                     v-model="v$.portal.$model"
                     :options="portals"
                     option-label="title"
+                    :filter="true"
                     :class="{
                       'p-invalid': v$.portal.$invalid && submitted,
                     }"

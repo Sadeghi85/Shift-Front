@@ -69,33 +69,34 @@ const gridOperationMenuItems = ref([
         label: t("menu.item.delete"),
         icon: "pi pi-times",
         command: () => {
-          //showConfirmDelete();
-
           confirm.require({
             message: t("confirm.message.delete"),
             header: t("confirm.header.confirmation"),
             icon: "pi pi-exclamation-triangle",
-            acceptClass: "p-button-danger",
+            acceptClass: "mr-4 p-button-danger",
+            rejectClass: "p-button-secondary",
             acceptLabel: t("confirm.button.accept"),
             rejectLabel: t("confirm.button.reject"),
             defaultFocus: "reject",
             accept: () => {
-              // shiftLocationService.value
-              //   .deleteShiftLocation({
-              //     id: gridOperationMenu.value.dataId,
-              //   } as ShiftLocationInputModel)
-              //   .then((response) => {
-              //     //console.log(response);
-              //     if (!response.data.success) {
-              //       throw new Error(
-              //         "Failed api call: [" + response.data.failureMessage + "]"
-              //       );
-              //     }
-              //     showSuccess(t("toast.success.delete"));
-              //   })
-              //   .catch((error) => {
-              //     console.log(error);
-              //   });
+              shiftLocationService.value
+                .deleteShiftLocation({
+                  id: gridOperationMenu.value.dataId,
+                } as ShiftLocationInputModel)
+                .then((response) => {
+                  //console.log(response);
+                  if (!response.data.success) {
+                    throw new Error(
+                      "Failed api call: [" + response.data.failureMessage + "]"
+                    );
+                  }
+
+                  handleSearch();
+                  showSuccess(t("toast.success.delete"));
+                })
+                .catch((error) => {
+                  console.log(error);
+                });
             },
             reject: () => {
               //console.log("reject");
@@ -115,6 +116,16 @@ const toggleGridOperationMenu = (event: any, id: number) => {
 
 const shiftLocations = ref<ShiftLocationViewModel[]>();
 const portals = ref<PortalViewModel[]>();
+
+const showSuccess = (detail: string) => {
+  toast.add({
+    severity: "success",
+    summary: t("toast.header.general"),
+    detail: detail,
+    life: 3000,
+    group: "br",
+  });
+};
 
 function loadShiftLocations(searchParams?: ShiftLocationSearchModel) {
   loading.value = true;
@@ -276,6 +287,7 @@ onMounted(() => {
                         v-model="portal"
                         :options="portals"
                         option-label="title"
+                        :filter="true"
                       />
 
                       <label for="portal">{{ t("portal.name") }}</label>
