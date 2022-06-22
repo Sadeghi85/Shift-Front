@@ -1,3 +1,33 @@
+<script lang="ts" setup>
+import { ref, onMounted, watch } from "vue";
+import { storeToRefs } from "pinia";
+import useApiErrorStore from "@/stores/api-error";
+import { useI18n } from "vue-i18n";
+import { useToast } from "primevue/usetoast";
+
+const { t } = useI18n();
+const toast = useToast();
+const apiErrorStore = useApiErrorStore();
+const { apiErrorMessage } = storeToRefs(apiErrorStore);
+
+watch(apiErrorMessage, (newValue) => {
+  if (newValue) {
+    showError(newValue);
+    apiErrorStore.removeApiErrorMessage();
+  }
+});
+
+const showError = (detail: string) => {
+  toast.add({
+    severity: "error",
+    summary: t("toast.header.general"),
+    detail: detail,
+    life: 3000,
+    group: "apiError",
+  });
+};
+</script>
+
 <template>
   <nav>
     <router-link
@@ -36,26 +66,8 @@
     >
   </nav>
   <router-view />
+
+  <Toast position="top-center" group="apiError" />
 </template>
-
-<script lang="ts" setup>
-//import { ref, onMounted, onBeforeMount } from "vue";
-import { useI18n } from "vue-i18n";
-
-const { t } = useI18n();
-
-// reactive state
-//const count = ref(0);
-
-// functions that mutate state and trigger updates
-// function increment() {
-//   count.value++;
-// }
-
-// lifecycle hooks
-// onMounted(() => {
-//   //console.log(`The initial count is ${count.value}.`);
-// });
-</script>
 
 <style></style>
