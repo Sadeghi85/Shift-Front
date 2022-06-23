@@ -13,18 +13,18 @@ export abstract class HttpClient {
       baseURL,
     });
 
-    this._initializeResponseInterceptor();
+    //this._initializeResponseInterceptor();
   }
 
-  private _initializeResponseInterceptor = () => {
-    this.instance.interceptors.response.use(
-      this._handleResponse,
-      this._handleError
-    );
-  };
+  // private _initializeResponseInterceptor = () => {
+  //   this.instance.interceptors.response.use(
+  //     this._handleResponse,
+  //     this._handleError
+  //   );
+  // };
 
-  //private _handleResponse = ({ data }: AxiosResponse) => data;
-  private _handleResponse = (response: AxiosResponse) => response;
+  ////private _handleResponse = ({ data }: AxiosResponse) => data;
+  //private _handleResponse = (response: AxiosResponse) => response;
 
-  protected _handleError = (error: any) => Promise.reject(error);
+  //protected _handleError = (error: any) => Promise.reject(error);
 }
