@@ -11,22 +11,6 @@ import PrimeVue from "primevue/config";
 import ToastService from "primevue/toastservice";
 import ConfirmationService from "primevue/confirmationservice";
 
-import InputText from "primevue/inputtext";
-import Dropdown from "primevue/dropdown";
-/* eslint-disable */
-import Button from "primevue/button";
-/* eslint-disable */
-import Dialog from "primevue/dialog";
-import Toast from "primevue/toast";
-import ConfirmDialog from "primevue/confirmdialog";
-import DataTable from "primevue/datatable";
-import Column from "primevue/column";
-import ColumnGroup from "primevue/columngroup"; //optional for column grouping
-import Row from "primevue/row"; //optional for row
-import Paginator from "primevue/paginator"; //optional for row grouping
-import Toolbar from "primevue/toolbar";
-import Menu from "primevue/menu";
-
 //import "primevue/resources/themes/bootstrap4-light-blue/theme.css";
 //import "primevue/resources/themes/lara-light-blue/theme.css";
 import "@/assets/css/lara-light-blue-rtl.css";
@@ -56,19 +40,5 @@ app.use(PrimeVue, {
 });
 app.use(ToastService);
 app.use(ConfirmationService);
-
-app.component("InputText", InputText);
-app.component("Dropdown", Dropdown);
-app.component("Button", Button);
-app.component("Dialog", Dialog);
-app.component("Toast", Toast);
-app.component("DataTable", DataTable);
-app.component("Column", Column);
-app.component("ColumnGroup", ColumnGroup);
-app.component("Row", Row);
-app.component("Paginator", Paginator);
-app.component("Toolbar", Toolbar);
-app.component("Menu", Menu);
-app.component("ConfirmDialog", ConfirmDialog);
 
 app.mount("#app");
