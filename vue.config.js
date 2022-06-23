@@ -172,20 +172,18 @@ module.exports = defineConfig({
     },
     allowedHosts: "all",
 
-    /* proxy: {
-      "^/connect": {
-        target: "https://sama.irib.ir/identity",
+    proxy: {
+      "^/GetToken": {
+        target: "http://localhost:8825/WebService/PortalWebService.asmx",
         changeOrigin: true,
+        onProxyReq: function (proxyReq) {
+          proxyReq.setHeader(
+            "Cookie",
+            "rtcookie=rui=1krFREj/0UVuMnfxv3FLR5+EuKVYbVwWTWo1TPx4PZixdlaVvdSC4cceLfenXeieq6nGa1F09US7QMgXIbgEJrsO+Z705qEfT5BBGjqQemwUceoL7IgzXf8PWHzsLo/h"
+          );
+        },
       },
-      "^/api": {
-        target: "https://sama.irib.ir/webapi",
-        changeOrigin: true,
-      },
-      "^/organizationchart": {
-        target: "https//sama.irib.ir/organizationchart",
-        changeOrigin: true,
-      },
-    }, */
+    },
   },
 
   transpileDependencies: true,
