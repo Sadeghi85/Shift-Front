@@ -10,9 +10,17 @@ export default class AgentService {
   }
 
   public getAgents(body: AgentSearchModel) {
-    return this.api.post<ApiResponseModel<AgentViewModel>>(
-      "/Agent/GetAll",
-      body
-    );
+    return this.api
+      .post<ApiResponseModel<AgentViewModel>>("/Agent/GetAll", body)
+      .then((response) => {
+        if (response.data.success == false) {
+          throw {
+            message: response.data,
+          };
+          //throw new Error("test");
+        }
+
+        return response.data;
+      });
   }
 }

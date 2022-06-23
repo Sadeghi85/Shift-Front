@@ -14,10 +14,21 @@ export default class ShiftTabletCrewService {
   }
 
   public getShiftTabletCrews(body: ShiftTabletCrewSearchModel) {
-    return this.api.post<ApiResponseModel<ShiftTabletCrewViewModel>>(
-      "/ShiftTabletCrew/GetAll",
-      body
-    );
+    return this.api
+      .post<ApiResponseModel<ShiftTabletCrewViewModel>>(
+        "/ShiftTabletCrew/GetAll",
+        body
+      )
+      .then((response) => {
+        if (response.data.success == false) {
+          throw {
+            message: response.data,
+          };
+          //throw new Error("test");
+        }
+
+        return response.data;
+      });
   }
 
   public getShiftTabletCrewExcel(body: ShiftTabletCrewSearchModel) {

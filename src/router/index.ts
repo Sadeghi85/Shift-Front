@@ -57,21 +57,22 @@ const routes: Array<RouteRecordRaw> = [
       ),
   },
   {
-    path: "/shift-tablet-crew",
+    path: "/shift-tablet-crew/:shiftTabletId",
     name: "shift-tablet-crew",
     // route level code-splitting
     // this generates a separate chunk (about.[hash].js) for this route
     // which is lazy-loaded when the route is visited.
     component: () =>
       import(
-        /* webpackChunkName: "shift-tablet-crew" */ "../views/ShiftTabletCrewView.vue"
+        /* webpackChunkName: "shift-tablet-crew" */ "../views/shift-tablet-crew/ShiftTabletCrewRD.vue"
       ),
   },
 ];
 
 const router = createRouter({
   //history: createWebHistory(process.env.BASE_URL),
-  history: createWebHashHistory(),
+  history: createWebHistory(),
+  //history: createWebHashHistory(),
   routes,
 });
 

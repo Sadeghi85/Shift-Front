@@ -1,33 +1,28 @@
 <script lang="ts" setup>
-import { reactive, ref, onMounted } from "vue";
+import { reactive, ref, onMounted, watch } from "vue";
 import { useI18n } from "vue-i18n";
-import useApiErrorStore from "@/stores/api-error";
-import ShiftTabletService from "@/services/ShiftTabletService";
-import { useToast } from "primevue/usetoast";
-import {
-  ShiftTabletViewModel,
-  ShiftTabletInputModel,
-  ShiftTabletSearchModel,
-} from "@/models/ShiftTabletModels";
-import {
-  ShiftProductionTypeViewModel,
-  ShiftProductionTypeSearchModel,
-  ShiftProductionTypeInputModel,
-} from "@/models/ShiftProductionTypeModels";
-import {
-  ShiftDefinitionViewModel,
-  ShiftDefinitionSearchModel,
-  ShiftDefinitionInputModel,
-} from "@/models/ShiftDefinitionModels";
-import ShiftProductionTypeService from "@/services/ShiftProductionTypeService";
-import ShiftDefinitionService from "@/services/ShiftDefinitionService";
 
-import ShiftTabletCU from "@/views/shift-tablet/ShiftTabletCU.vue";
+import ShiftTabletCrewService from "@/services/ShiftTabletCrewService";
+
+import useApiErrorStore from "@/stores/api-error";
+import {
+  ShiftTabletCrewInputModel,
+  ShiftTabletCrewSearchModel,
+  ShiftTabletCrewViewModel,
+} from "@/models/ShiftTabletCrewModels";
+import { useToast } from "primevue/usetoast";
 import { useConfirm } from "primevue/useconfirm";
-import { useRouter } from "vue-router";
+import {
+  ResourceTypeSearchModel,
+  ResourceTypeViewModel,
+} from "@/models/ResourceTypeModels";
+import { AgentSearchModel, AgentViewModel } from "@/models/AgentModels";
+import { useRouter, useRoute } from "vue-router";
+import AgentService from "@/services/AgentService";
+import ResourceTypeService from "@/services/ResourceTypeService";
 
 const router = useRouter();
-
+const route = useRoute();
 const { t } = useI18n();
 const toast = useToast();
 const confirm = useConfirm();
@@ -36,11 +31,10 @@ const apiErrorStore = useApiErrorStore();
 
 const pageSize = ref(10);
 const pageNumber = ref(0);
-
 const loading = ref(false);
 const totalRecords = ref(0);
 
-const cuShiftTabletId = ref(0);
+const cuShiftTabletCrewId = ref(0);
 
 const createUpdateFormIsVisible = ref(false);
 const searchFormIsVisible = ref(false);
@@ -49,11 +43,11 @@ const openCreateUpdateForm = () => {
   createUpdateFormIsVisible.value = true;
 };
 const closeCreateUpdateForm = () => {
-  cuShiftTabletId.value = 0;
+  cuShiftTabletCrewId.value = 0;
   createUpdateFormIsVisible.value = false;
 };
 const toggleCreateUpdateForm = () => {
-  cuShiftTabletId.value = 0;
+  cuShiftTabletCrewId.value = 0;
   createUpdateFormIsVisible.value = !createUpdateFormIsVisible.value;
 };
 const openSearchForm = () => {
@@ -72,21 +66,11 @@ const gridOperationMenuItems = ref([
     label: t("grid.button.operation"),
     items: [
       {
-        label: t("menu.item.shift-tablet-crew-assignment"),
-        icon: "pi pi-users",
-        command: () => {
-          router.push({
-            name: "shift-tablet-crew",
-            params: { shiftTabletId: gridOperationMenu.value.dataId },
-          });
-        },
-      },
-      {
         label: t("menu.item.update"),
         icon: "pi pi-refresh",
         command: () => {
           closeSearchForm();
-          cuShiftTabletId.value = gridOperationMenu.value.dataId;
+          cuShiftTabletCrewId.value = gridOperationMenu.value.dataId;
           openCreateUpdateForm();
         },
       },
@@ -104,16 +88,17 @@ const gridOperationMenuItems = ref([
             rejectLabel: t("confirm.button.reject"),
             defaultFocus: "reject",
             accept: () => {
-              shiftTabletService.value
-                .deleteShiftTablet({
+              shiftTabletCrewService.value
+                .deleteShiftTabletCrew({
                   id: gridOperationMenu.value.dataId,
-                } as ShiftTabletInputModel)
+                } as ShiftTabletCrewInputModel)
                 .then((response) => {
                   //console.log(response);
                   if (!response.data.success) {
-                    throw new Error(
-                      "Failed api call: [" + response.data.failureMessage + "]"
+                    apiErrorStore.setApiErrorMessage(
+                      response.data.failureMessage
                     );
+                    return;
                   }
 
                   handleSearch();
@@ -149,39 +134,42 @@ const showSuccess = (detail: string) => {
   });
 };
 
-const shiftDefinition = ref<ShiftDefinitionViewModel>();
-const shiftProductionType = ref<ShiftProductionTypeViewModel>();
-const shiftDate = ref("");
-const shiftWorthPercent = ref("");
+const shiftTabletCrews = ref<ShiftTabletCrewViewModel[]>();
+const jobs = ref<ResourceTypeViewModel[]>();
+const agents = ref<AgentViewModel[]>();
+const agent = ref<AgentViewModel>();
+const job = ref<ResourceTypeViewModel>();
 
-const shiftTablets = ref<ShiftTabletViewModel[]>();
-const shiftProductionTypes = ref<ShiftProductionTypeViewModel[]>();
-const shiftDefinitions = ref<ShiftDefinitionViewModel[]>();
-
-async function loadShiftTablets(searchParams?: ShiftTabletSearchModel) {
+async function loadShiftTabletCrews(searchParams?: ShiftTabletCrewSearchModel) {
   try {
     loading.value = true;
 
     if (!searchParams) {
       searchParams = {
-        pageNo: pageNumber.value,
         pageSize: pageSize.value,
-        orderKey: "id",
+        pageNo: pageNumber.value,
+        title: "",
+        agentId: 0,
+        agentName: "",
         desc: true,
-        shiftId: 0,
-        shiftDate: "",
-        productionTypeId: 0,
+        entranceTime: "",
+        exitTime: "",
+        fromDate: "",
         id: 0,
-        shiftWorthPercent: "",
-      } as ShiftTabletSearchModel;
+        isReplaced: null,
+        orderKey: "id",
+        resourceTypeId: 0,
+        shifTabletId: 0,
+        shiftTitle: "",
+        toDate: "",
+      } as ShiftTabletCrewSearchModel;
     }
 
-    const shiftTabletResponse = await shiftTabletService.value.getShiftTablets(
-      searchParams
-    );
+    const shiftTabletCrewsResponse =
+      await shiftTabletCrewService.value.getShiftTabletCrews(searchParams);
 
-    shiftTablets.value = shiftTabletResponse.data;
-    totalRecords.value = shiftTabletResponse.totalCount;
+    shiftTabletCrews.value = shiftTabletCrewsResponse.data;
+    totalRecords.value = shiftTabletCrewsResponse.totalCount;
     loading.value = false;
   } catch (error: any) {
     if (typeof error.message === "object") {
@@ -197,51 +185,62 @@ const onPage = async (event: any) => {
   await handleSearch();
 };
 
-const shiftTabletService = ref(new ShiftTabletService());
-const shiftProductionTypeService = ref(new ShiftProductionTypeService());
-const shiftDefinitionService = ref(new ShiftDefinitionService());
-
 const handleSearch = async () => {
-  await loadShiftTablets({
+  await loadShiftTabletCrews({
+    shifTabletId: +route.params.shiftTabletId,
     pageSize: pageSize.value,
     pageNo: pageNumber.value,
-
-    shiftId: shiftDefinition.value?.id ?? 0,
-    productionTypeId: shiftProductionType.value?.id ?? 0,
-
     orderKey: "id",
     desc: true,
-  } as ShiftTabletSearchModel);
+
+    agentId: agent.value?.id ?? 0,
+    resourceTypeId: job.value?.id ?? 0,
+
+    agentName: "",
+    entranceTime: "",
+    exitTime: "",
+    fromDate: "",
+    toDate: "",
+    shiftTitle: "",
+    isReplaced: null,
+    id: 0,
+
+    title: "",
+  } as ShiftTabletCrewSearchModel);
 };
+
+const shiftTabletCrewService = ref(new ShiftTabletCrewService());
+const agentService = ref(new AgentService());
+const jobService = ref(new ResourceTypeService());
 
 const loadEssentials = async () => {
   try {
-    // shiftProductionTypes
-    shiftProductionTypes.value = (
-      await shiftProductionTypeService.value.getShiftProductionTypes({
+    // agents
+    agents.value = (
+      await agentService.value.getAgents({
         pageSize: 2147483647, // Int32.MaxValue
         pageNo: 0,
-        title: "",
-        orderKey: "id",
-        desc: true,
-      } as ShiftProductionTypeSearchModel)
-    ).data;
-
-    // shiftDefinitions
-    shiftDefinitions.value = (
-      await shiftDefinitionService.value.getShiftDefinitions({
-        pageSize: 2147483647, // Int32.MaxValue
-        pageNo: 0,
-        title: "",
         orderKey: "id",
         desc: true,
         id: 0,
-        portalId: 0,
-        shiftType: 0,
-      } as ShiftDefinitionSearchModel)
+        firstName: "",
+        lastName: "",
+      } as AgentSearchModel)
     ).data;
 
-    // shiftTablets
+    // jobs
+    jobs.value = (
+      await jobService.value.getResourceTypes({
+        pageSize: 2147483647, // Int32.MaxValue
+        pageNo: 0,
+        orderKey: "id",
+        desc: true,
+        id: 0,
+        resourceName: "",
+      } as ResourceTypeSearchModel)
+    ).data;
+
+    // shiftTabletCrews
     await handleSearch();
   } catch (error: any) {
     if (typeof error.message === "object") {
@@ -252,8 +251,22 @@ const loadEssentials = async () => {
   }
 };
 
+watch(
+  () => route.params.shiftTabletId,
+  async (shiftTabletId, prevShiftTabletId) => {
+    if (shiftTabletId) {
+      await handleSearch();
+    }
+  },
+  { immediate: true }
+);
+
 // lifecycle hooks
 onMounted(async () => {
+  if (!route.params.shiftTabletId) {
+    router.push({ name: "shift-tablet" });
+  }
+
   await loadEssentials();
 });
 </script>
@@ -274,10 +287,19 @@ onMounted(async () => {
             />
             <Button
               icon="pi pi-plus"
-              class="p-button-rounded p-button-success"
+              class="p-button-rounded p-button-success ml-2"
               @click.prevent="
                 closeSearchForm();
                 toggleCreateUpdateForm();
+              "
+            />
+            <Button
+              icon="pi pi-arrow-left"
+              class="p-button-rounded p-button-warning"
+              @click.prevent="
+                router.options.history.state.back
+                  ? router.back()
+                  : router.push({ name: 'shift-tablet' })
               "
             />
           </template>
@@ -287,12 +309,12 @@ onMounted(async () => {
 
     <Transition>
       <div v-if="createUpdateFormIsVisible">
-        <ShiftTabletCU
-          :shift-tablet-id="cuShiftTabletId"
+        <ShiftTabletCrewCU
+          :shift-tablet-crew-id="cuShiftTabletCrewId"
           @reload-grid="handleSearch()"
           @close-form="closeCreateUpdateForm()"
         >
-        </ShiftTabletCU>
+        </ShiftTabletCrewCU>
       </div>
     </Transition>
 
@@ -307,52 +329,30 @@ onMounted(async () => {
                 @submit.prevent="handleSearch()"
               >
                 <div class="grid formgrid">
-                  <div class="field col-12 mb-4 md:col-4">
+                  <div class="field col-12 mb-2 md:col-4 md:mb-0">
                     <div class="p-float-label">
                       <Dropdown
-                        id="shiftDefinition"
-                        v-model="shiftDefinition"
-                        :options="shiftDefinitions"
-                        option-label="title"
+                        id="agent"
+                        v-model="agent"
+                        :options="agents"
+                        option-label="fullName"
+                        :filter="true"
                       />
 
-                      <label for="shiftDefinition">{{
-                        t("shiftDefinition.title")
-                      }}</label>
+                      <label for="agent">{{ t("agent.name") }}</label>
                     </div>
                   </div>
-
-                  <div class="field col-12 mb-4 md:col-4">
+                  <div class="field col-12 mb-2 md:col-4 md:mb-0">
                     <div class="p-float-label">
                       <Dropdown
-                        id="shiftProductionType"
-                        v-model="shiftProductionType"
-                        :options="shiftProductionTypes"
+                        id="job"
+                        v-model="job"
+                        :options="jobs"
                         option-label="title"
+                        :filter="true"
                       />
 
-                      <label for="shiftProductionType">{{
-                        t("productionType.title")
-                      }}</label>
-                    </div>
-                  </div>
-
-                  <div class="field col-12 mb-4 md:col-4">
-                    <div class="p-float-label">
-                      <InputText id="shiftDate" v-model="shiftDate" />
-                      <label for="shiftDate">{{ t("shiftDate.title") }}</label>
-                    </div>
-                  </div>
-
-                  <div class="field col-12 mb-4 md:col-4">
-                    <div class="p-float-label">
-                      <InputText
-                        id="shiftWorthPercent"
-                        v-model="shiftWorthPercent"
-                      />
-                      <label for="shiftWorthPercent">{{
-                        t("shiftWorthPercent.title")
-                      }}</label>
+                      <label for="job">{{ t("job.name") }}</label>
                     </div>
                   </div>
                 </div>
@@ -378,7 +378,7 @@ onMounted(async () => {
         <div class="col-12 md:col-12">
           <div class="card">
             <DataTable
-              :value="shiftTablets"
+              :value="shiftTabletCrews"
               :rows="10"
               data-key="id"
               :loading="loading"
@@ -400,20 +400,12 @@ onMounted(async () => {
               >
 
               <Column
-                field="shiftTitle"
-                :header="t('grid.header.shiftTitle')"
+                field="agentFullName"
+                :header="t('grid.header.agentFullName')"
               ></Column>
               <Column
-                field="productionTypeTitle"
-                :header="t('grid.header.productionTypeTitle')"
-              ></Column>
-              <Column
-                field="shiftDate"
-                :header="t('grid.header.shiftDate')"
-              ></Column>
-              <Column
-                field="shiftWorthPercent"
-                :header="t('grid.header.shiftWorthPercent')"
+                field="jobName"
+                :header="t('grid.header.jobName')"
               ></Column>
               <Column
                 header-style="width: 8em;"

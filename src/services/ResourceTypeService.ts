@@ -13,9 +13,20 @@ export default class ResourceTypeService {
   }
 
   public getResourceTypes(body: ResourceTypeSearchModel) {
-    return this.api.post<ApiResponseModel<ResourceTypeViewModel>>(
-      "/ResourceType/GetAll",
-      body
-    );
+    return this.api
+      .post<ApiResponseModel<ResourceTypeViewModel>>(
+        "/ResourceType/GetAll",
+        body
+      )
+      .then((response) => {
+        if (response.data.success == false) {
+          throw {
+            message: response.data,
+          };
+          //throw new Error("test");
+        }
+
+        return response.data;
+      });
   }
 }

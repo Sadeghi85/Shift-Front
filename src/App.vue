@@ -57,13 +57,6 @@ const showError = (detail: string) => {
       }"
       >{{ t("route.shift-tablet") }}</router-link
     >
-    |
-    <router-link
-      :to="{
-        name: 'shift-tablet-crew',
-      }"
-      >{{ t("route.shift-tablet-crew") }}</router-link
-    >
   </nav>
   <router-view />
 

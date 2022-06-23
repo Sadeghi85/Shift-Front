@@ -9,17 +9,22 @@ export interface ShiftTabletCrewInputModel {
 
 export interface ShiftTabletCrewSearchModel {
   id: number;
-  title?: string;
+  title: string;
   pageNo: number;
   pageSize: number;
   orderKey: string;
   desc: boolean;
 
-  isReplaced?: boolean;
-  agentName?: string;
+  agentName: string;
   shiftTitle: string;
-  fromDate?: string;
-  toDate?: string;
+  fromDate: string;
+  toDate: string;
+  agentId: number;
+  resourceTypeId: number;
+  shifTabletId: number;
+  entranceTime: string;
+  exitTime: string;
+  isReplaced: boolean | null;
 }
 
 export interface ShiftTabletCrewViewModel {
