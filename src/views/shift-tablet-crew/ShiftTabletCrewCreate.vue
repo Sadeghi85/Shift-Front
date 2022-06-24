@@ -104,35 +104,7 @@ const handleSubmit = (isFormValid: boolean) => {
           console.log(error);
         });
     } else {
-      shiftTabletCrewService.value
-        .updateShiftTabletCrew({
-          id: props.shiftTabletCrewId,
-          agentId: v$.value.agent.$model!.id,
-          entranceTime: null,
-          exitTime: null,
-          shiftTabletId: props.shiftTabletId,
-          resourceTypeId: v$.value.job.$model!.id,
-        } as ShiftTabletCrewInputModel)
-        .then((response) => {
-          //console.log(response);
-          if (!response.data.success) {
-            throw new Error(
-              "Failed api call: [" + response.data.failureMessage + "]"
-            );
-          }
-
-          //handleSearch();
-          emit("closeForm");
-          emit("reloadGrid");
-
-          //emit('eventB', params)
-
-          showSuccess(t("toast.success.update"));
-          resetForm();
-        })
-        .catch((error) => {
-          console.log(error);
-        });
+      //
     }
   }
 };
@@ -173,38 +145,7 @@ const fillForm = async () => {
     if (props.shiftTabletCrewId == 0) {
       resetForm();
     } else {
-      const shiftTabletCrew = (
-        await shiftTabletCrewService.value.getShiftTabletCrews({
-          pageSize: 1,
-          pageNo: 0,
-          id: props.shiftTabletCrewId,
-          orderKey: "id",
-          desc: true,
-
-          agentId: 0,
-          agentName: "",
-          entranceTime: "",
-          exitTime: "",
-          fromDate: "",
-          isReplaced: null,
-          resourceTypeId: 0,
-          shifTabletId: 0,
-          shiftTitle: "",
-          title: "",
-          toDate: "",
-        } as ShiftTabletCrewSearchModel)
-      ).data[0];
-
-      //   state.agent = agents.value!.find(
-      //     (p) => p.id == shiftTabletCrew.ag
-      //   );
-
-      //   state.shiftDefinition = shiftDefinitions.value!.find(
-      //     (p) => p.id == shiftTablet.shiftId
-      //   );
-
-      //   state.shiftDate = shiftTablet.shiftDate;
-      //   state.shiftWorthPercent = shiftTablet.shiftWorthPercent;
+      //
     }
   } catch (error: any) {
     if (typeof error.message === "object") {

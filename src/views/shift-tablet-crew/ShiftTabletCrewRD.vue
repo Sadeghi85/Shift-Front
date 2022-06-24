@@ -35,6 +35,7 @@ const loading = ref(false);
 const totalRecords = ref(0);
 
 const cuShiftTabletCrewId = ref(0);
+const cuComponentName = ref("");
 
 const createUpdateFormIsVisible = ref(false);
 const searchFormIsVisible = ref(false);
@@ -69,6 +70,7 @@ const gridOperationMenuItems = ref([
         label: t("menu.item.agentReplacement"),
         icon: "pi pi-user-edit",
         command: () => {
+          cuComponentName.value = "ShiftTabletCrewAgentReplacement";
           closeSearchForm();
           cuShiftTabletCrewId.value = gridOperationMenu.value.dataId;
           openCreateUpdateForm();
@@ -289,6 +291,7 @@ onMounted(async () => {
               icon="pi pi-plus"
               class="p-button-rounded p-button-success ml-2"
               @click.prevent="
+                cuComponentName = 'ShiftTabletCrewCreate';
                 closeSearchForm();
                 toggleCreateUpdateForm();
               "
@@ -309,13 +312,14 @@ onMounted(async () => {
 
     <Transition>
       <div v-if="createUpdateFormIsVisible">
-        <ShiftTabletCrewCU
+        <Component
+          :is="cuComponentName"
           :shift-tablet-crew-id="cuShiftTabletCrewId"
           :shift-tablet-id="+$route.params.shiftTabletId"
           @reload-grid="handleSearch()"
           @close-form="closeCreateUpdateForm()"
         >
-        </ShiftTabletCrewCU>
+        </Component>
       </div>
     </Transition>
 
