@@ -66,8 +66,8 @@ const gridOperationMenuItems = ref([
     label: t("grid.button.operation"),
     items: [
       {
-        label: t("menu.item.update"),
-        icon: "pi pi-refresh",
+        label: t("menu.item.agentReplacement"),
+        icon: "pi pi-user-edit",
         command: () => {
           closeSearchForm();
           cuShiftTabletCrewId.value = gridOperationMenu.value.dataId;
@@ -311,6 +311,7 @@ onMounted(async () => {
       <div v-if="createUpdateFormIsVisible">
         <ShiftTabletCrewCU
           :shift-tablet-crew-id="cuShiftTabletCrewId"
+          :shift-tablet-id="+$route.params.shiftTabletId"
           @reload-grid="handleSearch()"
           @close-form="closeCreateUpdateForm()"
         >
