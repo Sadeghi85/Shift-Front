@@ -36,6 +36,8 @@ export class Api extends HttpClient {
 
         config.headers = {
           Authorization: `Bearer ${token?.access_token}`,
+          "Content-Type": "application/json; charset=utf-8",
+          Accept: "application/json",
         };
         return config;
       },
@@ -75,6 +77,7 @@ export class Api extends HttpClient {
 
           Api.classInstance!.instance.defaults.headers.common["Authorization"] =
             "Bearer " + token?.access_token;
+
           return Api.classInstance!.instance(originalRequest);
         }
 
