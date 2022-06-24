@@ -10,7 +10,7 @@ export interface ShiftProductionTypeViewModel {
 
 export interface ShiftProductionTypeSearchModel {
   id: number;
-  title?: string;
+  title: string;
   pageNo: number;
   pageSize: number;
   orderKey: string;

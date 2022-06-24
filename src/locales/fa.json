@@ -29,6 +29,7 @@
   "exitTime.title": "ساعت خروج",
 
   "_": "menu",
+  "menu.item.agentReplacement": "جابجایی",
   "menu.item.update": "ویرایش",
   "menu.item.delete": "حذف",
   "menu.item.shift-tablet-crew-assignment": "تعریف کارکنان شیفت",

@@ -6,7 +6,7 @@ export interface ResourceTypeViewModel {
 
 export interface ResourceTypeSearchModel {
   id: number;
-  resourceName?: string;
+  resourceName: string;
   pageNo: number;
   pageSize: number;
   orderKey: string;

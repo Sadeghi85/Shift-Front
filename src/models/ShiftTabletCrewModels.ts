@@ -2,8 +2,8 @@ export interface ShiftTabletCrewInputModel {
   id: number;
   agentId: number;
   resourceTypeId: number;
-  entranceTime: string;
-  exitTime: string;
+  entranceTime: string | null;
+  exitTime: string | null;
   shiftTabletId: number;
 }
 

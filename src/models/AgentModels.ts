@@ -5,8 +5,8 @@ export interface AgentViewModel {
 
 export interface AgentSearchModel {
   id: number;
-  firstName?: string;
-  lastName?: string;
+  firstName: string;
+  lastName: string;
   pageNo: number;
   pageSize: number;
   orderKey: string;

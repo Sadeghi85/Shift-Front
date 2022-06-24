@@ -83,7 +83,7 @@ const gridOperationMenuItems = ref([
       },
       {
         label: t("menu.item.update"),
-        icon: "pi pi-refresh",
+        icon: "pi pi-pencil",
         command: () => {
           closeSearchForm();
           cuShiftTabletId.value = gridOperationMenu.value.dataId;

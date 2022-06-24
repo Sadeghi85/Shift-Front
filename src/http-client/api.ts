@@ -50,7 +50,7 @@ export class Api extends HttpClient {
       },
       async function (error) {
         const originalRequest = error.config;
-        if (error.response.status === 403 && !originalRequest._retry) {
+        if (error.response.status === 401 && !originalRequest._retry) {
           originalRequest._retry = true;
           let token: TokenViewModel | null = null;
 

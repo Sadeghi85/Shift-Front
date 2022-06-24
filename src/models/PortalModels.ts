@@ -9,5 +9,5 @@ export interface PortalSearchModel {
 
   pageNo: number;
   pageSize: number;
-  orderKey?: string;
+  orderKey: string;
 }

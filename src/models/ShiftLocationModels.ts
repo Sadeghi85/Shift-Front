@@ -6,7 +6,7 @@ export interface ShiftLocationInputModel {
 
 export interface ShiftLocationSearchModel {
   id: number;
-  title?: string;
+  title: string;
   portalId?: number;
   pageNo: number;
   pageSize: number;
