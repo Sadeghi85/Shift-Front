@@ -24,7 +24,7 @@ import "primeflex/primeflex.css";
 
 import "@/assets/css/app.css";
 
-import VuePersianDatetimePicker from "vue-persian-datetime-picker";
+import Vue3PersianDatetimePicker from "vue3-persian-datetime-picker";
 
 const pinia = createPinia();
 
@@ -61,7 +61,7 @@ fetch(AppSettings.SSO_URL, {
     app.use(ToastService);
     app.use(ConfirmationService);
 
-    app.component("PersianDatePicker", VuePersianDatetimePicker);
+    app.component("PersianDatePicker", Vue3PersianDatetimePicker);
 
     app.mount("#app");
   })
