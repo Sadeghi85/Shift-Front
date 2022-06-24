@@ -1,5 +1,12 @@
 <script lang="ts" setup>
-import { reactive, ref, onMounted, watch } from "vue";
+import {
+  reactive,
+  ref,
+  onMounted,
+  watch,
+  computed,
+  defineAsyncComponent,
+} from "vue";
 import { useI18n } from "vue-i18n";
 
 import ShiftTabletCrewService from "@/services/ShiftTabletCrewService";
@@ -36,6 +43,11 @@ const totalRecords = ref(0);
 
 const cuShiftTabletCrewId = ref(0);
 const cuComponentName = ref("");
+const cuComponentComputed = computed(() => {
+  return defineAsyncComponent(
+    () => import(`@/views/shift-tablet-crew/${cuComponentName.value}`)
+  );
+});
 
 const createUpdateFormIsVisible = ref(false);
 const searchFormIsVisible = ref(false);
@@ -313,7 +325,7 @@ onMounted(async () => {
     <Transition>
       <div v-if="createUpdateFormIsVisible">
         <Component
-          :is="cuComponentName"
+          :is="cuComponentComputed"
           :shift-tablet-crew-id="cuShiftTabletCrewId"
           :shift-tablet-id="+$route.params.shiftTabletId"
           @reload-grid="handleSearch()"
