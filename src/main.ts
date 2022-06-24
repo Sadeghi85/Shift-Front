@@ -29,12 +29,11 @@ const pinia = createPinia();
 const tokenStore = useTokenStore(pinia);
 tokenStore.removeToken();
 
-const myHeaders = new Headers();
-myHeaders.append("Content-Type", "application/json; charset=utf-8");
-
 fetch(AppSettings.SSO_URL, {
   method: "post",
-  headers: myHeaders,
+  headers: new Headers({
+    "Content-Type": "application/json; charset=utf-8",
+  }),
   body: JSON.stringify({ refresh_token: null }),
 })
   .then((response) => response.json())

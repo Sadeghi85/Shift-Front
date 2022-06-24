@@ -8,9 +8,7 @@ export const usePortalStore = defineStore({
   state: () => ({
     portals: useStorage<PortalViewModel[]>("portals", []),
   }),
-  getters: {
-    getPortals: (state) => state.portals,
-  },
+  getters: {},
   actions: {
     setPortals(portals: PortalViewModel[]) {
       this.portals = portals;

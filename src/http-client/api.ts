@@ -36,8 +36,6 @@ export class Api extends HttpClient {
 
         config.headers = {
           Authorization: `Bearer ${token?.access_token}`,
-          // Accept: "application/json",
-          // "Content-Type": "application/x-www-form-urlencoded",
         };
         return config;
       },
@@ -57,9 +55,20 @@ export class Api extends HttpClient {
           let token: TokenViewModel | null = null;
 
           try {
-            token = await Api.classInstance!.getToken({
-              refresh_token: Api.classInstance!.tokenStore.token?.refresh_token,
-            } as TokenInputModel);
+            const tokenResponse = await fetch(AppSettings.SSO_URL, {
+              method: "post",
+              headers: new Headers({
+                "Content-Type": "application/json; charset=utf-8",
+              }),
+              body: JSON.stringify({
+                refresh_token:
+                  Api.classInstance!.tokenStore.token?.refresh_token,
+              }),
+            });
+
+            token = await tokenResponse.json();
+
+            Api.classInstance!.tokenStore.setToken(token);
           } catch (error) {
             console.log(error);
           }
@@ -73,15 +82,6 @@ export class Api extends HttpClient {
       }
     );
   };
-
-  public async getToken(body: TokenInputModel | null) {
-    return this.instance.post<TokenViewModel>(AppSettings.SSO_URL, body);
-    // .then((response) => {
-    //   this.tokenStore.setToken(response.data);
-    // }).catch((error) => {
-    //   console.log(error);
-    // });
-  }
 
   /* public getPortals = () =>
     this.instance.get<ApiResponseModel<PortalModel>>("/Portal");

@@ -8,11 +8,9 @@ const useTokenStore = defineStore({
   state: () => ({
     token: ref<TokenViewModel | null>(),
   }),
-  getters: {
-    getToken: (state) => state.token,
-  },
+  getters: {},
   actions: {
-    setToken(token: TokenViewModel) {
+    setToken(token: TokenViewModel | null) {
       this.token = token;
     },
     removeToken() {

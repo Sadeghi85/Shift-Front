@@ -7,9 +7,7 @@ const useApiErrorStore = defineStore({
   state: () => ({
     apiErrorMessage: ref(""),
   }),
-  getters: {
-    getApiErrorMessage: (state) => state.apiErrorMessage,
-  },
+  getters: {},
   actions: {
     setApiErrorMessage(apiErrorMessage: string) {
       this.apiErrorMessage = apiErrorMessage;
