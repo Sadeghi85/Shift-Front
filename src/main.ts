@@ -24,12 +24,7 @@ import "primeflex/primeflex.css";
 
 import "@/assets/css/app.css";
 
-import "@/assets/jquery-2.2.4.min.js";
-import "@/assets/bootstrap-rtl.js";
-import "@/assets/mdcalendar/jalaali.js";
-
-import "@/assets/mdcalendar/jquery.Bootstrap-PersianDateTimePicker.js";
-import "@/assets/mdcalendar/jquery.Bootstrap-PersianDateTimePicker.css";
+import VuePersianDatetimePicker from "vue-persian-datetime-picker";
 
 const pinia = createPinia();
 
@@ -65,6 +60,8 @@ fetch(AppSettings.SSO_URL, {
     });
     app.use(ToastService);
     app.use(ConfirmationService);
+
+    app.component("PersianDatePicker", VuePersianDatetimePicker);
 
     app.mount("#app");
   })
