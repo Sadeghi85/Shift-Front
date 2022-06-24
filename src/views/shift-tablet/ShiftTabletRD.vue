@@ -339,7 +339,12 @@ onMounted(async () => {
 
                   <div class="field col-12 mb-4 md:col-4">
                     <div class="p-float-label">
-                      <InputText id="shiftDate" v-model="shiftDate" />
+                      <!-- <InputText id="shiftDate" v-model="shiftDate" /> -->
+                      <PersianDatePicker
+                        v-model="shiftDate"
+                        format="YYYY-MM-DD"
+                        display-format="jYYYY-jMM-jDD"
+                      />
                       <label for="shiftDate">{{ t("shiftDate.title") }}</label>
                     </div>
                   </div>
