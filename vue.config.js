@@ -118,10 +118,15 @@ function PrimeVueResolver(options = {}) {
 }
 
 const { defineConfig } = require("@vue/cli-service");
+const webpack = require("webpack");
 //const { PrimeVueResolver } = require("unplugin-vue-components/resolvers");
 module.exports = defineConfig({
   configureWebpack: {
     plugins: [
+      new webpack.IgnorePlugin({
+        resourceRegExp: new RegExp("/^./locale$/", "i"),
+        contextRegExp: new RegExp("/moment$/", "i"),
+      }),
       require("unplugin-vue-components/webpack")({
         // relative paths to the directory to search for components.
         dirs: ["src/components", "src/views"],
@@ -179,7 +184,7 @@ module.exports = defineConfig({
         onProxyReq: function (proxyReq) {
           proxyReq.setHeader(
             "Cookie",
-            "rtcookie=rui=1krFREj/0UVuMnfxv3FLR5+EuKVYbVwWTWo1TPx4PZixdlaVvdSC4cceLfenXeieq6nGa1F09US7QMgXIbgEJrsO+Z705qEfT5BBGjqQemwUceoL7IgzXf8PWHzsLo/h"
+            "rtcookie=rui=1krFREj/0UVuMnfxv3FLR5+EuKVYbVwWTWo1TPx4PZixdlaVvdSC4cceLfenXeieq6nGa1F09US7QMgXIbgEJqDiXccYvpp1D2raYRnuudweL/a3Gr5kr8rREf1j46pd"
           );
         },
       },

@@ -23,8 +23,8 @@
   "shiftDate.title": "تاریخ شیفت",
   "shiftWorthPercent.title": "درصد ارزش شیفت",
   "shiftTablet.title": "شیفت",
-  "agent.crew.title": "کارمند",
-  "resourceType.crew.title": "سمت",
+  "shiftTabletCrew.agentFullname": "نام کارمند",
+  "shiftTabletCrew.jobName": "سمت",
   "entranceTime.title": "ساعت ورود",
   "exitTime.title": "ساعت خروج",
 

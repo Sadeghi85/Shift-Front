@@ -142,6 +142,7 @@ const fillForm = () => {
       pageNo: 0,
       id: props.shiftLocationId,
       orderKey: "id",
+      isDeleted: false,
     } as ShiftLocationSearchModel;
 
     shiftLocationService.value

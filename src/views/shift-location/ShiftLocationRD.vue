@@ -136,6 +136,7 @@ function loadShiftLocations(searchParams?: ShiftLocationSearchModel) {
       pageNo: pageNumber.value,
       portalId: 0,
       title: "",
+      isDeleted: false,
     } as ShiftLocationSearchModel;
   }
 
@@ -212,6 +213,7 @@ const handleSearch = () => {
     title: locationName.value ?? "",
     orderKey: "id",
     desc: true,
+    isDeleted: false,
   } as ShiftLocationSearchModel);
 };
 

@@ -88,9 +88,8 @@ const handleSubmit = (isFormValid: boolean) => {
         .then((response) => {
           //console.log(response);
           if (!response.data.success) {
-            throw new Error(
-              "Failed api call: [" + response.data.failureMessage + "]"
-            );
+            apiErrorStore.setApiErrorMessage(response.data.failureMessage);
+            return;
           }
 
           //handleSearch();
@@ -213,7 +212,7 @@ watch(
                     :class="{
                       'p-error': v$.agent.$invalid && submitted,
                     }"
-                    >{{ t("agent.name")
+                    >{{ t("shiftTabletCrew.agentFullname")
                     }}<span :style="{ color: 'var(--red-500)' }">*</span></label
                   >
                 </div>
@@ -235,7 +234,7 @@ watch(
                     :class="{
                       'p-error': v$.job.$invalid && submitted,
                     }"
-                    >{{ t("job.name")
+                    >{{ t("shiftTabletCrew.jobName")
                     }}<span :style="{ color: 'var(--red-500)' }">*</span></label
                   >
                 </div>

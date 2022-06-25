@@ -173,6 +173,7 @@ async function loadShiftTablets(searchParams?: ShiftTabletSearchModel) {
         productionTypeId: 0,
         id: 0,
         shiftWorthPercent: "",
+        isDeleted: false,
       } as ShiftTabletSearchModel;
     }
 
@@ -211,6 +212,7 @@ const handleSearch = async () => {
 
     orderKey: "id",
     desc: true,
+    isDeleted: false,
   } as ShiftTabletSearchModel);
 };
 
@@ -238,6 +240,7 @@ const loadEssentials = async () => {
         id: 0,
         portalId: 0,
         shiftType: 0,
+        isDeleted: false,
       } as ShiftDefinitionSearchModel)
     ).data;
 

@@ -102,9 +102,8 @@ const handleSubmit = (isFormValid: boolean) => {
         .then((response) => {
           //console.log(response);
           if (!response.data.success) {
-            throw new Error(
-              "Failed api call: [" + response.data.failureMessage + "]"
-            );
+            apiErrorStore.setApiErrorMessage(response.data.failureMessage);
+            return;
           }
 
           emit("reloadGrid");
@@ -177,6 +176,7 @@ const fillForm = async () => {
         desc: true,
         portalId: 0,
         shiftType: 0,
+        isDeleted: false,
       } as ShiftDefinitionSearchModel)
     ).data;
 
@@ -194,6 +194,7 @@ const fillForm = async () => {
           shiftDate: "",
           shiftId: 0,
           shiftWorthPercent: "",
+          isDeleted: false,
         } as ShiftTabletSearchModel)
       ).data[0];
 

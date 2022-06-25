@@ -9,6 +9,7 @@ import {
 } from "vue";
 import { useI18n } from "vue-i18n";
 
+import ShiftTabletService from "@/services/ShiftTabletService";
 import ShiftTabletCrewService from "@/services/ShiftTabletCrewService";
 
 import useApiErrorStore from "@/stores/api-error";
@@ -27,6 +28,10 @@ import { AgentSearchModel, AgentViewModel } from "@/models/AgentModels";
 import { useRouter, useRoute } from "vue-router";
 import AgentService from "@/services/AgentService";
 import ResourceTypeService from "@/services/ResourceTypeService";
+import {
+  ShiftTabletSearchModel,
+  ShiftTabletViewModel,
+} from "@/models/ShiftTabletModels";
 
 const router = useRouter();
 const route = useRoute();
@@ -153,6 +158,7 @@ const jobs = ref<ResourceTypeViewModel[]>();
 const agents = ref<AgentViewModel[]>();
 const agent = ref<AgentViewModel>();
 const job = ref<ResourceTypeViewModel>();
+const shiftTablet = ref<ShiftTabletViewModel>();
 
 async function loadShiftTabletCrews(searchParams?: ShiftTabletCrewSearchModel) {
   try {
@@ -176,6 +182,7 @@ async function loadShiftTabletCrews(searchParams?: ShiftTabletCrewSearchModel) {
         shifTabletId: 0,
         shiftTitle: "",
         toDate: "",
+        isDeleted: false,
       } as ShiftTabletCrewSearchModel;
     }
 
@@ -220,15 +227,38 @@ const handleSearch = async () => {
     id: 0,
 
     title: "",
+    isDeleted: false,
   } as ShiftTabletCrewSearchModel);
 };
 
+const shiftTabletService = ref(new ShiftTabletService());
 const shiftTabletCrewService = ref(new ShiftTabletCrewService());
 const agentService = ref(new AgentService());
 const jobService = ref(new ResourceTypeService());
 
 const loadEssentials = async () => {
   try {
+    // shiftTablet
+    shiftTablet.value = (
+      await shiftTabletService.value.getShiftTablets({
+        id: +route.params.shiftTabletId,
+        orderKey: "id",
+        desc: true,
+        pageSize: 1,
+        pageNo: 0,
+        title: "",
+        fromDate: "",
+        toDate: "",
+        productionTypeId: 0,
+        shiftTitle: "",
+        shiftId: 0,
+        shiftTabletCrewId: 0,
+        shiftDate: "",
+        shiftWorthPercent: "",
+        isDeleted: false,
+      } as ShiftTabletSearchModel)
+    ).data[0];
+
     // agents
     agents.value = (
       await agentService.value.getAgents({
@@ -356,7 +386,9 @@ onMounted(async () => {
                         :filter="true"
                       />
 
-                      <label for="agent">{{ t("agent.name") }}</label>
+                      <label for="agent">{{
+                        t("shiftTabletCrew.agentFullname")
+                      }}</label>
                     </div>
                   </div>
                   <div class="field col-12 mb-2 md:col-4 md:mb-0">
@@ -369,7 +401,9 @@ onMounted(async () => {
                         :filter="true"
                       />
 
-                      <label for="job">{{ t("job.name") }}</label>
+                      <label for="job">{{
+                        t("shiftTabletCrew.jobName")
+                      }}</label>
                     </div>
                   </div>
                 </div>
@@ -389,6 +423,41 @@ onMounted(async () => {
         </div>
       </div>
     </Transition>
+
+    <div class="content-section">
+      <div class="grid">
+        <div class="col-12 md:col-12 p-fluid">
+          <div class="card info">
+            <div class="grid">
+              <div class="col">
+                {{ t("portal.name") }}:
+                <strong>{{ shiftTablet?.portalName }}</strong>
+              </div>
+              <div class="col">
+                {{ t("shift.title") }}:
+                <strong>{{ shiftTablet?.shiftTitle }}</strong>
+              </div>
+              <div class="col">
+                {{ t("productionType.title") }}:
+                <strong>{{ shiftTablet?.productionTypeTitle }}</strong>
+              </div>
+              <div class="col">
+                {{ t("shiftDate.title") }}:
+                <strong>{{ shiftTablet?.shiftDate }}</strong>
+              </div>
+              <div class="col">
+                {{ t("shift.startTime") }}:
+                <strong>{{ shiftTablet?.shiftStartTime }}</strong>
+              </div>
+              <div class="col">
+                {{ t("shift.endTime") }}:
+                <strong>{{ shiftTablet?.shiftEndTime }}</strong>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
 
     <div class="content-section">
       <div class="grid">
@@ -476,5 +545,9 @@ onMounted(async () => {
 .v-enter-from,
 .v-leave-to {
   opacity: 0;
+}
+
+.info {
+  background-color: var(--blue-50);
 }
 </style>

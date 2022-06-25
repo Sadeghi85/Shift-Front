@@ -61,6 +61,22 @@ fetch(AppSettings.SSO_URL, {
     app.use(ToastService);
     app.use(ConfirmationService);
 
+    // app.use(Vue3PersianDatetimePicker, {
+    //   name: 'PersianDatePicker',
+    //   props: {
+    //     format: 'YYYY-MM-DD HH:mm',
+    //     displayFormat: 'jYYYY-jMM-jDD',
+    //     editable: false,
+    //     inputClass: 'form-control my-custom-class-name',
+    //     placeholder: 'Please select a date',
+    //     altFormat: 'YYYY-MM-DD HH:mm',
+    //     color: '#00acc1',
+    //     autoSubmit: false,
+    //     //...
+    //     //... And whatever you want to set as default.
+    //     //...
+    //   }
+    // })
     app.component("PersianDatePicker", Vue3PersianDatetimePicker);
 
     app.mount("#app");

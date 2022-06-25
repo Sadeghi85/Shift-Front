@@ -12,6 +12,7 @@ export interface ShiftLocationSearchModel {
   pageSize: number;
   orderKey: string;
   desc: boolean;
+  isDeleted: boolean | null;
 }
 
 export interface ShiftLocationViewModel {

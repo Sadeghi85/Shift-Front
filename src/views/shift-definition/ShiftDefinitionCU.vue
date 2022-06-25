@@ -164,6 +164,7 @@ const fillForm = async () => {
           portalId: 0,
           shiftType: 0,
           title: "",
+          isDeleted: false,
         } as ShiftDefinitionSearchModel)
       ).data[0];
 

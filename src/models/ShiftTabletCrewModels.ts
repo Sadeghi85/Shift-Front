@@ -25,6 +25,7 @@ export interface ShiftTabletCrewSearchModel {
   entranceTime: string;
   exitTime: string;
   isReplaced: boolean | null;
+  isDeleted: boolean | null;
 }
 
 export interface ShiftTabletCrewViewModel {
@@ -40,4 +41,6 @@ export interface ShiftTabletCrewViewModel {
   persianWeekDay: string;
   weekDay: string;
   portalName: string;
+  agentId: number;
+  resourceTypeId: number;
 }

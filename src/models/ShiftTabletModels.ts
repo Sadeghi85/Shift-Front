@@ -17,6 +17,7 @@ export interface ShiftTabletSearchModel {
   pageSize: number;
   orderKey: string;
   desc: boolean;
+  isDeleted: boolean | null;
 }
 
 export interface ShiftTabletViewModel {
@@ -27,4 +28,7 @@ export interface ShiftTabletViewModel {
   productionTypeId: number;
   productionTypeTitle: string;
   shiftWorthPercent: string;
+  portalName: string;
+  shiftStartTime: string;
+  shiftEndTime: string;
 }

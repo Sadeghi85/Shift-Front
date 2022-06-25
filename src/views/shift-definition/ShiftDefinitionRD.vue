@@ -143,6 +143,7 @@ async function loadShiftDefinitions(searchParams?: ShiftDefinitionSearchModel) {
         pageSize: pageSize.value,
         pageNo: pageNumber.value,
         title: "",
+        isDeleted: false,
       } as ShiftDefinitionSearchModel;
     }
 
@@ -175,6 +176,7 @@ const handleSearch = async () => {
     shiftType: shiftType.value?.id ?? 0,
     orderKey: "id",
     desc: true,
+    isDeleted: false,
   } as ShiftDefinitionSearchModel);
 };
 const shiftTitle = ref("");
