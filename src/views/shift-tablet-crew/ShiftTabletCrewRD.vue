@@ -47,12 +47,15 @@ const loading = ref(false);
 const totalRecords = ref(0);
 
 const cuShiftTabletCrewId = ref(0);
-const cuComponentName = ref("");
-const cuComponentComputed = computed(() => {
-  return defineAsyncComponent(
-    () => import(`@/views/shift-tablet-crew/${cuComponentName.value}`)
-  );
-});
+
+const ShiftTabletCrewCreateView = defineAsyncComponent(
+  () => import("@/views/shift-tablet-crew/ShiftTabletCrewCreate.vue")
+);
+const ShiftTabletCrewAgentReplacementView = defineAsyncComponent(
+  () => import("@/views/shift-tablet-crew/ShiftTabletCrewAgentReplacement.vue")
+);
+
+const cuComponent = ref();
 
 const createUpdateFormIsVisible = ref(false);
 const searchFormIsVisible = ref(false);
@@ -87,7 +90,7 @@ const gridOperationMenuItems = ref([
         label: t("menu.item.agentReplacement"),
         icon: "pi pi-user-edit",
         command: () => {
-          cuComponentName.value = "ShiftTabletCrewAgentReplacement";
+          cuComponent.value = ShiftTabletCrewAgentReplacementView;
           closeSearchForm();
           cuShiftTabletCrewId.value = gridOperationMenu.value.dataId;
           openCreateUpdateForm();
@@ -333,7 +336,7 @@ onMounted(async () => {
               icon="pi pi-plus"
               class="p-button-rounded p-button-success ml-2"
               @click.prevent="
-                cuComponentName = 'ShiftTabletCrewCreate';
+                cuComponent = ShiftTabletCrewCreateView;
                 closeSearchForm();
                 toggleCreateUpdateForm();
               "
@@ -355,7 +358,7 @@ onMounted(async () => {
     <Transition>
       <div v-if="createUpdateFormIsVisible">
         <Component
-          :is="cuComponentComputed"
+          :is="cuComponent"
           :shift-tablet-crew-id="cuShiftTabletCrewId"
           :shift-tablet-id="+$route.params.shiftTabletId"
           @reload-grid="handleSearch()"
