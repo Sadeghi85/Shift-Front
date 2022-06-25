@@ -298,6 +298,44 @@ const loadEssentials = async () => {
   }
 };
 
+const getExcel = () => {
+  shiftTabletCrewService.value
+    .getShiftTabletCrewExcel({
+      pageNo: 0,
+      pageSize: 2147483647, // Int32.MaxValue
+      orderKey: "",
+      desc: true,
+      shifTabletId: +route.params.shiftTabletId,
+      agentId: 0,
+      agentName: "",
+      entranceTime: "",
+      exitTime: "",
+      fromDate: "",
+      toDate: "",
+      shiftTitle: "",
+      isReplaced: null,
+      id: 0,
+      isDeleted: false,
+      title: "",
+      resourceTypeId: 0,
+    } as ShiftTabletCrewSearchModel)
+    .then((response) => {
+      //console.log(response);
+
+      const blob = new Blob([response.data], {
+        type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+      });
+      const link = document.createElement("a");
+      link.href = URL.createObjectURL(blob);
+      link.setAttribute("download", "ShiftTabletCrew.xlsx");
+      link.click();
+      URL.revokeObjectURL(link.href);
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+};
+
 watch(
   () => route.params.shiftTabletId,
   async (shiftTabletId, prevShiftTabletId) => {
@@ -324,6 +362,11 @@ onMounted(async () => {
       <div class="col-12 md:col-12">
         <Toolbar>
           <template #end>
+            <Button
+              icon="pi pi-file-excel"
+              class="p-button-rounded ml-2"
+              @click.prevent="getExcel()"
+            />
             <Button
               icon="pi pi-search"
               class="p-button-rounded ml-2"
