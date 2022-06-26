@@ -6,6 +6,7 @@ import {
   watch,
   computed,
   defineAsyncComponent,
+  shallowRef,
 } from "vue";
 import { useI18n } from "vue-i18n";
 
@@ -55,7 +56,7 @@ const ShiftTabletCrewAgentReplacementView = defineAsyncComponent(
   () => import("@/views/shift-tablet-crew/ShiftTabletCrewAgentReplacement.vue")
 );
 
-const cuComponent = ref();
+const cuComponent = shallowRef();
 
 const createUpdateFormIsVisible = ref(false);
 const searchFormIsVisible = ref(false);
@@ -398,6 +399,41 @@ onMounted(async () => {
       </div>
     </div>
 
+    <div class="content-section">
+      <div class="grid">
+        <div class="col-12 md:col-12 p-fluid">
+          <div class="card info">
+            <div class="grid">
+              <div class="col">
+                {{ t("portal.name") }}:
+                <strong>{{ shiftTablet?.portalName }}</strong>
+              </div>
+              <div class="col">
+                {{ t("shift.title") }}:
+                <strong>{{ shiftTablet?.shiftTitle }}</strong>
+              </div>
+              <div class="col">
+                {{ t("productionType.title") }}:
+                <strong>{{ shiftTablet?.productionTypeTitle }}</strong>
+              </div>
+              <div class="col">
+                {{ t("shiftDate.title") }}:
+                <strong>{{ shiftTablet?.shiftDate }}</strong>
+              </div>
+              <div class="col">
+                {{ t("shift.startTime") }}:
+                <strong>{{ shiftTablet?.shiftStartTime }}</strong>
+              </div>
+              <div class="col">
+                {{ t("shift.endTime") }}:
+                <strong>{{ shiftTablet?.shiftEndTime }}</strong>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <Transition>
       <div v-if="createUpdateFormIsVisible">
         <Component
@@ -469,41 +505,6 @@ onMounted(async () => {
         </div>
       </div>
     </Transition>
-
-    <div class="content-section">
-      <div class="grid">
-        <div class="col-12 md:col-12 p-fluid">
-          <div class="card info">
-            <div class="grid">
-              <div class="col">
-                {{ t("portal.name") }}:
-                <strong>{{ shiftTablet?.portalName }}</strong>
-              </div>
-              <div class="col">
-                {{ t("shift.title") }}:
-                <strong>{{ shiftTablet?.shiftTitle }}</strong>
-              </div>
-              <div class="col">
-                {{ t("productionType.title") }}:
-                <strong>{{ shiftTablet?.productionTypeTitle }}</strong>
-              </div>
-              <div class="col">
-                {{ t("shiftDate.title") }}:
-                <strong>{{ shiftTablet?.shiftDate }}</strong>
-              </div>
-              <div class="col">
-                {{ t("shift.startTime") }}:
-                <strong>{{ shiftTablet?.shiftStartTime }}</strong>
-              </div>
-              <div class="col">
-                {{ t("shift.endTime") }}:
-                <strong>{{ shiftTablet?.shiftEndTime }}</strong>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
 
     <div class="content-section">
       <div class="grid">
