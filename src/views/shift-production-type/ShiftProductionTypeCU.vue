@@ -153,8 +153,8 @@ const btnSubmitClass = computed(() => {
 
 watch(
   () => props.shiftProductionTypeId,
-  (shiftProductionTypeId, prevShiftProductionTypeId) => {
-    fillForm();
+  async (shiftProductionTypeId, prevShiftProductionTypeId) => {
+    await fillForm();
   },
   { immediate: true }
 );

@@ -10,9 +10,17 @@ export default class PortalService {
   }
 
   public getPortals(body: PortalSearchModel) {
-    return this.api.post<ApiResponseModel<PortalViewModel>>(
-      "/Portal/GetAll",
-      body
-    );
+    return this.api
+      .post<ApiResponseModel<PortalViewModel>>("/Portal/GetAll", body)
+      .then((response) => {
+        if (response.data.success == false) {
+          throw {
+            message: response.data,
+          };
+          //throw new Error("test");
+        }
+
+        return response.data;
+      });
   }
 }

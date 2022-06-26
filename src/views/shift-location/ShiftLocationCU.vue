@@ -13,6 +13,7 @@ import {
   ShiftLocationInputModel,
   ShiftLocationSearchModel,
 } from "@/models/ShiftLocationModels";
+import useApiErrorStore from "@/stores/api-error";
 
 // interface Props {
 //   shiftLocationId?: number;
@@ -28,6 +29,8 @@ const props = defineProps({
   },
 });
 const emit = defineEmits(["reloadGrid", "closeForm"]);
+
+const apiErrorStore = useApiErrorStore();
 
 // reactive state
 const submitted = ref(false);
@@ -133,67 +136,44 @@ const resetForm = () => {
   submitted.value = false;
 };
 
-const fillForm = () => {
-  if (props.shiftLocationId == 0) {
-    resetForm();
-  } else {
-    const searchParams = {
-      pageSize: 1,
-      pageNo: 0,
-      id: props.shiftLocationId,
-      orderKey: "id",
-      isDeleted: false,
-    } as ShiftLocationSearchModel;
-
-    shiftLocationService.value
-      .getShiftLocations(searchParams)
-      .then((response) => {
-        //console.log(response);
-        if (!response.data.success) {
-          throw new Error(
-            "Failed api call: [" + response.data.failureMessage + "]"
-          );
-        }
-
-        state.locationName = response.data.data[0].title;
-        state.portal = portals.value!.find(
-          (p) => p.id == response.data.data[0].portalId
-        );
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  }
-};
-
-function loadPortals() {
-  if (portalStore.portals.length == 0) {
-    portalService.value
-      .getPortals({
-        pageNo: 0,
+const fillForm = async () => {
+  try {
+    // portals
+    portals.value = (
+      await portalService.value.getPortals({
         pageSize: 2147483647, // Int32.MaxValue
+        pageNo: 0,
+        orderKey: "id",
+        desc: true,
         portalId: 0,
         title: "",
-        orderKey: "",
       } as PortalSearchModel)
-      .then((response) => {
-        //console.log(response);
-        if (!response.data.success) {
-          throw new Error(
-            "Failed api call: [" + response.data.failureMessage + "]"
-          );
-        }
+    ).data;
 
-        portalStore.setPortals(response.data.data);
-        portals.value = portalStore.portals;
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  } else {
-    portals.value = portalStore.portals;
+    if (props.shiftLocationId == 0) {
+      resetForm();
+    } else {
+      const shiftLocation = (
+        await shiftLocationService.value.getShiftLocations({
+          pageSize: 1,
+          pageNo: 0,
+          id: props.shiftLocationId,
+          orderKey: "id",
+          isDeleted: false,
+        } as ShiftLocationSearchModel)
+      ).data[0];
+
+      state.locationName = shiftLocation.title;
+      state.portal = portals.value!.find((p) => p.id == shiftLocation.portalId);
+    }
+  } catch (error: any) {
+    if (typeof error.message === "object") {
+      apiErrorStore.setApiErrorMessage(error.message.failureMessage);
+    } else {
+      console.log(error.message);
+    }
   }
-}
+};
 
 const btnSubmitLabel = computed(() => {
   if (props.shiftLocationId == 0) {
@@ -212,8 +192,8 @@ const btnSubmitClass = computed(() => {
 
 watch(
   () => props.shiftLocationId,
-  (shiftLocationId, prevShiftLocationId) => {
-    fillForm();
+  async (shiftLocationId, prevShiftLocationId) => {
+    await fillForm();
   },
   { immediate: true }
 );
@@ -221,7 +201,7 @@ watch(
 // lifecycle hooks
 onMounted(() => {
   // portals
-  loadPortals();
+  //loadPortals();
 });
 </script>
 

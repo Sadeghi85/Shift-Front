@@ -14,10 +14,21 @@ export default class ShiftLocationService {
   }
 
   public getShiftLocations(body: ShiftLocationSearchModel) {
-    return this.api.post<ApiResponseModel<ShiftLocationViewModel>>(
-      "/ShiftLocation/GetAll",
-      body
-    );
+    return this.api
+      .post<ApiResponseModel<ShiftLocationViewModel>>(
+        "/ShiftLocation/GetAll",
+        body
+      )
+      .then((response) => {
+        if (response.data.success == false) {
+          throw {
+            message: response.data,
+          };
+          //throw new Error("test");
+        }
+
+        return response.data;
+      });
   }
 
   public createShiftLocation(body: ShiftLocationInputModel) {

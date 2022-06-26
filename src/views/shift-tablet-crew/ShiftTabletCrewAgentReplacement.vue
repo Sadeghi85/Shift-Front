@@ -196,8 +196,8 @@ const btnSubmitClass = computed(() => {
 
 watch(
   () => props.shiftTabletCrewId,
-  (shiftLocationId, prevShiftLocationId) => {
-    fillForm();
+  async (shiftLocationId, prevShiftLocationId) => {
+    await fillForm();
   },
   { immediate: true }
 );

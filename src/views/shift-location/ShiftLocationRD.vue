@@ -3,7 +3,6 @@ import { ref, onMounted } from "vue";
 import { useI18n } from "vue-i18n";
 import PortalService from "@/services/PortalService";
 import ShiftLocationService from "@/services/ShiftLocationService";
-import { usePortalStore } from "@/stores/portal";
 import { PortalViewModel, PortalSearchModel } from "@/models/PortalModels";
 import { useToast } from "primevue/usetoast";
 import { useConfirm } from "primevue/useconfirm";
@@ -12,13 +11,15 @@ import {
   ShiftLocationInputModel,
   ShiftLocationSearchModel,
 } from "@/models/ShiftLocationModels";
-
+import useApiErrorStore from "@/stores/api-error";
 import ShiftLocationCU from "@/views/shift-location/ShiftLocationCU.vue";
 
 // reactive state
 const { t } = useI18n();
 const toast = useToast();
 const confirm = useConfirm();
+
+const apiErrorStore = useApiErrorStore();
 
 const pageSize = ref(10);
 const pageNumber = ref(0);
@@ -127,44 +128,6 @@ const showSuccess = (detail: string) => {
   });
 };
 
-function loadShiftLocations(searchParams?: ShiftLocationSearchModel) {
-  loading.value = true;
-
-  if (!searchParams) {
-    searchParams = {
-      pageSize: pageSize.value,
-      pageNo: pageNumber.value,
-      portalId: 0,
-      title: "",
-      isDeleted: false,
-    } as ShiftLocationSearchModel;
-  }
-
-  shiftLocationService.value
-    .getShiftLocations(searchParams)
-    .then((response) => {
-      //console.log(response);
-      if (!response.data.success) {
-        throw new Error(
-          "Failed api call: [" + response.data.failureMessage + "]"
-        );
-      }
-
-      shiftLocations.value = response.data.data;
-      totalRecords.value = response.data.totalCount;
-      loading.value = false;
-    })
-    .catch((error) => {
-      console.log(error);
-    });
-}
-
-const onPage = (event: any) => {
-  pageNumber.value = event.page;
-
-  handleSearch();
-};
-
 const locationName = ref("");
 const portal = ref<PortalViewModel>();
 
@@ -172,41 +135,45 @@ const portal = ref<PortalViewModel>();
 
 const portalService = ref(new PortalService());
 const shiftLocationService = ref(new ShiftLocationService());
-const portalStore = usePortalStore();
 
 // functions that mutate state and trigger updates
+const onPage = async (event: any) => {
+  pageNumber.value = event.page;
 
-function loadPortals() {
-  if (portalStore.portals.length == 0) {
-    portalService.value
-      .getPortals({
-        pageNo: 0,
-        pageSize: 2147483647, // Int32.MaxValue
+  await handleSearch();
+};
+
+async function loadShiftLocations(searchParams?: ShiftLocationSearchModel) {
+  try {
+    loading.value = true;
+
+    if (!searchParams) {
+      searchParams = {
+        pageSize: pageSize.value,
+        pageNo: pageNumber.value,
         portalId: 0,
         title: "",
-        orderKey: "",
-      } as PortalSearchModel)
-      .then((response) => {
-        //console.log(response);
-        if (!response.data.success) {
-          throw new Error(
-            "Failed api call: [" + response.data.failureMessage + "]"
-          );
-        }
+        isDeleted: false,
+      } as ShiftLocationSearchModel;
+    }
 
-        portalStore.setPortals(response.data.data);
-        portals.value = portalStore.portals;
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  } else {
-    portals.value = portalStore.portals;
+    const shiftLocationResponse =
+      await shiftLocationService.value.getShiftLocations(searchParams);
+
+    shiftLocations.value = shiftLocationResponse.data;
+    totalRecords.value = shiftLocationResponse.totalCount;
+    loading.value = false;
+  } catch (error: any) {
+    if (typeof error.message === "object") {
+      apiErrorStore.setApiErrorMessage(error.message.failureMessage);
+    } else {
+      console.log(error.message);
+    }
   }
 }
 
-const handleSearch = () => {
-  loadShiftLocations({
+const handleSearch = async () => {
+  await loadShiftLocations({
     pageSize: pageSize.value,
     pageNo: pageNumber.value,
     portalId: portal.value?.id ?? 0,
@@ -217,13 +184,34 @@ const handleSearch = () => {
   } as ShiftLocationSearchModel);
 };
 
-// lifecycle hooks
-onMounted(() => {
-  // portals
-  loadPortals();
+const loadEssentials = async () => {
+  try {
+    // portals
+    portals.value = (
+      await portalService.value.getPortals({
+        pageSize: 2147483647, // Int32.MaxValue
+        pageNo: 0,
+        orderKey: "id",
+        desc: true,
+        portalId: 0,
+        title: "",
+      } as PortalSearchModel)
+    ).data;
 
-  // shiftLocations
-  handleSearch();
+    // shiftLocations
+    await handleSearch();
+  } catch (error: any) {
+    if (typeof error.message === "object") {
+      apiErrorStore.setApiErrorMessage(error.message.failureMessage);
+    } else {
+      console.log(error.message);
+    }
+  }
+};
+
+// lifecycle hooks
+onMounted(async () => {
+  await loadEssentials();
 });
 </script>
 

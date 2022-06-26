@@ -1,9 +1,8 @@
 <script lang="ts" setup>
-import { reactive, ref, onMounted } from "vue";
+import { ref, onMounted } from "vue";
 import { useI18n } from "vue-i18n";
 import PortalService from "@/services/PortalService";
 import ShiftDefinitionService from "@/services/ShiftDefinitionService";
-import { usePortalStore } from "@/stores/portal";
 import useApiErrorStore from "@/stores/api-error";
 import { PortalSearchModel, PortalViewModel } from "@/models/PortalModels";
 import { useToast } from "primevue/usetoast";
@@ -185,42 +184,30 @@ const shiftType = ref<ShiftTypeViewModel>();
 
 const portalService = ref(new PortalService());
 const shiftDefinitionService = ref(new ShiftDefinitionService());
-const portalStore = usePortalStore();
-
-function loadPortals() {
-  if (portalStore.portals.length == 0) {
-    portalService.value
-      .getPortals({
-        pageNo: 0,
-        pageSize: 2147483647, // Int32.MaxValue
-        portalId: 0,
-        title: "",
-        orderKey: "",
-      } as PortalSearchModel)
-      .then((response) => {
-        //console.log(response);
-        if (!response.data.success) {
-          throw new Error(
-            "Failed api call: [" + response.data.failureMessage + "]"
-          );
-        }
-
-        portalStore.setPortals(response.data.data);
-        portals.value = portalStore.portals;
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  } else {
-    portals.value = portalStore.portals;
-  }
-}
 
 const loadEssentials = async () => {
-  // portals
-  loadPortals();
-  // shiftDefinitions
-  await handleSearch();
+  try {
+    // portals
+    portals.value = (
+      await portalService.value.getPortals({
+        pageSize: 2147483647, // Int32.MaxValue
+        pageNo: 0,
+        orderKey: "id",
+        desc: true,
+        portalId: 0,
+        title: "",
+      } as PortalSearchModel)
+    ).data;
+
+    // shiftDefinitions
+    await handleSearch();
+  } catch (error: any) {
+    if (typeof error.message === "object") {
+      apiErrorStore.setApiErrorMessage(error.message.failureMessage);
+    } else {
+      console.log(error.message);
+    }
+  }
 };
 
 // lifecycle hooks

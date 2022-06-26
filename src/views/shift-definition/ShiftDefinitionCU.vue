@@ -151,6 +151,18 @@ const resetForm = () => {
 
 const fillForm = async () => {
   try {
+    // portals
+    portals.value = (
+      await portalService.value.getPortals({
+        pageSize: 2147483647, // Int32.MaxValue
+        pageNo: 0,
+        orderKey: "id",
+        desc: true,
+        portalId: 0,
+        title: "",
+      } as PortalSearchModel)
+    ).data;
+
     if (props.shiftDefinitionId == 0) {
       resetForm();
     } else {
@@ -187,35 +199,6 @@ const fillForm = async () => {
   }
 };
 
-function loadPortals() {
-  if (portalStore.portals.length == 0) {
-    portalService.value
-      .getPortals({
-        pageNo: 0,
-        pageSize: 2147483647, // Int32.MaxValue
-        portalId: 0,
-        title: "",
-        orderKey: "",
-      } as PortalSearchModel)
-      .then((response) => {
-        //console.log(response);
-        if (!response.data.success) {
-          throw new Error(
-            "Failed api call: [" + response.data.failureMessage + "]"
-          );
-        }
-
-        portalStore.setPortals(response.data.data);
-        portals.value = portalStore.portals;
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  } else {
-    portals.value = portalStore.portals;
-  }
-}
-
 const btnSubmitLabel = computed(() => {
   if (props.shiftDefinitionId == 0) {
     return t("button.create");
@@ -242,7 +225,7 @@ watch(
 // lifecycle hooks
 onMounted(() => {
   // portals
-  loadPortals();
+  //loadPortals();
 });
 </script>
 
