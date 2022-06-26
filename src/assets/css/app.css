@@ -135,3 +135,26 @@ nav a.router-link-exact-active {
 .p-datatable th[class*="align-"] .p-column-header-content {
   display: inline-flex;
 }
+
+/*
+Persian Datepicker
+*/
+.vpd-main {
+  width: 100%;
+}
+.vpd-icon-btn {
+  position: unset !important;
+  pointer-events: unset !important;
+  top: unset !important;
+  margin-top: unset !important;
+  transition-property: unset !important;
+  transition-timing-function: unset !important;
+  line-height: unset !important;
+}
+.vpd-input-group input {
+  line-height: normal !important;
+  padding: 0.75rem 0.75rem !important;
+}
+/*
+Persian Datepicker
+*/

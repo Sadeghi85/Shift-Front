@@ -345,10 +345,9 @@ onMounted(async () => {
                       <!-- <InputText id="shiftDate" v-model="shiftDate" /> -->
                       <PersianDatePicker
                         v-model="shiftDate"
-                        format="YYYY-MM-DD"
-                        display-format="jYYYY-jMM-jDD"
+                        :placeholder="t('shiftDate.title')"
                       />
-                      <label for="shiftDate">{{ t("shiftDate.title") }}</label>
+                      <!-- <label for="shiftDate">{{ t("shiftDate.title") }}</label> -->
                     </div>
                   </div>
 
