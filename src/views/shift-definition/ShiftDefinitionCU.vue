@@ -305,7 +305,7 @@ onMounted(() => {
 
               <div class="field col-12 mb-4 md:col-4">
                 <div class="p-float-label">
-                  <InputText
+                  <!-- <InputText
                     id="startTime"
                     v-model="v$.startTime.$model"
                     :class="{
@@ -319,7 +319,21 @@ onMounted(() => {
                     }"
                     >{{ t("shift.startTime")
                     }}<span :style="{ color: 'var(--red-500)' }">*</span></label
-                  >
+                  > -->
+
+                  <PersianDatePicker
+                    v-model="v$.startTime.$model"
+                    :placeholder="t('shift.startTime') + '*'"
+                    type="time"
+                    format="HH:mm:ss"
+                    display-format="HH:mm:ss"
+                    :input-class="{
+                      'p-inputtext p-component p-invalid':
+                        v$.startTime.$invalid && submitted,
+                      'p-inputtext p-component ':
+                        !v$.startTime.$invalid || !submitted,
+                    }"
+                  />
                 </div>
               </div>
               <div class="field col-12 mb-4 md:col-4">
