@@ -413,10 +413,6 @@ onMounted(async () => {
                 <strong>{{ shiftTablet?.shiftTitle }}</strong>
               </div>
               <div class="col">
-                {{ t("productionType.title") }}:
-                <strong>{{ shiftTablet?.productionTypeTitle }}</strong>
-              </div>
-              <div class="col">
                 {{ t("shiftDate.title") }}:
                 <strong>{{ shiftTablet?.shiftDate }}</strong>
               </div>

@@ -24,17 +24,6 @@ const routes: Array<RouteRecordRaw> = [
       ),
   },
   {
-    path: "/shift-production-type",
-    name: "shift-production-type",
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
-    component: () =>
-      import(
-        /* webpackChunkName: "shift-production-type" */ "../views/shift-production-type/ShiftProductionTypeRD.vue"
-      ),
-  },
-  {
     path: "/shift-definition",
     name: "shift-definition",
     // route level code-splitting

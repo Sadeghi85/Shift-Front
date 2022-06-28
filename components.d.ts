@@ -19,8 +19,6 @@ declare module '@vue/runtime-core' {
     ShiftDefinitionRD: typeof import('./src/views/shift-definition/ShiftDefinitionRD.vue')['default']
     ShiftLocationCU: typeof import('./src/views/shift-location/ShiftLocationCU.vue')['default']
     ShiftLocationRD: typeof import('./src/views/shift-location/ShiftLocationRD.vue')['default']
-    ShiftProductionTypeCU: typeof import('./src/views/shift-production-type/ShiftProductionTypeCU.vue')['default']
-    ShiftProductionTypeRD: typeof import('./src/views/shift-production-type/ShiftProductionTypeRD.vue')['default']
     ShiftTabletCrewAgentReplacement: typeof import('./src/views/shift-tablet-crew/ShiftTabletCrewAgentReplacement.vue')['default']
     ShiftTabletCrewCreate: typeof import('./src/views/shift-tablet-crew/ShiftTabletCrewCreate.vue')['default']
     ShiftTabletCrewRD: typeof import('./src/views/shift-tablet-crew/ShiftTabletCrewRD.vue')['default']

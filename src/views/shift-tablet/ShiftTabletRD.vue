@@ -10,16 +10,10 @@ import {
   ShiftTabletSearchModel,
 } from "@/models/ShiftTabletModels";
 import {
-  ShiftProductionTypeViewModel,
-  ShiftProductionTypeSearchModel,
-  ShiftProductionTypeInputModel,
-} from "@/models/ShiftProductionTypeModels";
-import {
   ShiftDefinitionViewModel,
   ShiftDefinitionSearchModel,
   ShiftDefinitionInputModel,
 } from "@/models/ShiftDefinitionModels";
-import ShiftProductionTypeService from "@/services/ShiftProductionTypeService";
 import ShiftDefinitionService from "@/services/ShiftDefinitionService";
 
 import ShiftTabletCU from "@/views/shift-tablet/ShiftTabletCU.vue";
@@ -150,12 +144,10 @@ const showSuccess = (detail: string) => {
 };
 
 const shiftDefinition = ref<ShiftDefinitionViewModel>();
-const shiftProductionType = ref<ShiftProductionTypeViewModel>();
 const shiftDate = ref("");
 const shiftWorthPercent = ref("");
 
 const shiftTablets = ref<ShiftTabletViewModel[]>();
-const shiftProductionTypes = ref<ShiftProductionTypeViewModel[]>();
 const shiftDefinitions = ref<ShiftDefinitionViewModel[]>();
 
 async function loadShiftTablets(searchParams?: ShiftTabletSearchModel) {
@@ -170,9 +162,9 @@ async function loadShiftTablets(searchParams?: ShiftTabletSearchModel) {
         desc: true,
         shiftId: 0,
         shiftDate: "",
-        productionTypeId: 0,
         id: 0,
-        shiftWorthPercent: "",
+        fromDate: "",
+        toDate: "",
         isDeleted: false,
       } as ShiftTabletSearchModel;
     }
@@ -199,7 +191,6 @@ const onPage = async (event: any) => {
 };
 
 const shiftTabletService = ref(new ShiftTabletService());
-const shiftProductionTypeService = ref(new ShiftProductionTypeService());
 const shiftDefinitionService = ref(new ShiftDefinitionService());
 
 const handleSearch = async () => {
@@ -208,7 +199,6 @@ const handleSearch = async () => {
     pageNo: pageNumber.value,
 
     shiftId: shiftDefinition.value?.id ?? 0,
-    productionTypeId: shiftProductionType.value?.id ?? 0,
 
     orderKey: "id",
     desc: true,
@@ -218,17 +208,6 @@ const handleSearch = async () => {
 
 const loadEssentials = async () => {
   try {
-    // shiftProductionTypes
-    shiftProductionTypes.value = (
-      await shiftProductionTypeService.value.getShiftProductionTypes({
-        pageSize: 2147483647, // Int32.MaxValue
-        pageNo: 0,
-        title: "",
-        orderKey: "id",
-        desc: true,
-      } as ShiftProductionTypeSearchModel)
-    ).data;
-
     // shiftDefinitions
     shiftDefinitions.value = (
       await shiftDefinitionService.value.getShiftDefinitions({
@@ -321,21 +300,6 @@ onMounted(async () => {
 
                       <label for="shiftDefinition">{{
                         t("shiftDefinition.title")
-                      }}</label>
-                    </div>
-                  </div>
-
-                  <div class="field col-12 mb-4 md:col-4">
-                    <div class="p-float-label">
-                      <Dropdown
-                        id="shiftProductionType"
-                        v-model="shiftProductionType"
-                        :options="shiftProductionTypes"
-                        option-label="title"
-                      />
-
-                      <label for="shiftProductionType">{{
-                        t("productionType.title")
                       }}</label>
                     </div>
                   </div>

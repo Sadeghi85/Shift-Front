@@ -12,16 +12,10 @@ import {
   ShiftTabletSearchModel,
 } from "@/models/ShiftTabletModels";
 import {
-  ShiftProductionTypeViewModel,
-  ShiftProductionTypeSearchModel,
-  ShiftProductionTypeInputModel,
-} from "@/models/ShiftProductionTypeModels";
-import {
   ShiftDefinitionViewModel,
   ShiftDefinitionSearchModel,
   ShiftDefinitionInputModel,
 } from "@/models/ShiftDefinitionModels";
-import ShiftProductionTypeService from "@/services/ShiftProductionTypeService";
 import ShiftDefinitionService from "@/services/ShiftDefinitionService";
 
 // interface Props {
@@ -46,19 +40,16 @@ const apiErrorStore = useApiErrorStore();
 const submitted = ref(false);
 
 const shiftTablets = ref<ShiftTabletViewModel[]>();
-const shiftProductionTypes = ref<ShiftProductionTypeViewModel[]>();
 const shiftDefinitions = ref<ShiftDefinitionViewModel[]>();
 
 const state = reactive({
   shiftDefinition: ref<ShiftDefinitionViewModel>(),
-  shiftProductionType: ref<ShiftProductionTypeViewModel>(),
   shiftDate: ref<string>(),
   shiftWorthPercent: ref<string>(),
 });
 
 const rules = {
   shiftDefinition: { required },
-  shiftProductionType: { required },
   shiftDate: { required },
   shiftWorthPercent: { required },
 };
@@ -68,7 +59,6 @@ const { t } = useI18n();
 const v$ = useVuelidate(rules, state);
 
 const shiftTabletService = ref(new ShiftTabletService());
-const shiftProductionTypeService = ref(new ShiftProductionTypeService());
 const shiftDefinitionService = ref(new ShiftDefinitionService());
 
 const toast = useToast();
@@ -94,7 +84,6 @@ const handleSubmit = (isFormValid: boolean) => {
         .createShiftTablet({
           id: 0,
           shiftId: v$.value.shiftDefinition.$model!.id,
-          productionTypeId: v$.value.shiftProductionType.$model!.id,
           shiftDate: v$.value.shiftDate.$model,
           shiftWorthPercent: v$.value.shiftWorthPercent.$model,
           shiftTime: "00:00:00",
@@ -118,7 +107,6 @@ const handleSubmit = (isFormValid: boolean) => {
         .updateShiftTablet({
           id: props.shiftTabletId,
           shiftId: v$.value.shiftDefinition.$model!.id,
-          productionTypeId: v$.value.shiftProductionType.$model!.id,
           shiftDate: v$.value.shiftDate.$model,
           shiftWorthPercent: v$.value.shiftWorthPercent.$model,
           shiftTime: "00:00:00",
@@ -144,7 +132,6 @@ const handleSubmit = (isFormValid: boolean) => {
 };
 
 const resetForm = () => {
-  state.shiftProductionType = undefined;
   state.shiftDate = "";
   state.shiftWorthPercent = "";
   state.shiftDefinition = undefined;
@@ -154,17 +141,6 @@ const resetForm = () => {
 
 const fillForm = async () => {
   try {
-    // load shift production types
-    shiftProductionTypes.value = (
-      await shiftProductionTypeService.value.getShiftProductionTypes({
-        pageNo: 0,
-        pageSize: 2147483647, // Int32.MaxValue
-        orderKey: "",
-        id: 0,
-        title: "",
-      } as ShiftProductionTypeSearchModel)
-    ).data;
-
     // load shift definitions
     shiftDefinitions.value = (
       await shiftDefinitionService.value.getShiftDefinitions({
@@ -190,17 +166,13 @@ const fillForm = async () => {
           id: props.shiftTabletId,
           orderKey: "id",
           desc: true,
-          productionTypeId: 0,
           shiftDate: "",
           shiftId: 0,
-          shiftWorthPercent: "",
           isDeleted: false,
+          fromDate: "",
+          toDate: "",
         } as ShiftTabletSearchModel)
       ).data[0];
-
-      state.shiftProductionType = shiftProductionTypes.value!.find(
-        (p) => p.id == shiftTablet.productionTypeId
-      );
 
       state.shiftDefinition = shiftDefinitions.value!.find(
         (p) => p.id == shiftTablet.shiftId
@@ -279,29 +251,6 @@ onMounted(() => {
                       'p-error': v$.shiftDefinition.$invalid && submitted,
                     }"
                     >{{ t("shiftDefinition.title")
-                    }}<span :style="{ color: 'var(--red-500)' }">*</span></label
-                  >
-                </div>
-              </div>
-
-              <div class="field col-12 mb-4 md:col-4">
-                <div class="p-float-label">
-                  <Dropdown
-                    id="shiftProductionType"
-                    v-model="v$.shiftProductionType.$model"
-                    :options="shiftProductionTypes"
-                    option-label="title"
-                    :class="{
-                      'p-invalid': v$.shiftProductionType.$invalid && submitted,
-                    }"
-                  />
-
-                  <label
-                    for="shiftProductionType"
-                    :class="{
-                      'p-error': v$.shiftProductionType.$invalid && submitted,
-                    }"
-                    >{{ t("productionType.title")
                     }}<span :style="{ color: 'var(--red-500)' }">*</span></label
                   >
                 </div>

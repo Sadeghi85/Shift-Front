@@ -1,7 +1,6 @@
 export interface ShiftTabletInputModel {
   id: number;
   shiftId: number;
-  productionTypeId: number;
   shiftTime: string;
   shiftDate: string;
   shiftWorthPercent: string;
@@ -10,14 +9,13 @@ export interface ShiftTabletInputModel {
 export interface ShiftTabletSearchModel {
   id: number;
   shiftId: number;
-  productionTypeId: number;
-  shiftDate: string;
-  shiftWorthPercent: string;
   pageNo: number;
   pageSize: number;
   orderKey: string;
   desc: boolean;
   isDeleted: boolean | null;
+  fromDate: string;
+  toDate: string;
 }
 
 export interface ShiftTabletViewModel {
@@ -25,9 +23,8 @@ export interface ShiftTabletViewModel {
   shiftId: number;
   shiftTitle: string;
   shiftDate: string;
-  productionTypeId: number;
-  productionTypeTitle: string;
   shiftWorthPercent: string;
+  portalId: number;
   portalName: string;
   shiftStartTime: string;
   shiftEndTime: string;

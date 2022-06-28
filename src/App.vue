@@ -39,13 +39,6 @@ const showError = (detail: string) => {
     |
     <router-link
       :to="{
-        name: 'shift-production-type',
-      }"
-      >{{ t("route.shift-production-type") }}</router-link
-    >
-    |
-    <router-link
-      :to="{
         name: 'shift-definition',
       }"
       >{{ t("route.shift-definition") }}</router-link
