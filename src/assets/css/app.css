@@ -150,11 +150,16 @@ Persian Datepicker
   transition-property: unset !important;
   transition-timing-function: unset !important;
   line-height: unset !important;
+
+  border-top-right-radius: 6px;
+  border-bottom-right-radius: 6px;
 }
+
 .vpd-input-group input {
   line-height: normal !important;
   padding: 0.75rem 0.75rem !important;
 }
+
 /*
 Persian Datepicker
 */
