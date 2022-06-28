@@ -122,7 +122,14 @@ const webpack = require("webpack");
 //const { PrimeVueResolver } = require("unplugin-vue-components/resolvers");
 module.exports = defineConfig({
   configureWebpack: {
+    // disable sourcemap files in production
+    devtool: false,
+    // experiments: {
+    //   topLevelAwait: true,
+    // },
     plugins: [
+      // trim unnecessary locales from momentjs
+      new webpack.ContextReplacementPlugin(/moment[\/\\]locale$/, /fa/),
       new webpack.IgnorePlugin({
         resourceRegExp: new RegExp("/^./locale$/", "i"),
         contextRegExp: new RegExp("/moment$/", "i"),
@@ -184,7 +191,7 @@ module.exports = defineConfig({
         onProxyReq: function (proxyReq) {
           proxyReq.setHeader(
             "Cookie",
-            "rtcookie=rui=1krFREj/0UVuMnfxv3FLR5+EuKVYbVwWTWo1TPx4PZixdlaVvdSC4cceLfenXeieq6nGa1F09US7QMgXIbgEJqDiXccYvpp1D2raYRnuudweL/a3Gr5kr8rREf1j46pd"
+            "rtcookie=rui=1krFREj/0UVuMnfxv3FLR5+EuKVYbVwWTWo1TPx4PZixdlaVvdSC4cceLfenXeieq6nGa1F09US7QMgXIbgEJktl9HimtqijzU7RqmeB4DuVNh/4DWomZcQbo5KrV+cE"
           );
         },
       },
@@ -192,6 +199,8 @@ module.exports = defineConfig({
   },
 
   transpileDependencies: true,
+
+  //filenameHashing: false,
 
   publicPath:
     process.env.NODE_ENV === "production" ? process.env.VUE_APP_BASE_URL : "/",

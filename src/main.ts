@@ -7,12 +7,14 @@ import i18n from "./i18n";
 import { createPinia } from "pinia";
 
 import useTokenStore from "./stores/token";
-import { AppSettings } from "@/config";
+import { AppSettings } from "./config";
 
 import PrimeVue from "primevue/config";
 
 import ToastService from "primevue/toastservice";
 import ConfirmationService from "primevue/confirmationservice";
+
+import { TokenViewModel } from "./models/TokenModels";
 
 //import "primevue/resources/themes/bootstrap4-light-blue/theme.css";
 //import "primevue/resources/themes/lara-light-blue/theme.css";
@@ -24,7 +26,7 @@ import "primeflex/primeflex.css";
 
 import "@/assets/css/app.css";
 
-import Vue3PersianDatetimePicker from "vue3-persian-datetime-picker";
+//import Vue3PersianDatetimePicker from "vue3-persian-datetime-picker";
 
 const pinia = createPinia();
 
@@ -39,8 +41,20 @@ fetch(AppSettings.SSO_URL, {
   body: JSON.stringify({ refresh_token: null }),
 })
   .then((response) => response.json())
-  .then((data) => {
+  .then(async (data: TokenViewModel) => {
+    if (!data.access_token) {
+      throw new Error("token is null");
+    }
+
     tokenStore.setToken(data);
+
+    let Vue3PersianDatetimePicker: any = null;
+    try {
+      Vue3PersianDatetimePicker = await (async () =>
+        import("vue3-persian-datetime-picker"))();
+    } catch (e) {
+      throw new Error("couldn't download vue3-persian-datetime-picker");
+    }
 
     const app = createApp(App);
 

@@ -59,9 +59,11 @@ html {
   font-size: 12px; /* the rest of elements are sized relative to this */
 }
 
-body {
+* {
   font-family: IRANSans;
+}
 
+body {
   /* line-height: 29px; */
   /* font-weight: 500; */
   color: #999;
@@ -73,8 +75,8 @@ body {
   direction: rtl;
 }
 
-#app {
-}
+/* #app {
+} */
 
 nav {
   padding: 1rem;
