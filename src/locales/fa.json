@@ -1,6 +1,8 @@
 {
   "_": "elements",
   "dropdown.placeholder.portal": "شبکه را انتخاب کنید",
+  "input.fromDate": "از تاریخ",
+  "input.toDate": "تا تاریخ",
 
   "_": "buttons",
   "button.excel": "اکسل",

@@ -325,14 +325,17 @@ onMounted(() => {
                     v-model="v$.startTime.$model"
                     :placeholder="t('shift.startTime') + '*'"
                     type="time"
-                    format="HH:mm:ss"
+                    format="HH:mm:00"
                     display-format="HH:mm"
-                    :input-class="{
-                      'p-inputtext p-component p-invalid':
-                        v$.startTime.$invalid && submitted,
-                      'p-inputtext p-component ':
-                        !v$.startTime.$invalid || !submitted,
-                    }"
+                    :input-class="
+                      v$.startTime.$invalid && submitted
+                        ? 'p-inputtext p-component p-invalid'
+                        : 'p-inputtext p-component '
+                    "
+                    :compact-time="true"
+                    :clearable="true"
+                    :auto-submit="true"
+                    :popover="true"
                   />
                 </div>
               </div>
@@ -358,14 +361,17 @@ onMounted(() => {
                     v-model="v$.endTime.$model"
                     :placeholder="t('shift.endTime') + '*'"
                     type="time"
-                    format="HH:mm:ss"
+                    format="HH:mm:00"
                     display-format="HH:mm"
-                    :input-class="{
-                      'p-inputtext p-component p-invalid':
-                        v$.endTime.$invalid && submitted,
-                      'p-inputtext p-component ':
-                        !v$.endTime.$invalid || !submitted,
-                    }"
+                    :input-class="
+                      v$.endTime.$invalid && submitted
+                        ? 'p-inputtext p-component p-invalid'
+                        : 'p-inputtext p-component '
+                    "
+                    :compact-time="true"
+                    :clearable="true"
+                    :auto-submit="true"
+                    :popover="true"
                   />
                 </div>
               </div>

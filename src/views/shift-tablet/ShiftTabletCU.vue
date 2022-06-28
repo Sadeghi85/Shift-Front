@@ -32,7 +32,7 @@ const props = defineProps({
     default: 0,
   },
 });
-const emit = defineEmits(["reloadGrid", "closeForm"]);
+const emit = defineEmits(["updateIsDone", "insertIsDone", "cuIsCanceled"]);
 
 const apiErrorStore = useApiErrorStore();
 
@@ -95,7 +95,8 @@ const handleSubmit = (isFormValid: boolean) => {
             return;
           }
 
-          emit("reloadGrid");
+          emit("insertIsDone");
+
           showSuccess(t("toast.success.create"));
           resetForm();
         })
@@ -119,8 +120,8 @@ const handleSubmit = (isFormValid: boolean) => {
             );
           }
 
-          emit("closeForm");
-          emit("reloadGrid");
+          emit("updateIsDone");
+
           showSuccess(t("toast.success.update"));
           resetForm();
         })
@@ -258,21 +259,21 @@ onMounted(() => {
 
               <div class="field col-12 mb-4 md:col-4">
                 <div class="p-float-label">
-                  <InputText
-                    id="shiftDate"
+                  <PersianDatePicker
                     v-model="v$.shiftDate.$model"
-                    :class="{
-                      'p-invalid': v$.shiftDate.$invalid && submitted,
-                    }"
+                    :placeholder="t('shiftDate.title') + '*'"
+                    type="date"
+                    format="YYYY-MM-DD"
+                    display-format="jYYYY/jMM/jDD"
+                    :input-class="
+                      v$.shiftDate.$invalid && submitted
+                        ? 'p-inputtext p-component p-invalid'
+                        : 'p-inputtext p-component '
+                    "
+                    :clearable="true"
+                    :auto-submit="true"
+                    :popover="true"
                   />
-                  <label
-                    for="shiftDate"
-                    :class="{
-                      'p-error': v$.shiftDate.$invalid && submitted,
-                    }"
-                    >{{ t("shiftDate.title")
-                    }}<span :style="{ color: 'var(--red-500)' }">*</span></label
-                  >
                 </div>
               </div>
 
@@ -298,7 +299,7 @@ onMounted(() => {
             </div>
 
             <div class="grid">
-              <div class="col-12 mb-4 md:col-1">
+              <div class="col-12 mb-2 md:col-1">
                 <Button
                   type="submit"
                   :label="btnSubmitLabel"
@@ -311,7 +312,7 @@ onMounted(() => {
                   type="button"
                   :label="t('button.cancel')"
                   class="mt-4 p-button-secondary"
-                  @click="emit('closeForm')"
+                  @click="emit('cuIsCanceled')"
                 />
               </div>
             </div>

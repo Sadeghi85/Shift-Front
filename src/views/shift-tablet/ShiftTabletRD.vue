@@ -144,8 +144,8 @@ const showSuccess = (detail: string) => {
 };
 
 const shiftDefinition = ref<ShiftDefinitionViewModel>();
-const shiftDate = ref("");
-const shiftWorthPercent = ref("");
+const shiftTabletFromDate = ref("");
+const shiftTabletToDate = ref("");
 
 const shiftTablets = ref<ShiftTabletViewModel[]>();
 const shiftDefinitions = ref<ShiftDefinitionViewModel[]>();
@@ -199,11 +199,33 @@ const handleSearch = async () => {
     pageNo: pageNumber.value,
 
     shiftId: shiftDefinition.value?.id ?? 0,
+    fromDate: shiftTabletFromDate.value ?? "",
+    toDate: shiftTabletToDate.value ?? "",
 
     orderKey: "id",
     desc: true,
     isDeleted: false,
   } as ShiftTabletSearchModel);
+};
+
+const resetSearchForm = async () => {
+  shiftDefinition.value = undefined;
+  shiftTabletFromDate.value = "";
+  shiftTabletToDate.value = "";
+
+  searchFormIsVisible.value = false;
+
+  await handleSearch();
+};
+
+const insertIsDone = async () => {
+  await resetSearchForm();
+  await handleSearch();
+};
+
+const updateIsDone = async () => {
+  closeCreateUpdateForm();
+  await handleSearch();
 };
 
 const loadEssentials = async () => {
@@ -271,8 +293,9 @@ onMounted(async () => {
       <div v-if="createUpdateFormIsVisible">
         <ShiftTabletCU
           :shift-tablet-id="cuShiftTabletId"
-          @reload-grid="handleSearch()"
-          @close-form="closeCreateUpdateForm()"
+          @insert-is-done="insertIsDone"
+          @update-is-done="updateIsDone"
+          @cu-is-canceled="closeCreateUpdateForm"
         >
         </ShiftTabletCU>
       </div>
@@ -306,34 +329,51 @@ onMounted(async () => {
 
                   <div class="field col-12 mb-4 md:col-4">
                     <div class="p-float-label">
-                      <!-- <InputText id="shiftDate" v-model="shiftDate" /> -->
                       <PersianDatePicker
-                        v-model="shiftDate"
-                        :placeholder="t('shiftDate.title')"
+                        v-model="shiftTabletFromDate"
+                        :placeholder="t('input.fromDate')"
+                        type="date"
+                        format="YYYY-MM-DD"
+                        display-format="jYYYY/jMM/jDD"
+                        input-class="p-inputtext p-component"
+                        :clearable="true"
+                        :auto-submit="true"
+                        :popover="true"
                       />
-                      <!-- <label for="shiftDate">{{ t("shiftDate.title") }}</label> -->
                     </div>
                   </div>
 
                   <div class="field col-12 mb-4 md:col-4">
                     <div class="p-float-label">
-                      <InputText
-                        id="shiftWorthPercent"
-                        v-model="shiftWorthPercent"
+                      <PersianDatePicker
+                        v-model="shiftTabletToDate"
+                        :placeholder="t('input.toDate')"
+                        type="date"
+                        format="YYYY-MM-DD"
+                        display-format="jYYYY/jMM/jDD"
+                        input-class="p-inputtext p-component"
+                        :clearable="true"
+                        :auto-submit="true"
+                        :popover="true"
                       />
-                      <label for="shiftWorthPercent">{{
-                        t("shiftWorthPercent.title")
-                      }}</label>
                     </div>
                   </div>
                 </div>
 
-                <div class="grid formgrid">
-                  <div class="col-12 mb-2 md:col-1 md:mb-0">
+                <div class="grid">
+                  <div class="col-12 mb-2 md:col-1">
                     <Button
                       type="submit"
                       :label="t('button.search')"
                       class="mt-4"
+                    />
+                  </div>
+                  <div class="col-12 mb-2 md:col-1">
+                    <Button
+                      type="button"
+                      :label="t('button.cancel')"
+                      class="mt-4 p-button-secondary"
+                      @click="resetSearchForm"
                     />
                   </div>
                 </div>
@@ -373,10 +413,6 @@ onMounted(async () => {
               <Column
                 field="shiftTitle"
                 :header="t('grid.header.shiftTitle')"
-              ></Column>
-              <Column
-                field="productionTypeTitle"
-                :header="t('grid.header.productionTypeTitle')"
               ></Column>
               <Column
                 field="shiftDate"
