@@ -184,6 +184,25 @@ const handleSearch = async () => {
   } as ShiftLocationSearchModel);
 };
 
+const resetSearchForm = async () => {
+  portal.value = undefined;
+  locationName.value = "";
+
+  searchFormIsVisible.value = false;
+
+  await handleSearch();
+};
+
+const insertIsDone = async () => {
+  await resetSearchForm();
+  await handleSearch();
+};
+
+const updateIsDone = async () => {
+  closeCreateUpdateForm();
+  await handleSearch();
+};
+
 const loadEssentials = async () => {
   try {
     // portals
@@ -246,8 +265,9 @@ onMounted(async () => {
       <div v-if="createUpdateFormIsVisible">
         <ShiftLocationCU
           :shift-location-id="cuShiftLocationId"
-          @reload-grid="handleSearch()"
-          @close-form="closeCreateUpdateForm()"
+          @insert-is-done="insertIsDone"
+          @update-is-done="updateIsDone"
+          @cu-is-canceled="closeCreateUpdateForm"
         >
         </ShiftLocationCU>
       </div>
@@ -264,13 +284,13 @@ onMounted(async () => {
                 @submit.prevent="handleSearch()"
               >
                 <div class="grid formgrid">
-                  <div class="col-12 mb-2 md:col-4 md:mb-0">
+                  <div class="col-12 mb-2 md:col-4">
                     <div class="p-float-label">
                       <InputText id="locationName" v-model="locationName" />
                       <label for="locationName">{{ t("location.name") }}</label>
                     </div>
                   </div>
-                  <div class="field col-12 mb-2 md:col-4 md:mb-0">
+                  <div class="field col-12 mb-2 md:col-4">
                     <div class="p-float-label">
                       <Dropdown
                         id="portal"
@@ -285,12 +305,20 @@ onMounted(async () => {
                   </div>
                 </div>
 
-                <div class="grid formgrid">
-                  <div class="col-12 mb-2 md:col-1 md:mb-0">
+                <div class="grid">
+                  <div class="col-12 mb-2 md:col-1">
                     <Button
                       type="submit"
                       :label="t('button.search')"
                       class="mt-4"
+                    />
+                  </div>
+                  <div class="col-12 mb-2 md:col-1">
+                    <Button
+                      type="button"
+                      :label="t('button.cancel')"
+                      class="mt-4 p-button-secondary"
+                      @click.prevent="resetSearchForm"
                     />
                   </div>
                 </div>
@@ -350,7 +378,9 @@ onMounted(async () => {
                     icon="pi pi-cog"
                     aria-haspopup="true"
                     aria-controls="grid_operation_menu"
-                    @click="toggleGridOperationMenu($event, slotProps.data.id)"
+                    @click.prevent="
+                      toggleGridOperationMenu($event, slotProps.data.id)
+                    "
                   />
                 </template>
               </Column>

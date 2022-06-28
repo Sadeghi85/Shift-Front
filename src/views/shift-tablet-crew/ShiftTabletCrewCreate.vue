@@ -30,7 +30,7 @@ const props = defineProps({
     required: true,
   },
 });
-const emit = defineEmits(["reloadGrid", "closeForm"]);
+const emit = defineEmits(["updateIsDone", "insertIsDone", "cuIsCanceled"]);
 
 const apiErrorStore = useApiErrorStore();
 
@@ -92,9 +92,7 @@ const handleSubmit = (isFormValid: boolean) => {
             return;
           }
 
-          //handleSearch();
-          emit("reloadGrid");
-          //emit('eventB', params)
+          emit("insertIsDone");
 
           showSuccess(t("toast.success.create"));
           resetForm();
@@ -195,7 +193,7 @@ watch(
             @submit.prevent="handleSubmit(!v$.$invalid)"
           >
             <div class="grid formgrid">
-              <div class="col-12 mb-2 md:col-4 md:mb-0">
+              <div class="col-12 mb-2 md:col-4">
                 <div class="p-float-label">
                   <Dropdown
                     id="agent"
@@ -217,7 +215,7 @@ watch(
                   >
                 </div>
               </div>
-              <div class="field col-12 mb-2 md:col-4 md:mb-0">
+              <div class="field col-12 mb-2 md:col-4">
                 <div class="p-float-label">
                   <Dropdown
                     id="job"
@@ -241,7 +239,7 @@ watch(
               </div>
             </div>
             <div class="grid formgrid">
-              <div class="col-12 mb-2 md:col-1 md:mb-0">
+              <div class="col-12 mb-2 md:col-1">
                 <Button
                   class="mt-4"
                   type="submit"
@@ -249,12 +247,12 @@ watch(
                   :class="btnSubmitClass"
                 ></Button>
               </div>
-              <div class="col-12 mb-2 md:col-1 md:mb-0">
+              <div class="col-12 mb-2 md:col-1">
                 <Button
                   class="mt-4 p-button-secondary"
                   type="button"
                   :label="t('button.cancel')"
-                  @click="emit('closeForm')"
+                  @click.prevent="emit('cuIsCanceled')"
                 ></Button>
               </div>
             </div>

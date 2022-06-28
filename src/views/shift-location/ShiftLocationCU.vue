@@ -28,7 +28,7 @@ const props = defineProps({
     default: 0,
   },
 });
-const emit = defineEmits(["reloadGrid", "closeForm"]);
+const emit = defineEmits(["updateIsDone", "insertIsDone", "cuIsCanceled"]);
 
 const apiErrorStore = useApiErrorStore();
 
@@ -88,9 +88,7 @@ const handleSubmit = (isFormValid: boolean) => {
             );
           }
 
-          //handleSearch();
-          emit("reloadGrid");
-          //emit('eventB', params)
+          emit("insertIsDone");
 
           showSuccess(t("toast.success.create"));
           resetForm();
@@ -113,11 +111,7 @@ const handleSubmit = (isFormValid: boolean) => {
             );
           }
 
-          //handleSearch();
-          emit("closeForm");
-          emit("reloadGrid");
-
-          //emit('eventB', params)
+          emit("updateIsDone");
 
           showSuccess(t("toast.success.update"));
           resetForm();
@@ -216,7 +210,7 @@ onMounted(() => {
             @submit.prevent="handleSubmit(!v$.$invalid)"
           >
             <div class="grid formgrid">
-              <div class="col-12 mb-2 md:col-4 md:mb-0">
+              <div class="col-12 mb-2 md:col-4">
                 <div class="p-float-label">
                   <InputText
                     id="locationName"
@@ -235,7 +229,7 @@ onMounted(() => {
                   >
                 </div>
               </div>
-              <div class="field col-12 mb-2 md:col-4 md:mb-0">
+              <div class="field col-12 mb-2 md:col-4">
                 <div class="p-float-label">
                   <Dropdown
                     id="portal"
@@ -261,7 +255,7 @@ onMounted(() => {
             </div>
 
             <div class="grid formgrid">
-              <div class="col-12 mb-2 md:col-1 md:mb-0">
+              <div class="col-12 mb-2 md:col-1">
                 <Button
                   type="submit"
                   :label="btnSubmitLabel"
@@ -269,12 +263,12 @@ onMounted(() => {
                   :class="btnSubmitClass"
                 />
               </div>
-              <div class="col-12 mb-2 md:col-1 md:mb-0">
+              <div class="col-12 mb-2 md:col-1">
                 <Button
                   type="button"
                   :label="t('button.cancel')"
                   class="mt-4 p-button-secondary"
-                  @click="emit('closeForm')"
+                  @click.prevent="emit('cuIsCanceled')"
                 />
               </div>
             </div>

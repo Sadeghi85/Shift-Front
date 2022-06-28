@@ -5,7 +5,6 @@ import { required } from "@vuelidate/validators";
 import { useVuelidate } from "@vuelidate/core";
 import PortalService from "@/services/PortalService";
 import ShiftDefinitionService from "@/services/ShiftDefinitionService";
-import { usePortalStore } from "@/stores/portal";
 import useApiErrorStore from "@/stores/api-error";
 import { PortalViewModel, PortalSearchModel } from "@/models/PortalModels";
 import { useToast } from "primevue/usetoast";
@@ -16,12 +15,6 @@ import {
 } from "@/models/ShiftDefinitionModels";
 import { ShiftTypeViewModel } from "@/models/ShiftTypeModels";
 
-// interface Props {
-//   shiftLocationId?: number;
-// }
-// const props = withDefaults(defineProps<Props>(), {
-//   shiftLocationId: 0,
-// });
 const props = defineProps({
   shiftDefinitionId: {
     type: Number,
@@ -29,7 +22,7 @@ const props = defineProps({
     default: 0,
   },
 });
-const emit = defineEmits(["reloadGrid", "closeForm"]);
+const emit = defineEmits(["updateIsDone", "insertIsDone", "cuIsCanceled"]);
 
 // reactive state
 const { t } = useI18n();
@@ -63,7 +56,6 @@ const rules = {
 const v$ = useVuelidate(rules, state);
 const portalService = ref(new PortalService());
 const shiftDefinitionService = ref(new ShiftDefinitionService());
-const portalStore = usePortalStore();
 
 const toast = useToast();
 const showSuccess = (detail: string) => {
@@ -99,9 +91,7 @@ const handleSubmit = (isFormValid: boolean) => {
             return;
           }
 
-          //handleSearch();
-          emit("reloadGrid");
-          //emit('eventB', params)
+          emit("insertIsDone");
 
           showSuccess(t("toast.success.create"));
           resetForm();
@@ -126,8 +116,7 @@ const handleSubmit = (isFormValid: boolean) => {
             return;
           }
 
-          emit("closeForm");
-          emit("reloadGrid");
+          emit("updateIsDone");
 
           showSuccess(t("toast.success.update"));
           resetForm();
@@ -305,22 +294,6 @@ onMounted(() => {
 
               <div class="field col-12 mb-4 md:col-4">
                 <div class="p-float-label">
-                  <!-- <InputText
-                    id="startTime"
-                    v-model="v$.startTime.$model"
-                    :class="{
-                      'p-invalid': v$.startTime.$invalid && submitted,
-                    }"
-                  />
-                  <label
-                    for="startTime"
-                    :class="{
-                      'p-error': v$.startTime.$invalid && submitted,
-                    }"
-                    >{{ t("shift.startTime")
-                    }}<span :style="{ color: 'var(--red-500)' }">*</span></label
-                  > -->
-
                   <PersianDatePicker
                     v-model="v$.startTime.$model"
                     :placeholder="t('shift.startTime') + '*'"
@@ -341,22 +314,6 @@ onMounted(() => {
               </div>
               <div class="field col-12 mb-4 md:col-4">
                 <div class="p-float-label">
-                  <!-- <InputText
-                    id="endTime"
-                    v-model="v$.endTime.$model"
-                    :class="{
-                      'p-invalid': v$.endTime.$invalid && submitted,
-                    }"
-                  />
-                  <label
-                    for="endTime"
-                    :class="{
-                      'p-error': v$.endTime.$invalid && submitted,
-                    }"
-                    >{{ t("shift.endTime")
-                    }}<span :style="{ color: 'var(--red-500)' }">*</span></label
-                  > -->
-
                   <PersianDatePicker
                     v-model="v$.endTime.$model"
                     :placeholder="t('shift.endTime') + '*'"
@@ -386,12 +343,12 @@ onMounted(() => {
                   :class="btnSubmitClass"
                 />
               </div>
-              <div class="col-12 mb-2 md:col-1 md:mb-0">
+              <div class="col-12 mb-2 md:col-1">
                 <Button
                   type="button"
                   :label="t('button.cancel')"
                   class="mt-4 p-button-secondary"
-                  @click="emit('closeForm')"
+                  @click.prevent="emit('cuIsCanceled')"
                 />
               </div>
             </div>

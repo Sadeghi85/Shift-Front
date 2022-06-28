@@ -66,16 +66,6 @@ const gridOperationMenuItems = ref([
     label: t("grid.button.operation"),
     items: [
       {
-        label: t("menu.item.shift-tablet-crew-assignment"),
-        icon: "pi pi-users",
-        command: () => {
-          router.push({
-            name: "shift-tablet-crew",
-            params: { shiftTabletId: gridOperationMenu.value.dataId },
-          });
-        },
-      },
-      {
         label: t("menu.item.update"),
         icon: "pi pi-pencil",
         command: () => {
@@ -373,7 +363,7 @@ onMounted(async () => {
                       type="button"
                       :label="t('button.cancel')"
                       class="mt-4 p-button-secondary"
-                      @click="resetSearchForm"
+                      @click.prevent="resetSearchForm"
                     />
                   </div>
                 </div>
@@ -423,6 +413,29 @@ onMounted(async () => {
                 :header="t('grid.header.shiftWorthPercent')"
               ></Column>
               <Column
+                header-style="width: 12em;"
+                header-class="align-center"
+                body-style="text-align: center;"
+              >
+                <template #header>
+                  <span>{{
+                    t("grid.button.shift-tablet-crew-assignment")
+                  }}</span>
+                </template>
+                <template #body="slotProps">
+                  <Button
+                    icon="pi pi-users"
+                    class="p-button-rounded p-button-secondary"
+                    @click.prevent="
+                      router.push({
+                        name: 'shift-tablet-crew',
+                        params: { shiftTabletId: slotProps.data.id },
+                      })
+                    "
+                  ></Button>
+                </template>
+              </Column>
+              <Column
                 header-style="width: 8em;"
                 header-class="align-center"
                 body-style="text-align: center;"
@@ -437,7 +450,9 @@ onMounted(async () => {
                     icon="pi pi-cog"
                     aria-haspopup="true"
                     aria-controls="grid_operation_menu"
-                    @click="toggleGridOperationMenu($event, slotProps.data.id)"
+                    @click.prevent="
+                      toggleGridOperationMenu($event, slotProps.data.id)
+                    "
                   />
                 </template>
               </Column>

@@ -185,6 +185,26 @@ const shiftType = ref<ShiftTypeViewModel>();
 const portalService = ref(new PortalService());
 const shiftDefinitionService = ref(new ShiftDefinitionService());
 
+const resetSearchForm = async () => {
+  shiftTitle.value = "";
+  portal.value = undefined;
+  shiftType.value = undefined;
+
+  searchFormIsVisible.value = false;
+
+  await handleSearch();
+};
+
+const insertIsDone = async () => {
+  await resetSearchForm();
+  await handleSearch();
+};
+
+const updateIsDone = async () => {
+  closeCreateUpdateForm();
+  await handleSearch();
+};
+
 const loadEssentials = async () => {
   try {
     // portals
@@ -247,8 +267,9 @@ onMounted(async () => {
       <div v-if="createUpdateFormIsVisible">
         <ShiftDefinitionCU
           :shift-definition-id="cuShiftDefinitionId"
-          @reload-grid="handleSearch()"
-          @close-form="closeCreateUpdateForm()"
+          @insert-is-done="insertIsDone"
+          @update-is-done="updateIsDone"
+          @cu-is-canceled="closeCreateUpdateForm"
         >
         </ShiftDefinitionCU>
       </div>
@@ -265,13 +286,13 @@ onMounted(async () => {
                 @submit.prevent="handleSearch()"
               >
                 <div class="grid formgrid">
-                  <div class="col-12 mb-2 md:col-4 md:mb-0">
+                  <div class="col-12 mb-2 md:col-4">
                     <div class="p-float-label">
                       <InputText id="shiftTitle" v-model="shiftTitle" />
                       <label for="shiftTitle">{{ t("shift.title") }}</label>
                     </div>
                   </div>
-                  <div class="field col-12 mb-2 md:col-4 md:mb-0">
+                  <div class="field col-12 mb-2 md:col-4">
                     <div class="p-float-label">
                       <Dropdown
                         id="portal"
@@ -285,7 +306,7 @@ onMounted(async () => {
                     </div>
                   </div>
 
-                  <div class="field col-12 mb-2 md:col-4 md:mb-0">
+                  <div class="field col-12 mb-2 md:col-4">
                     <div class="p-float-label">
                       <Dropdown
                         id="shiftType"
@@ -299,12 +320,20 @@ onMounted(async () => {
                   </div>
                 </div>
 
-                <div class="grid formgrid">
-                  <div class="col-12 mb-2 md:col-1 md:mb-0">
+                <div class="grid">
+                  <div class="col-12 mb-2 md:col-1">
                     <Button
                       type="submit"
                       :label="t('button.search')"
                       class="mt-4"
+                    />
+                  </div>
+                  <div class="col-12 mb-2 md:col-1">
+                    <Button
+                      type="button"
+                      :label="t('button.cancel')"
+                      class="mt-4 p-button-secondary"
+                      @click.prevent="resetSearchForm"
                     />
                   </div>
                 </div>
@@ -376,7 +405,9 @@ onMounted(async () => {
                     icon="pi pi-cog"
                     aria-haspopup="true"
                     aria-controls="grid_operation_menu"
-                    @click="toggleGridOperationMenu($event, slotProps.data.id)"
+                    @click.prevent="
+                      toggleGridOperationMenu($event, slotProps.data.id)
+                    "
                   />
                 </template>
               </Column>

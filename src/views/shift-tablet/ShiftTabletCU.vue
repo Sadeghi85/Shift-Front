@@ -307,12 +307,12 @@ onMounted(() => {
                   :class="btnSubmitClass"
                 />
               </div>
-              <div class="col-12 mb-2 md:col-1 md:mb-0">
+              <div class="col-12 mb-2 md:col-1">
                 <Button
                   type="button"
                   :label="t('button.cancel')"
                   class="mt-4 p-button-secondary"
-                  @click="emit('cuIsCanceled')"
+                  @click.prevent="emit('cuIsCanceled')"
                 />
               </div>
             </div>
