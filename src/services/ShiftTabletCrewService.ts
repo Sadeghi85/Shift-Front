@@ -37,6 +37,12 @@ export default class ShiftTabletCrewService {
     });
   }
 
+  public getShiftTabletCrewPdf(body: ShiftTabletCrewSearchModel) {
+    return this.api.post("/ShiftTabletCrew/Getpdf", body, {
+      responseType: "blob",
+    });
+  }
+
   public createShiftTabletCrew(body: ShiftTabletCrewInputModel) {
     return this.api.post("/ShiftTabletCrew/Register", body);
   }

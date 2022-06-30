@@ -19,6 +19,8 @@ import ShiftDefinitionService from "@/services/ShiftDefinitionService";
 import ShiftTabletCU from "@/views/shift-tablet/ShiftTabletCU.vue";
 import { useConfirm } from "primevue/useconfirm";
 import { useRouter } from "vue-router";
+import ShiftTabletCrewService from "@/services/ShiftTabletCrewService";
+import { ShiftTabletCrewSearchModel } from "@/models/ShiftTabletCrewModels";
 
 const router = useRouter();
 
@@ -27,6 +29,10 @@ const toast = useToast();
 const confirm = useConfirm();
 
 const apiErrorStore = useApiErrorStore();
+
+const shiftTabletCrewService = ref(new ShiftTabletCrewService());
+const shiftTabletService = ref(new ShiftTabletService());
+const shiftDefinitionService = ref(new ShiftDefinitionService());
 
 const pageSize = ref(10);
 const pageNumber = ref(0);
@@ -58,6 +64,109 @@ const closeSearchForm = () => {
 };
 const toggleSearchForm = () => {
   searchFormIsVisible.value = !searchFormIsVisible.value;
+};
+
+const getShiftTabletReportPdf = () => {
+  shiftTabletCrewService.value
+    .getShiftTabletCrewPdf({
+      pageNo: 0,
+      pageSize: 2147483647, // Int32.MaxValue
+      orderKey: "",
+      desc: true,
+      shifTabletId: 0,
+      agentId: 0,
+      agentName: "",
+      entranceTime: "",
+      exitTime: "",
+      fromDate: shiftTabletFromDate.value ?? "",
+      toDate: shiftTabletToDate.value ?? "",
+      shiftTitle: "",
+      isReplaced: null,
+      id: 0,
+      isDeleted: false,
+      title: "",
+      resourceTypeId: 0,
+    } as ShiftTabletCrewSearchModel)
+    .then((response) => {
+      //console.log(response);
+
+      const blob = new Blob([response.data], {
+        type: "application/pdf",
+      });
+      const link = document.createElement("a");
+      link.href = URL.createObjectURL(blob);
+      link.setAttribute("download", "ShiftTabletCrew.pdf");
+      link.click();
+      URL.revokeObjectURL(link.href);
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+};
+
+const getShiftTabletReportExcel = () => {
+  shiftTabletCrewService.value
+    .getShiftTabletCrewExcel({
+      pageNo: 0,
+      pageSize: 2147483647, // Int32.MaxValue
+      orderKey: "",
+      desc: true,
+      shifTabletId: 0,
+      agentId: 0,
+      agentName: "",
+      entranceTime: "",
+      exitTime: "",
+      fromDate: shiftTabletFromDate.value ?? "",
+      toDate: shiftTabletToDate.value ?? "",
+      shiftTitle: "",
+      isReplaced: null,
+      id: 0,
+      isDeleted: false,
+      title: "",
+      resourceTypeId: 0,
+    } as ShiftTabletCrewSearchModel)
+    .then((response) => {
+      //console.log(response);
+
+      const blob = new Blob([response.data], {
+        type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+      });
+      const link = document.createElement("a");
+      link.href = URL.createObjectURL(blob);
+      link.setAttribute("download", "ShiftTabletCrew.xlsx");
+      link.click();
+      URL.revokeObjectURL(link.href);
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+};
+
+const shiftTabletReportMenu = ref();
+const shiftTabletReportMenuItems = ref([
+  {
+    label: t("menu.item.reports"),
+    items: [
+      {
+        label: t("menu.item.excel"),
+        icon: "pi pi-file-excel",
+        command: () => {
+          getShiftTabletReportExcel();
+        },
+      },
+      {
+        label: t("menu.item.pdf"),
+        icon: "pi pi-file-pdf",
+        command: () => {
+          getShiftTabletReportPdf();
+        },
+      },
+    ],
+  },
+]);
+
+const toggleShiftTabletReportMenu = (event: any) => {
+  shiftTabletReportMenu.value.toggle(event);
 };
 
 const gridOperationMenu = ref();
@@ -179,9 +288,6 @@ const onPage = async (event: any) => {
   pageNumber.value = event.page;
   await handleSearch();
 };
-
-const shiftTabletService = ref(new ShiftTabletService());
-const shiftDefinitionService = ref(new ShiftDefinitionService());
 
 const handleSearch = async () => {
   await loadShiftTablets({
@@ -366,6 +472,15 @@ onMounted(async () => {
                       @click.prevent="resetSearchForm"
                     />
                   </div>
+
+                  <div class="col-12 mb-2 md:col-2">
+                    <Button
+                      type="button"
+                      class="mt-4 p-button-help"
+                      :label="t('button.shiftTablet.report')"
+                      @click.prevent="toggleShiftTabletReportMenu($event)"
+                    />
+                  </div>
                 </div>
               </form>
             </div>
@@ -473,6 +588,13 @@ onMounted(async () => {
     id="grid_operation_menu"
     ref="gridOperationMenu"
     :model="gridOperationMenuItems"
+    :popup="true"
+  />
+
+  <Menu
+    id="shift_tablet_report_menu"
+    ref="shiftTabletReportMenu"
+    :model="shiftTabletReportMenuItems"
     :popup="true"
   />
 

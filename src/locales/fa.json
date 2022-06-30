@@ -10,6 +10,7 @@
   "button.update": "ویرایش",
   "button.search": "جستجو",
   "button.cancel": "لغو",
+  "button.shiftTablet.report": "گزارشات لوح شیفت",
 
   "_": "entities",
   "portal.name": "شبکه",
@@ -35,8 +36,12 @@
   "menu.item.update": "ویرایش",
   "menu.item.delete": "حذف",
   "menu.item.shift-tablet-crew-assignment": "تعریف کارکنان شیفت",
+  "menu.item.reports": "گزارشات",
+  "menu.item.excel": "فرمت اکسل",
+  "menu.item.pdf": "فرمت pdf",
 
   "_": "grid",
+  "grid.currentPageReportTemplate": "صفحه {0} از {1}",
   "grid.button.operation": "عملیات",
   "grid.button.shift-tablet-crew-assignment": "تعریف کارکنان شیفت",
   "grid.header.index": "ردیف",
