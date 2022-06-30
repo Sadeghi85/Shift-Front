@@ -22,7 +22,7 @@ import "@/assets/css/lara-light-blue-rtl.css";
 import "primevue/resources/primevue.min.css";
 import "primeicons/primeicons.css";
 
-import "primeflex/primeflex.css";
+import "primeflex/primeflex.min.css";
 
 import "@/assets/css/app.css";
 

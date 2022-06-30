@@ -13,6 +13,9 @@ import {
 } from "@/models/ShiftLocationModels";
 import useApiErrorStore from "@/stores/api-error";
 import ShiftLocationCU from "@/views/shift-location/ShiftLocationCU.vue";
+import { useGeneralStore } from "@/stores/general";
+
+const generalStore = useGeneralStore();
 
 // reactive state
 const { t } = useI18n();
@@ -21,7 +24,7 @@ const confirm = useConfirm();
 
 const apiErrorStore = useApiErrorStore();
 
-const pageSize = ref(10);
+const pageSize = ref(generalStore.rowPerPage);
 const pageNumber = ref(0);
 const loading = ref(false);
 const totalRecords = ref(0);
@@ -138,8 +141,10 @@ const shiftLocationService = ref(new ShiftLocationService());
 
 // functions that mutate state and trigger updates
 const onPage = async (event: any) => {
-  pageNumber.value = event.page;
+  generalStore.rowPerPage = event.rows;
 
+  pageSize.value = event.rows;
+  pageNumber.value = event.page;
   await handleSearch();
 };
 
@@ -387,8 +392,16 @@ onMounted(async () => {
             </DataTable>
 
             <Paginator
-              :rows="10"
+              v-model:rows="pageSize"
               :total-records="totalRecords"
+              :rows-per-page-options="[10, 25, 50, 100]"
+              template="CurrentPageReport FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink RowsPerPageDropdown"
+              :current-page-report-template="
+                t('grid.currentPageReportTemplate', [
+                  '{currentPage}',
+                  '{totalPages}',
+                ])
+              "
               @page="onPage($event)"
             ></Paginator>
           </div>

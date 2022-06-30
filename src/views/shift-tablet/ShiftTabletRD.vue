@@ -21,6 +21,9 @@ import { useConfirm } from "primevue/useconfirm";
 import { useRouter } from "vue-router";
 import ShiftTabletCrewService from "@/services/ShiftTabletCrewService";
 import { ShiftTabletCrewSearchModel } from "@/models/ShiftTabletCrewModels";
+import { useGeneralStore } from "@/stores/general";
+
+const generalStore = useGeneralStore();
 
 const router = useRouter();
 
@@ -34,7 +37,7 @@ const shiftTabletCrewService = ref(new ShiftTabletCrewService());
 const shiftTabletService = ref(new ShiftTabletService());
 const shiftDefinitionService = ref(new ShiftDefinitionService());
 
-const pageSize = ref(10);
+const pageSize = ref(generalStore.rowPerPage);
 const pageNumber = ref(0);
 
 const loading = ref(false);
@@ -285,6 +288,9 @@ async function loadShiftTablets(searchParams?: ShiftTabletSearchModel) {
 }
 
 const onPage = async (event: any) => {
+  generalStore.rowPerPage = event.rows;
+
+  pageSize.value = event.rows;
   pageNumber.value = event.page;
   await handleSearch();
 };
@@ -574,8 +580,16 @@ onMounted(async () => {
             </DataTable>
 
             <Paginator
-              :rows="10"
+              v-model:rows="pageSize"
               :total-records="totalRecords"
+              :rows-per-page-options="[10, 25, 50, 100]"
+              template="CurrentPageReport FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink RowsPerPageDropdown"
+              :current-page-report-template="
+                t('grid.currentPageReportTemplate', [
+                  '{currentPage}',
+                  '{totalPages}',
+                ])
+              "
               @page="onPage($event)"
             ></Paginator>
           </div>

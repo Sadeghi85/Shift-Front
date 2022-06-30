@@ -15,6 +15,9 @@ import { ShiftTypeViewModel } from "@/models/ShiftTypeModels";
 
 import ShiftDefinitionCU from "@/views/shift-definition/ShiftDefinitionCU.vue";
 import { useConfirm } from "primevue/useconfirm";
+import { useGeneralStore } from "@/stores/general";
+
+const generalStore = useGeneralStore();
 
 const { t } = useI18n();
 const toast = useToast();
@@ -22,7 +25,7 @@ const confirm = useConfirm();
 
 const apiErrorStore = useApiErrorStore();
 
-const pageSize = ref(10);
+const pageSize = ref(generalStore.rowPerPage);
 const pageNumber = ref(0);
 const loading = ref(false);
 const totalRecords = ref(0);
@@ -162,6 +165,9 @@ async function loadShiftDefinitions(searchParams?: ShiftDefinitionSearchModel) {
 }
 
 const onPage = async (event: any) => {
+  generalStore.rowPerPage = event.rows;
+
+  pageSize.value = event.rows;
   pageNumber.value = event.page;
   await handleSearch();
 };
@@ -414,8 +420,16 @@ onMounted(async () => {
             </DataTable>
 
             <Paginator
-              :rows="10"
+              v-model:rows="pageSize"
               :total-records="totalRecords"
+              :rows-per-page-options="[10, 25, 50, 100]"
+              template="CurrentPageReport FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink RowsPerPageDropdown"
+              :current-page-report-template="
+                t('grid.currentPageReportTemplate', [
+                  '{currentPage}',
+                  '{totalPages}',
+                ])
+              "
               @page="onPage($event)"
             ></Paginator>
           </div>

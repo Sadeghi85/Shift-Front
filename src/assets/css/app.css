@@ -165,3 +165,9 @@ Persian Datepicker
 /*
 Persian Datepicker
 */
+
+/* paginator */
+.p-paginator-current {
+  font-weight: bold;
+}
+/* paginator */

@@ -33,6 +33,9 @@ import {
   ShiftTabletSearchModel,
   ShiftTabletViewModel,
 } from "@/models/ShiftTabletModels";
+import { useGeneralStore } from "@/stores/general";
+
+const generalStore = useGeneralStore();
 
 const router = useRouter();
 const route = useRoute();
@@ -42,7 +45,7 @@ const confirm = useConfirm();
 
 const apiErrorStore = useApiErrorStore();
 
-const pageSize = ref(10);
+const pageSize = ref(generalStore.rowPerPage);
 const pageNumber = ref(0);
 const loading = ref(false);
 const totalRecords = ref(0);
@@ -206,6 +209,9 @@ async function loadShiftTabletCrews(searchParams?: ShiftTabletCrewSearchModel) {
 }
 
 const onPage = async (event: any) => {
+  generalStore.rowPerPage = event.rows;
+
+  pageSize.value = event.rows;
   pageNumber.value = event.page;
   await handleSearch();
 };
@@ -318,44 +324,6 @@ const loadEssentials = async () => {
   }
 };
 
-const getExcel = () => {
-  shiftTabletCrewService.value
-    .getShiftTabletCrewExcel({
-      pageNo: 0,
-      pageSize: 2147483647, // Int32.MaxValue
-      orderKey: "",
-      desc: true,
-      shifTabletId: +route.params.shiftTabletId,
-      agentId: 0,
-      agentName: "",
-      entranceTime: "",
-      exitTime: "",
-      fromDate: "",
-      toDate: "",
-      shiftTitle: "",
-      isReplaced: null,
-      id: 0,
-      isDeleted: false,
-      title: "",
-      resourceTypeId: 0,
-    } as ShiftTabletCrewSearchModel)
-    .then((response) => {
-      //console.log(response);
-
-      const blob = new Blob([response.data], {
-        type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-      });
-      const link = document.createElement("a");
-      link.href = URL.createObjectURL(blob);
-      link.setAttribute("download", "ShiftTabletCrew.xlsx");
-      link.click();
-      URL.revokeObjectURL(link.href);
-    })
-    .catch((error) => {
-      console.log(error);
-    });
-};
-
 watch(
   () => route.params.shiftTabletId,
   async (shiftTabletId, prevShiftTabletId) => {
@@ -382,11 +350,6 @@ onMounted(async () => {
       <div class="col-12 md:col-12">
         <Toolbar>
           <template #end>
-            <Button
-              icon="pi pi-file-excel"
-              class="p-button-rounded ml-2"
-              @click.prevent="getExcel()"
-            />
             <Button
               icon="pi pi-search"
               class="p-button-rounded ml-2"
@@ -588,10 +551,19 @@ onMounted(async () => {
             </DataTable>
 
             <Paginator
-              :rows="10"
+              v-model:rows="pageSize"
               :total-records="totalRecords"
+              :rows-per-page-options="[10, 25, 50, 100]"
+              template="CurrentPageReport FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink RowsPerPageDropdown"
+              :current-page-report-template="
+                t('grid.currentPageReportTemplate', [
+                  '{currentPage}',
+                  '{totalPages}',
+                ])
+              "
               @page="onPage($event)"
-            ></Paginator>
+            >
+            </Paginator>
           </div>
         </div>
       </div>

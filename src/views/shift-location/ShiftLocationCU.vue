@@ -5,7 +5,6 @@ import { required } from "@vuelidate/validators";
 import { useVuelidate } from "@vuelidate/core";
 import PortalService from "@/services/PortalService";
 import ShiftLocationService from "@/services/ShiftLocationService";
-import { usePortalStore } from "@/stores/portal";
 import { PortalViewModel, PortalSearchModel } from "@/models/PortalModels";
 import { useToast } from "primevue/usetoast";
 import {
@@ -53,7 +52,6 @@ const { t } = useI18n();
 const v$ = useVuelidate(rules, state);
 const portalService = ref(new PortalService());
 const shiftLocationService = ref(new ShiftLocationService());
-const portalStore = usePortalStore();
 
 const toast = useToast();
 const showSuccess = (detail: string) => {
