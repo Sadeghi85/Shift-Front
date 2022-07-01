@@ -208,9 +208,10 @@ const gridOperationMenuItems = ref([
                 .then((response) => {
                   //console.log(response);
                   if (!response.data.success) {
-                    throw new Error(
-                      "Failed api call: [" + response.data.failureMessage + "]"
+                    apiErrorStore.setApiErrorMessage(
+                      response.data.failureMessage
                     );
+                    return;
                   }
 
                   handleSearch();
@@ -598,8 +599,6 @@ onMounted(async () => {
                     type="button"
                     class="p-button-rounded p-button-secondary"
                     icon="pi pi-cog"
-                    aria-haspopup="true"
-                    aria-controls="grid_operation_menu"
                     @click.prevent="
                       toggleGridOperationMenu($event, slotProps.data.id)
                     "

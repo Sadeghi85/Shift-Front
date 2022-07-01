@@ -81,9 +81,8 @@ const handleSubmit = (isFormValid: boolean) => {
         .then((response) => {
           //console.log(response);
           if (!response.data.success) {
-            throw new Error(
-              "Failed api call: [" + response.data.failureMessage + "]"
-            );
+            apiErrorStore.setApiErrorMessage(response.data.failureMessage);
+            return;
           }
 
           emit("insertIsDone");
@@ -104,9 +103,8 @@ const handleSubmit = (isFormValid: boolean) => {
         .then((response) => {
           //console.log(response);
           if (!response.data.success) {
-            throw new Error(
-              "Failed api call: [" + response.data.failureMessage + "]"
-            );
+            apiErrorStore.setApiErrorMessage(response.data.failureMessage);
+            return;
           }
 
           emit("updateIsDone");

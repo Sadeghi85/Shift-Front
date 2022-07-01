@@ -205,10 +205,8 @@ const onDropdownAgentFilter = async (event: any) => {
         pageSize: generalStore.dropdownItemsCount,
         orderKey: "id",
         id: 0,
-
         desc: true,
-        firstName: event.value,
-        lastName: "",
+        name: event.value,
       } as AgentSearchModel)
     ).data;
   } catch (error: any) {
@@ -272,8 +270,7 @@ const loadEssentials = async () => {
         pageNo: 0,
         desc: true,
         id: 0,
-        firstName: "",
-        lastName: "",
+        name: "",
       } as AgentSearchModel)
     ).data;
 
@@ -350,23 +347,23 @@ watch(
             <div class="grid">
               <div class="col">
                 {{ t("portal.name") }}:
-                <strong>{{ shiftTablet!.portalName }}</strong>
+                <strong>{{ shiftTablet?.portalName }}</strong>
               </div>
               <div class="col">
                 {{ t("shift.title") }}:
-                <strong>{{ shiftTablet!.shiftTitle }}</strong>
+                <strong>{{ shiftTablet?.shiftTitle }}</strong>
               </div>
               <div class="col">
                 {{ t("shiftDate.title") }}:
-                <strong>{{ pdate(shiftTablet!.shiftDate) }}</strong>
+                <strong>{{ pdate(shiftTablet?.shiftDate ?? "") }}</strong>
               </div>
               <div class="col">
                 {{ t("shift.startTime") }}:
-                <strong>{{ shiftTablet!.shiftStartTime }}</strong>
+                <strong>{{ shiftTablet?.shiftStartTime }}</strong>
               </div>
               <div class="col">
                 {{ t("shift.endTime") }}:
-                <strong>{{ shiftTablet!.shiftEndTime }}</strong>
+                <strong>{{ shiftTablet?.shiftEndTime }}</strong>
               </div>
             </div>
           </div>
