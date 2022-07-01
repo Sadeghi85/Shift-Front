@@ -22,6 +22,7 @@ import { useRouter } from "vue-router";
 import ShiftTabletCrewService from "@/services/ShiftTabletCrewService";
 import { ShiftTabletCrewSearchModel } from "@/models/ShiftTabletCrewModels";
 import { useGeneralStore } from "@/stores/general";
+import { pdate } from "@/helpers/utilities";
 
 const generalStore = useGeneralStore();
 
@@ -501,7 +502,6 @@ onMounted(async () => {
           <div class="card">
             <DataTable
               :value="shiftTablets"
-              :rows="10"
               data-key="id"
               :loading="loading"
               show-gridlines
@@ -522,17 +522,45 @@ onMounted(async () => {
               >
 
               <Column
+                field="portalName"
+                :header="t('grid.header.portal')"
+              ></Column>
+              <Column
                 field="shiftTitle"
                 :header="t('grid.header.shiftTitle')"
               ></Column>
-              <Column
-                field="shiftDate"
-                :header="t('grid.header.shiftDate')"
-              ></Column>
+              <Column field="shiftDate" :header="t('grid.header.shiftDate')">
+                <template #body="slotProps">
+                  {{ pdate(slotProps.data.shiftDate) }}
+                </template>
+              </Column>
               <Column
                 field="shiftWorthPercent"
                 :header="t('grid.header.shiftWorthPercent')"
               ></Column>
+              <Column
+                header-style="width: 12em;"
+                header-class="align-center"
+                body-style="text-align: center;"
+              >
+                <template #header>
+                  <span>{{
+                    t("grid.button.shift-tablet-crew-secretary")
+                  }}</span>
+                </template>
+                <template #body="slotProps">
+                  <Button
+                    icon="pi pi-list"
+                    class="p-button-rounded p-button-secondary"
+                    @click.prevent="
+                      router.push({
+                        name: 'shift-tablet-crew-secretary',
+                        params: { shiftTabletId: slotProps.data.id },
+                      })
+                    "
+                  ></Button>
+                </template>
+              </Column>
               <Column
                 header-style="width: 12em;"
                 header-class="align-center"
