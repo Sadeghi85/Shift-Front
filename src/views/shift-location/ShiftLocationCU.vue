@@ -233,6 +233,7 @@ watch(
                     :options="portals"
                     option-label="title"
                     :filter="true"
+                    :show-clear="true"
                     :class="{
                       'p-invalid': v$.portal.$invalid && submitted,
                     }"

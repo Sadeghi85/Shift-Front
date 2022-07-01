@@ -237,6 +237,7 @@ watch(
                     v-model="v$.shiftDefinition.$model"
                     :options="shiftDefinitions"
                     option-label="title"
+                    :show-clear="true"
                     :class="{
                       'p-invalid': v$.shiftDefinition.$invalid && submitted,
                     }"

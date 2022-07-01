@@ -306,6 +306,7 @@ onMounted(async () => {
                         :options="portals"
                         option-label="title"
                         :filter="true"
+                        :show-clear="true"
                       />
 
                       <label for="portal">{{ t("portal.name") }}</label>
@@ -319,6 +320,7 @@ onMounted(async () => {
                         v-model="shiftType"
                         :options="shiftTypes"
                         option-label="title"
+                        :show-clear="true"
                       />
 
                       <label for="shiftType">{{ t("shiftType.title") }}</label>

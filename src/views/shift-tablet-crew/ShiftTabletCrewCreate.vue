@@ -200,6 +200,7 @@ watch(
                     :options="agents"
                     option-label="fullName"
                     :filter="true"
+                    :show-clear="true"
                     :class="{
                       'p-invalid': v$.agent.$invalid && submitted,
                     }"
@@ -222,6 +223,7 @@ watch(
                     :options="jobs"
                     option-label="title"
                     :filter="true"
+                    :show-clear="true"
                     :class="{
                       'p-invalid': v$.job.$invalid && submitted,
                     }"

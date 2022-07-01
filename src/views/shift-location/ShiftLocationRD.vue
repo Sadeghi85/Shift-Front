@@ -303,6 +303,7 @@ onMounted(async () => {
                         :options="portals"
                         option-label="title"
                         :filter="true"
+                        :show-clear="true"
                       />
 
                       <label for="portal">{{ t("portal.name") }}</label>

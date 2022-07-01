@@ -254,6 +254,7 @@ watch(
                     :options="portals"
                     option-label="title"
                     :filter="true"
+                    :show-clear="true"
                     :class="{ 'p-invalid': v$.portal.$invalid && submitted }"
                   />
 
@@ -274,6 +275,7 @@ watch(
                     v-model="v$.shiftType.$model"
                     :options="shiftTypes"
                     option-label="title"
+                    :show-clear="true"
                     :class="{
                       'p-invalid': v$.shiftType.$invalid && submitted,
                     }"

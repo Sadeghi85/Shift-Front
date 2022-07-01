@@ -306,23 +306,23 @@ watch(
             <div class="grid">
               <div class="col">
                 {{ t("portal.name") }}:
-                <strong>{{ shiftTablet?.portalName }}</strong>
+                <strong>{{ shiftTablet!.portalName }}</strong>
               </div>
               <div class="col">
                 {{ t("shift.title") }}:
-                <strong>{{ shiftTablet?.shiftTitle }}</strong>
+                <strong>{{ shiftTablet!.shiftTitle }}</strong>
               </div>
               <div class="col">
                 {{ t("shiftDate.title") }}:
-                <strong>{{ pdate(shiftTablet?.shiftDate) }}</strong>
+                <strong>{{ pdate(shiftTablet!.shiftDate) }}</strong>
               </div>
               <div class="col">
                 {{ t("shift.startTime") }}:
-                <strong>{{ shiftTablet?.shiftStartTime }}</strong>
+                <strong>{{ shiftTablet!.shiftStartTime }}</strong>
               </div>
               <div class="col">
                 {{ t("shift.endTime") }}:
-                <strong>{{ shiftTablet?.shiftEndTime }}</strong>
+                <strong>{{ shiftTablet!.shiftEndTime }}</strong>
               </div>
             </div>
           </div>
@@ -484,7 +484,7 @@ watch(
   <ConfirmDialog position="top-center"></ConfirmDialog>
 </template>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .v-enter-active,
 .v-leave-active {
   transition: opacity 0.2s ease-out;
@@ -498,7 +498,9 @@ watch(
 .info {
   background-color: var(--blue-50);
 }
+</style>
 
+<style lang="scss">
 .row-secretary-unattended {
   background-color: var(--yellow-100) !important;
 }

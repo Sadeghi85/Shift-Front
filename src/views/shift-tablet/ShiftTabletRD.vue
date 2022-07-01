@@ -422,6 +422,7 @@ onMounted(async () => {
                         v-model="shiftDefinition"
                         :options="shiftDefinitions"
                         option-label="title"
+                        :show-clear="true"
                       />
 
                       <label for="shiftDefinition">{{

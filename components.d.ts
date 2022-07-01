@@ -3,6 +3,8 @@
 // Read more: https://github.com/vuejs/core/pull/3399
 import '@vue/runtime-core'
 
+export {}
+
 declare module '@vue/runtime-core' {
   export interface GlobalComponents {
     Button: typeof import('primevue/button')['default']
@@ -28,6 +30,5 @@ declare module '@vue/runtime-core' {
     Toast: typeof import('primevue/toast')['default']
     Toolbar: typeof import('primevue/toolbar')['default']
   }
-}
 
-export {}
+}

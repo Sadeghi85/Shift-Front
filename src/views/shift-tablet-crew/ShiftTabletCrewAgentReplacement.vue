@@ -225,6 +225,7 @@ watch(
                     :options="agents"
                     option-label="fullName"
                     :filter="true"
+                    :show-clear="true"
                     :class="{
                       'p-invalid': v$.agent.$invalid && submitted,
                     }"
