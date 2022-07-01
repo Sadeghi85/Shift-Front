@@ -123,7 +123,23 @@ const webpack = require("webpack");
 module.exports = defineConfig({
   configureWebpack: {
     // disable sourcemap files in production
-    devtool: false,
+    devtool: process.env.NODE_ENV === "production" ? false : "source-map",
+    output: {
+      devtoolModuleFilenameTemplate: (info) => {
+        let $filename = "sources://" + info.resourcePath + "?" + info.hash;
+        if (
+          info.resourcePath.match(/\.vue$/) &&
+          !info.query.match(/type=script/)
+        ) {
+          $filename =
+            "webpack-generated:///" + info.resourcePath + "?" + info.hash;
+        }
+        return $filename;
+      },
+      devtoolFallbackModuleFilenameTemplate: (info) => {
+        return "webpack:///" + info.resourcePath + "?" + info.hash;
+      },
+    },
     // experiments: {
     //   topLevelAwait: true,
     // },
@@ -191,7 +207,7 @@ module.exports = defineConfig({
         onProxyReq: function (proxyReq) {
           proxyReq.setHeader(
             "Cookie",
-            "rtcookie=rui=1krFREj/0UVuMnfxv3FLR5+EuKVYbVwWTWo1TPx4PZixdlaVvdSC4cceLfenXeieq6nGa1F09US7QMgXIbgEJktl9HimtqijzU7RqmeB4DuVNh/4DWomZcQbo5KrV+cE"
+            "rtcookie=rui=1krFREj/0UVuMnfxv3FLR5+EuKVYbVwWTWo1TPx4PZixdlaVvdSC4cceLfenXeieq6nGa1F09US7QMgXIbgEJlpMA+T4Wd4w3ogBGk4b64DHgR9myOQIarRIP8xsCOqe"
           );
         },
       },
