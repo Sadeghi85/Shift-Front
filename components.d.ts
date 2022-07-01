@@ -22,6 +22,7 @@ declare module '@vue/runtime-core' {
     ShiftTabletCrewAgentReplacement: typeof import('./src/views/shift-tablet-crew/ShiftTabletCrewAgentReplacement.vue')['default']
     ShiftTabletCrewCreate: typeof import('./src/views/shift-tablet-crew/ShiftTabletCrewCreate.vue')['default']
     ShiftTabletCrewRD: typeof import('./src/views/shift-tablet-crew/ShiftTabletCrewRD.vue')['default']
+    ShiftTabletCrewSecretary: typeof import('./src/views/shift-tablet-crew/ShiftTabletCrewSecretary.vue')['default']
     ShiftTabletCU: typeof import('./src/views/shift-tablet/ShiftTabletCU.vue')['default']
     ShiftTabletRD: typeof import('./src/views/shift-tablet/ShiftTabletRD.vue')['default']
     Toast: typeof import('primevue/toast')['default']

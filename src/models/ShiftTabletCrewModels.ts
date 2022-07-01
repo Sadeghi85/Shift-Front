@@ -34,6 +34,8 @@ export interface ShiftTabletCrewViewModel {
   agentFullName: string;
   entranceTime: string;
   exitTime: string;
+  defaultEntranceTime: string;
+  defaultExitTime: string;
   jobName: string;
   shiftTitle: string;
   shiftDate: string;

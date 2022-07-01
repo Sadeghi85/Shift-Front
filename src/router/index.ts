@@ -15,9 +15,6 @@ const routes: Array<RouteRecordRaw> = [
   {
     path: "/shift-location",
     name: "shift-location",
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
     component: () =>
       import(
         /* webpackChunkName: "shift-location" */ "../views/shift-location/ShiftLocationRD.vue"
@@ -26,9 +23,6 @@ const routes: Array<RouteRecordRaw> = [
   {
     path: "/shift-definition",
     name: "shift-definition",
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
     component: () =>
       import(
         /* webpackChunkName: "shift-definition" */ "../views/shift-definition/ShiftDefinitionRD.vue"
@@ -37,9 +31,6 @@ const routes: Array<RouteRecordRaw> = [
   {
     path: "/shift-tablet",
     name: "shift-tablet",
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
     component: () =>
       import(
         /* webpackChunkName: "shift-tablet" */ "../views/shift-tablet/ShiftTabletRD.vue"
@@ -48,12 +39,17 @@ const routes: Array<RouteRecordRaw> = [
   {
     path: "/shift-tablet-crew/:shiftTabletId",
     name: "shift-tablet-crew",
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
     component: () =>
       import(
         /* webpackChunkName: "shift-tablet-crew" */ "../views/shift-tablet-crew/ShiftTabletCrewRD.vue"
+      ),
+  },
+  {
+    path: "/shift-tablet-crew-secretary/:shiftTabletId",
+    name: "shift-tablet-crew-secretary",
+    component: () =>
+      import(
+        /* webpackChunkName: "shift-tablet-crew-secretary" */ "../views/shift-tablet-crew/ShiftTabletCrewSecretary.vue"
       ),
   },
 ];
