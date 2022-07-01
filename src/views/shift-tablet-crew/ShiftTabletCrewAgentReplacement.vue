@@ -18,6 +18,9 @@ import {
   ResourceTypeSearchModel,
   ResourceTypeViewModel,
 } from "@/models/ResourceTypeModels";
+import { useGeneralStore } from "@/stores/general";
+
+const generalStore = useGeneralStore();
 
 const props = defineProps({
   shiftTabletCrewId: {
@@ -53,7 +56,7 @@ const rules = {
 const { t } = useI18n();
 const v$ = useVuelidate(rules, state);
 const agentService = ref(new AgentService());
-const resourceTypeService = ref(new ResourceTypeService());
+const jobService = ref(new ResourceTypeService());
 const shiftTabletCrewService = ref(new ShiftTabletCrewService());
 
 const toast = useToast();
@@ -68,6 +71,50 @@ const showSuccess = (detail: string) => {
 };
 
 // functions that mutate state and trigger updates
+const onDropdownAgentFilter = async (event: any) => {
+  try {
+    agents.value = (
+      await agentService.value.getAgents({
+        pageNo: 0,
+        pageSize: generalStore.dropdownItemsCount,
+        orderKey: "id",
+        id: 0,
+
+        desc: true,
+        firstName: event.value,
+        lastName: "",
+      } as AgentSearchModel)
+    ).data;
+  } catch (error: any) {
+    if (typeof error.message === "object") {
+      apiErrorStore.setApiErrorMessage(error.message.failureMessage);
+    } else {
+      console.log(error.message);
+    }
+  }
+};
+
+const onDropdownJobFilter = async (event: any) => {
+  try {
+    jobs.value = (
+      await jobService.value.getResourceTypes({
+        pageNo: 0,
+        pageSize: generalStore.dropdownItemsCount,
+        orderKey: "id",
+        id: 0,
+        desc: true,
+        resourceName: event.value,
+      } as ResourceTypeSearchModel)
+    ).data;
+  } catch (error: any) {
+    if (typeof error.message === "object") {
+      apiErrorStore.setApiErrorMessage(error.message.failureMessage);
+    } else {
+      console.log(error.message);
+    }
+  }
+};
+
 const handleSubmit = (isFormValid: boolean) => {
   submitted.value = true;
 
@@ -117,8 +164,8 @@ const fillForm = async () => {
     agents.value = (
       await agentService.value.getAgents({
         pageNo: 0,
-        pageSize: 2147483647, // Int32.MaxValue
-        orderKey: "",
+        pageSize: generalStore.dropdownItemsCount,
+        orderKey: "id",
         id: 0,
 
         desc: true,
@@ -128,10 +175,10 @@ const fillForm = async () => {
     ).data;
 
     jobs.value = (
-      await resourceTypeService.value.getResourceTypes({
+      await jobService.value.getResourceTypes({
         pageNo: 0,
-        pageSize: 2147483647, // Int32.MaxValue
-        orderKey: "",
+        pageSize: generalStore.dropdownItemsCount,
+        orderKey: "id",
         id: 0,
         desc: true,
         resourceName: "",
@@ -229,6 +276,7 @@ watch(
                     :class="{
                       'p-invalid': v$.agent.$invalid && submitted,
                     }"
+                    @filter="onDropdownAgentFilter"
                   ></Dropdown
                   ><label
                     for="agent"
@@ -251,6 +299,7 @@ watch(
                     :class="{
                       'p-invalid': v$.job.$invalid && submitted,
                     }"
+                    @filter="onDropdownJobFilter"
                   ></Dropdown
                   ><label
                     for="job"

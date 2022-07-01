@@ -266,6 +266,50 @@ const updateIsDone = async () => {
   await handleSearch();
 };
 
+const onDropdownAgentFilter = async (event: any) => {
+  try {
+    agents.value = (
+      await agentService.value.getAgents({
+        pageNo: 0,
+        pageSize: generalStore.dropdownItemsCount,
+        orderKey: "id",
+        id: 0,
+
+        desc: true,
+        firstName: event.value,
+        lastName: "",
+      } as AgentSearchModel)
+    ).data;
+  } catch (error: any) {
+    if (typeof error.message === "object") {
+      apiErrorStore.setApiErrorMessage(error.message.failureMessage);
+    } else {
+      console.log(error.message);
+    }
+  }
+};
+
+const onDropdownJobFilter = async (event: any) => {
+  try {
+    jobs.value = (
+      await jobService.value.getResourceTypes({
+        pageNo: 0,
+        pageSize: generalStore.dropdownItemsCount,
+        orderKey: "id",
+        id: 0,
+        desc: true,
+        resourceName: event.value,
+      } as ResourceTypeSearchModel)
+    ).data;
+  } catch (error: any) {
+    if (typeof error.message === "object") {
+      apiErrorStore.setApiErrorMessage(error.message.failureMessage);
+    } else {
+      console.log(error.message);
+    }
+  }
+};
+
 const loadEssentials = async () => {
   try {
     // shiftTablet
@@ -292,9 +336,9 @@ const loadEssentials = async () => {
     // agents
     agents.value = (
       await agentService.value.getAgents({
-        pageSize: 2147483647, // Int32.MaxValue
-        pageNo: 0,
+        pageSize: generalStore.dropdownItemsCount,
         orderKey: "id",
+        pageNo: 0,
         desc: true,
         id: 0,
         firstName: "",
@@ -305,9 +349,9 @@ const loadEssentials = async () => {
     // jobs
     jobs.value = (
       await jobService.value.getResourceTypes({
-        pageSize: 2147483647, // Int32.MaxValue
-        pageNo: 0,
+        pageSize: generalStore.dropdownItemsCount,
         orderKey: "id",
+        pageNo: 0,
         desc: true,
         id: 0,
         resourceName: "",
@@ -443,6 +487,7 @@ watch(
                         :options="agents"
                         option-label="fullName"
                         :filter="true"
+                        @filter="onDropdownAgentFilter"
                       />
 
                       <label for="agent">{{
@@ -458,6 +503,7 @@ watch(
                         :options="jobs"
                         option-label="title"
                         :filter="true"
+                        @filter="onDropdownJobFilter"
                       />
 
                       <label for="job">{{
