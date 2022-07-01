@@ -215,12 +215,8 @@ watch(
 );
 
 // lifecycle hooks
-onMounted(() => {
-  // load shift production types
-  //loadShiftProductionTypes();
-  // load shift definitions
-  //loadShiftDefinitions();
-});
+// onMounted(() => {
+// });
 </script>
 
 <template>

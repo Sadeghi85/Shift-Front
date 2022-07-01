@@ -191,10 +191,8 @@ watch(
 );
 
 // lifecycle hooks
-onMounted(() => {
-  // portals
-  //loadPortals();
-});
+// onMounted(() => {
+// });
 </script>
 
 <template>

@@ -356,7 +356,6 @@ onMounted(async () => {
           <div class="card">
             <DataTable
               :value="shiftDefinitions"
-              :rows="10"
               data-key="id"
               :loading="loading"
               show-gridlines

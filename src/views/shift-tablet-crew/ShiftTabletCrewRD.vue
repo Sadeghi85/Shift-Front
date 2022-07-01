@@ -34,6 +34,7 @@ import {
   ShiftTabletViewModel,
 } from "@/models/ShiftTabletModels";
 import { useGeneralStore } from "@/stores/general";
+import { pdate } from "@/helpers/utilities";
 
 const generalStore = useGeneralStore();
 
@@ -328,20 +329,17 @@ watch(
   () => route.params.shiftTabletId,
   async (shiftTabletId, prevShiftTabletId) => {
     if (shiftTabletId) {
-      await handleSearch();
+      await loadEssentials();
+    } else {
+      router.push({ name: "shift-tablet" });
     }
   },
   { immediate: true }
 );
 
 // lifecycle hooks
-onMounted(async () => {
-  if (!route.params.shiftTabletId) {
-    router.push({ name: "shift-tablet" });
-  }
-
-  await loadEssentials();
-});
+// onMounted(async () => {
+// });
 </script>
 
 <template>
@@ -396,7 +394,7 @@ onMounted(async () => {
               </div>
               <div class="col">
                 {{ t("shiftDate.title") }}:
-                <strong>{{ shiftTablet?.shiftDate }}</strong>
+                <strong>{{ pdate(shiftTablet?.shiftDate) }}</strong>
               </div>
               <div class="col">
                 {{ t("shift.startTime") }}:
@@ -499,7 +497,6 @@ onMounted(async () => {
           <div class="card">
             <DataTable
               :value="shiftTabletCrews"
-              :rows="10"
               data-key="id"
               :loading="loading"
               show-gridlines
