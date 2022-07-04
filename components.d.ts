@@ -20,6 +20,7 @@ declare module '@vue/runtime-core' {
     RouterView: typeof import('vue-router')['RouterView']
     ShiftDefinitionCU: typeof import('./src/views/shift-definition/ShiftDefinitionCU.vue')['default']
     ShiftDefinitionRD: typeof import('./src/views/shift-definition/ShiftDefinitionRD.vue')['default']
+    ShiftDefinitionTemplate: typeof import('./src/views/shift-definition/ShiftDefinitionTemplate.vue')['default']
     ShiftLocationCU: typeof import('./src/views/shift-location/ShiftLocationCU.vue')['default']
     ShiftLocationRD: typeof import('./src/views/shift-location/ShiftLocationRD.vue')['default']
     ShiftTabletCrewAgentReplacement: typeof import('./src/views/shift-tablet-crew/ShiftTabletCrewAgentReplacement.vue')['default']

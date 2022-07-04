@@ -256,7 +256,10 @@ watch(
                     :filter="true"
                     :show-clear="true"
                     :class="{ 'p-invalid': v$.portal.$invalid && submitted }"
-                  />
+                    ><template #empty>
+                      {{ t("dropdown.slot.empty") }}
+                    </template></Dropdown
+                  >
 
                   <label
                     for="portal"
@@ -279,7 +282,10 @@ watch(
                     :class="{
                       'p-invalid': v$.shiftType.$invalid && submitted,
                     }"
-                  />
+                    ><template #empty>
+                      {{ t("dropdown.slot.empty") }}
+                    </template></Dropdown
+                  >
 
                   <label
                     for="shiftType"

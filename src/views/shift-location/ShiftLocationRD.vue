@@ -305,7 +305,10 @@ onMounted(async () => {
                         option-label="title"
                         :filter="true"
                         :show-clear="true"
-                      />
+                        ><template #empty>
+                          {{ t("dropdown.slot.empty") }}
+                        </template></Dropdown
+                      >
 
                       <label for="portal">{{ t("portal.name") }}</label>
                     </div>
@@ -388,6 +391,9 @@ onMounted(async () => {
                   />
                 </template>
               </Column>
+              <template #empty>
+                {{ t("grid.slot.empty") }}
+              </template>
             </DataTable>
 
             <Paginator

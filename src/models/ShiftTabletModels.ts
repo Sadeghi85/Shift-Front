@@ -4,6 +4,7 @@ export interface ShiftTabletInputModel {
   shiftTime: string;
   shiftDate: string;
   shiftWorthPercent: string;
+  hasLivePrograms: boolean;
 }
 
 export interface ShiftTabletSearchModel {

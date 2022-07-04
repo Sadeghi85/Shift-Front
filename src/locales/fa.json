@@ -1,6 +1,5 @@
 {
-  "_": "elements",
-  "dropdown.placeholder.portal": "شبکه را انتخاب کنید",
+  "_": "input",
   "input.fromDate": "از تاریخ",
   "input.toDate": "تا تاریخ",
 
@@ -40,8 +39,13 @@
   "menu.item.excel": "فرمت اکسل",
   "menu.item.pdf": "فرمت pdf",
 
+  "_": "dropdown",
+  "dropdown.placeholder.portal": "شبکه را انتخاب کنید",
+  "dropdown.slot.empty": "هیچ اطلاعاتی وجود ندارد",
+
   "_": "grid",
   "grid.currentPageReportTemplate": "صفحه {0} از {1}",
+  "grid.slot.empty": "هیچ اطلاعاتی وجود ندارد",
   "grid.button.operation": "عملیات",
   "grid.button.shift-tablet-crew-assignment": "تعریف کارکنان شیفت",
   "grid.button.shift-tablet-crew-secretary": "گزارش منشی صحنه",

@@ -277,7 +277,9 @@ watch(
                       'p-invalid': v$.agent.$invalid && submitted,
                     }"
                     @filter="onDropdownAgentFilter"
-                  ></Dropdown
+                    ><template #empty>
+                      {{ t("dropdown.slot.empty") }}
+                    </template></Dropdown
                   ><label
                     for="agent"
                     :class="{
@@ -300,7 +302,9 @@ watch(
                       'p-invalid': v$.job.$invalid && submitted,
                     }"
                     @filter="onDropdownJobFilter"
-                  ></Dropdown
+                    ><template #empty>
+                      {{ t("dropdown.slot.empty") }}
+                    </template></Dropdown
                   ><label
                     for="job"
                     :class="{

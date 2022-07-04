@@ -424,7 +424,10 @@ onMounted(async () => {
                         :options="shiftDefinitions"
                         option-label="title"
                         :show-clear="true"
-                      />
+                        ><template #empty>
+                          {{ t("dropdown.slot.empty") }}
+                        </template></Dropdown
+                      >
 
                       <label for="shiftDefinition">{{
                         t("shiftDefinition.title")
@@ -605,6 +608,9 @@ onMounted(async () => {
                   />
                 </template>
               </Column>
+              <template #empty>
+                {{ t("grid.slot.empty") }}
+              </template>
             </DataTable>
 
             <Paginator

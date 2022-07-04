@@ -235,7 +235,10 @@ watch(
                     :class="{
                       'p-invalid': v$.portal.$invalid && submitted,
                     }"
-                  />
+                    ><template #empty>
+                      {{ t("dropdown.slot.empty") }}
+                    </template></Dropdown
+                  >
 
                   <label
                     for="portal"

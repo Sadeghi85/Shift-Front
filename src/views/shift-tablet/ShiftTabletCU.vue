@@ -87,6 +87,7 @@ const handleSubmit = (isFormValid: boolean) => {
           shiftDate: v$.value.shiftDate.$model,
           shiftWorthPercent: v$.value.shiftWorthPercent.$model,
           shiftTime: "00:00:00",
+          hasLivePrograms: false,
         } as ShiftTabletInputModel)
         .then((response) => {
           //console.log(response);
@@ -240,7 +241,10 @@ watch(
                     :class="{
                       'p-invalid': v$.shiftDefinition.$invalid && submitted,
                     }"
-                  />
+                    ><template #empty>
+                      {{ t("dropdown.slot.empty") }}
+                    </template></Dropdown
+                  >
 
                   <label
                     for="shiftDefinition"

@@ -391,7 +391,10 @@ watch(
                         option-label="fullName"
                         :filter="true"
                         @filter="onDropdownAgentFilter"
-                      />
+                        ><template #empty>
+                          {{ t("dropdown.slot.empty") }}
+                        </template></Dropdown
+                      >
 
                       <label for="agent">{{
                         t("shiftTabletCrew.agentFullname")
@@ -407,7 +410,10 @@ watch(
                         option-label="title"
                         :filter="true"
                         @filter="onDropdownJobFilter"
-                      />
+                        ><template #empty>
+                          {{ t("dropdown.slot.empty") }}
+                        </template></Dropdown
+                      >
 
                       <label for="job">{{
                         t("shiftTabletCrew.jobName")
@@ -501,6 +507,9 @@ watch(
                 style="width: 10%; min-width: 8rem"
                 body-style="text-align:center"
               ></Column>
+              <template #empty>
+                {{ t("grid.slot.empty") }}
+              </template>
             </DataTable>
 
             <Paginator
