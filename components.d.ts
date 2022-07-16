@@ -32,5 +32,4 @@ declare module '@vue/runtime-core' {
     Toast: typeof import('primevue/toast')['default']
     Toolbar: typeof import('primevue/toolbar')['default']
   }
-
 }
