@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-import { reactive, ref, onMounted, watch, computed } from "vue";
 import { useI18n } from "vue-i18n";
 import { required } from "@vuelidate/validators";
 import { useVuelidate } from "@vuelidate/core";

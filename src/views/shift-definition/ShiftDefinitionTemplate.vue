@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-import { ref, onMounted, reactive, watch } from "vue";
 import { useI18n } from "vue-i18n";
 import PortalService from "@/services/PortalService";
 import ShiftDefinitionService from "@/services/ShiftDefinitionService";

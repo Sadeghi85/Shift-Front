@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-import { reactive, ref, onMounted } from "vue";
 import { useI18n } from "vue-i18n";
 import useApiErrorStore from "@/stores/api-error";
 import ShiftTabletService from "@/services/ShiftTabletService";

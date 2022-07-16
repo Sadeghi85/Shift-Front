@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-import { ref, onMounted, watch, defineAsyncComponent, shallowRef } from "vue";
 import { useI18n } from "vue-i18n";
 
 import ShiftTabletService from "@/services/ShiftTabletService";

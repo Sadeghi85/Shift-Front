@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-import { reactive, ref, onMounted, watch, computed } from "vue";
 import { useI18n } from "vue-i18n";
 import { required } from "@vuelidate/validators";
 import { useVuelidate } from "@vuelidate/core";
@@ -81,8 +80,7 @@ const onDropdownAgentFilter = async (event: any) => {
         id: 0,
 
         desc: true,
-        firstName: event.value,
-        lastName: "",
+        name: event.value,
       } as AgentSearchModel)
     ).data;
   } catch (error: any) {
@@ -169,8 +167,7 @@ const fillForm = async () => {
         id: 0,
 
         desc: true,
-        firstName: "",
-        lastName: "",
+        name: "",
       } as AgentSearchModel)
     ).data;
 

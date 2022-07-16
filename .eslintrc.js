@@ -14,6 +14,7 @@ module.exports = {
     "plugin:prettier/recommended",
     "plugin:@typescript-eslint/recommended",
     "prettier",
+    "./.eslintrc-auto-import.json",
   ],
 
   parser: "vue-eslint-parser",

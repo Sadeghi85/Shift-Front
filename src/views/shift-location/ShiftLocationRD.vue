@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-import { ref, onMounted } from "vue";
 import { useI18n } from "vue-i18n";
 import PortalService from "@/services/PortalService";
 import ShiftLocationService from "@/services/ShiftLocationService";
