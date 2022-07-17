@@ -1,7 +1,7 @@
 import { Api } from "@/http-client/api";
-import { ApiResponseModel } from "@/models/ApiResponseModel";
-import { AgentViewModel, AgentSearchModel } from "@/models/AgentModels";
 import { AxiosInstance } from "axios";
+import { AgentSearchModel, AgentViewModel } from "@/models/AgentModels";
+import { IApiResponseModel } from "@/models/ApiResponseModel";
 
 export default class AgentService {
   private api: AxiosInstance;
@@ -11,7 +11,7 @@ export default class AgentService {
 
   public getAgents(body: AgentSearchModel) {
     return this.api
-      .post<ApiResponseModel<AgentViewModel>>("/Agent/GetAll", body)
+      .post<IApiResponseModel<AgentViewModel>>("/Agent/GetAll", body)
       .then((response) => {
         if (response.data.success == false) {
           throw {

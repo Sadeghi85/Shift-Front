@@ -1,22 +1,8 @@
 <script lang="ts" setup>
-import { useI18n } from "vue-i18n";
-import { required } from "@vuelidate/validators";
-import { useVuelidate } from "@vuelidate/core";
 import AgentService from "@/services/AgentService";
 import ResourceTypeService from "@/services/ResourceTypeService";
 import ShiftTabletCrewService from "@/services/ShiftTabletCrewService";
 import useApiErrorStore from "@/stores/api-error";
-import { useToast } from "primevue/usetoast";
-import {
-  ShiftTabletCrewViewModel,
-  ShiftTabletCrewInputModel,
-  ShiftTabletCrewSearchModel,
-} from "@/models/ShiftTabletCrewModels";
-import { AgentSearchModel, AgentViewModel } from "@/models/AgentModels";
-import {
-  ResourceTypeSearchModel,
-  ResourceTypeViewModel,
-} from "@/models/ResourceTypeModels";
 import { useGeneralStore } from "@/stores/general";
 
 const generalStore = useGeneralStore();
@@ -38,12 +24,12 @@ const apiErrorStore = useApiErrorStore();
 // reactive state
 const submitted = ref(false);
 
-const agents = ref<AgentViewModel[]>();
-const jobs = ref<ResourceTypeViewModel[]>();
+const agents = ref<InstanceType<typeof AgentViewModel>[]>();
+const jobs = ref<InstanceType<typeof ResourceTypeViewModel>[]>();
 
 const state = reactive({
-  agent: ref<AgentViewModel>(),
-  job: ref<ResourceTypeViewModel>(),
+  agent: ref<InstanceType<typeof AgentViewModel>>(),
+  job: ref<InstanceType<typeof ResourceTypeViewModel>>(),
 });
 
 const rules = {
@@ -73,15 +59,15 @@ const showSuccess = (detail: string) => {
 const onDropdownAgentFilter = async (event: any) => {
   try {
     agents.value = (
-      await agentService.value.getAgents({
-        pageNo: 0,
-        pageSize: generalStore.dropdownItemsCount,
-        orderKey: "id",
-        id: 0,
-
-        desc: true,
-        name: event.value,
-      } as AgentSearchModel)
+      await agentService.value.getAgents(
+        new AgentSearchModel({
+          pageNo: 0,
+          pageSize: generalStore.dropdownItemsCount,
+          orderKey: "id",
+          desc: true,
+          name: event.value,
+        })
+      )
     ).data;
   } catch (error: any) {
     if (typeof error.message === "object") {
@@ -95,14 +81,15 @@ const onDropdownAgentFilter = async (event: any) => {
 const onDropdownJobFilter = async (event: any) => {
   try {
     jobs.value = (
-      await jobService.value.getResourceTypes({
-        pageNo: 0,
-        pageSize: generalStore.dropdownItemsCount,
-        orderKey: "id",
-        id: 0,
-        desc: true,
-        resourceName: event.value,
-      } as ResourceTypeSearchModel)
+      await jobService.value.getResourceTypes(
+        new ResourceTypeSearchModel({
+          pageNo: 0,
+          pageSize: generalStore.dropdownItemsCount,
+          orderKey: "id",
+          desc: true,
+          resourceName: event.value,
+        })
+      )
     ).data;
   } catch (error: any) {
     if (typeof error.message === "object") {
@@ -123,14 +110,14 @@ const handleSubmit = (isFormValid: boolean) => {
       //
     } else {
       shiftTabletCrewService.value
-        .updateShiftTabletCrew({
-          id: props.shiftTabletCrewId,
-          agentId: v$.value.agent.$model!.id,
-          entranceTime: null,
-          exitTime: null,
-          shiftTabletId: props.shiftTabletId,
-          resourceTypeId: v$.value.job.$model!.id,
-        } as ShiftTabletCrewInputModel)
+        .updateShiftTabletCrew(
+          new ShiftTabletCrewInputModel({
+            id: props.shiftTabletCrewId,
+            agentId: v$.value.agent.$model?.id,
+            shiftTabletId: props.shiftTabletId,
+            resourceTypeId: v$.value.job.$model?.id,
+          })
+        )
         .then((response) => {
           //console.log(response);
           if (!response.data.success) {
@@ -160,52 +147,30 @@ const resetForm = () => {
 const fillForm = async () => {
   try {
     agents.value = (
-      await agentService.value.getAgents({
-        pageNo: 0,
-        pageSize: generalStore.dropdownItemsCount,
-        orderKey: "id",
-        id: 0,
-
-        desc: true,
-        name: "",
-      } as AgentSearchModel)
+      await agentService.value.getAgents(
+        new AgentSearchModel({
+          pageSize: generalStore.dropdownItemsCount,
+        })
+      )
     ).data;
 
     jobs.value = (
-      await jobService.value.getResourceTypes({
-        pageNo: 0,
-        pageSize: generalStore.dropdownItemsCount,
-        orderKey: "id",
-        id: 0,
-        desc: true,
-        resourceName: "",
-      } as ResourceTypeSearchModel)
+      await jobService.value.getResourceTypes(
+        new ResourceTypeSearchModel({
+          pageSize: generalStore.dropdownItemsCount,
+        })
+      )
     ).data;
 
     if (props.shiftTabletCrewId == 0) {
       resetForm();
     } else {
       const shiftTabletCrew = (
-        await shiftTabletCrewService.value.getShiftTabletCrews({
-          pageSize: 1,
-          pageNo: 0,
-          id: props.shiftTabletCrewId,
-          orderKey: "id",
-          desc: true,
-
-          agentId: 0,
-          agentName: "",
-          entranceTime: "",
-          exitTime: "",
-          fromDate: "",
-          isReplaced: null,
-          resourceTypeId: 0,
-          shifTabletId: 0,
-          shiftTitle: "",
-          title: "",
-          toDate: "",
-          isDeleted: false,
-        } as ShiftTabletCrewSearchModel)
+        await shiftTabletCrewService.value.getShiftTabletCrews(
+          new ShiftTabletCrewSearchModel({
+            id: props.shiftTabletCrewId,
+          })
+        )
       ).data[0];
 
       state.agent = agents.value.find((x) => x.id == shiftTabletCrew.agentId);

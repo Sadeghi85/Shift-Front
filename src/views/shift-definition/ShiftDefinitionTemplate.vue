@@ -1,33 +1,10 @@
 <script lang="ts" setup>
-import { useI18n } from "vue-i18n";
 import PortalService from "@/services/PortalService";
 import ShiftDefinitionService from "@/services/ShiftDefinitionService";
 import useApiErrorStore from "@/stores/api-error";
-import { PortalSearchModel, PortalViewModel } from "@/models/PortalModels";
-import { useToast } from "primevue/usetoast";
-import {
-  ShiftDefinitionViewModel,
-  ShiftDefinitionInputModel,
-  ShiftDefinitionSearchModel,
-} from "@/models/ShiftDefinitionModels";
-import { ShiftTypeViewModel } from "@/models/ShiftTypeModels";
-
-import ShiftDefinitionCU from "@/views/shift-definition/ShiftDefinitionCU.vue";
-import { useConfirm } from "primevue/useconfirm";
 import { useGeneralStore } from "@/stores/general";
 import ResourceTypeService from "@/services/ResourceTypeService";
-import useVuelidate from "@vuelidate/core";
-import { required } from "@vuelidate/validators";
-import {
-  ResourceTypeSearchModel,
-  ResourceTypeViewModel,
-} from "@/models/ResourceTypeModels";
 import ShiftDefinitionTemplateService from "@/services/ShiftDefinitionTemplateService";
-import {
-  ShiftDefinitionTemplateInputModel,
-  ShiftDefinitionTemplateSearchModel,
-  ShiftDefinitionTemplateViewModel,
-} from "@/models/ShiftDefinitionTemplateModels";
 
 const props = defineProps({
   shiftDefinitionId: {
@@ -48,7 +25,7 @@ const apiErrorStore = useApiErrorStore();
 
 const pageSize = ref(generalStore.rowPerPage);
 const pageNumber = ref(0);
-const loading = ref(false);
+const loading = ref(true);
 const totalRecords = ref(0);
 
 const showSuccess = (detail: string) => {
@@ -81,9 +58,11 @@ const gridTemplateOperationMenuItems = ref([
             defaultFocus: "reject",
             accept: () => {
               shiftDefinitionTemplateService.value
-                .deleteShiftDefinitionTemplate({
-                  id: gridTemplateOperationMenu.value.dataId,
-                } as ShiftDefinitionTemplateInputModel)
+                .deleteShiftDefinitionTemplate(
+                  new ShiftDefinitionTemplateInputModel({
+                    id: gridTemplateOperationMenu.value.dataId,
+                  })
+                )
                 .then(async (response) => {
                   //console.log(response);
                   if (!response.data.success) {
@@ -115,11 +94,12 @@ const toggleGridTemplateOperationMenu = (event: any, id: number) => {
   gridTemplateOperationMenu.value.toggle(event);
 };
 
-const shiftDefinitionTemplates = ref<ShiftDefinitionTemplateViewModel[]>();
+const shiftDefinitionTemplates =
+  ref<InstanceType<typeof ShiftDefinitionTemplateViewModel>[]>();
 const submitted = ref(false);
-const jobs = ref<ResourceTypeViewModel[]>();
+const jobs = ref<InstanceType<typeof ResourceTypeViewModel>[]>();
 const state = reactive({
-  job: ref<ResourceTypeViewModel>(),
+  job: ref<InstanceType<typeof ResourceTypeViewModel>>(),
 });
 const rules = {
   job: { required },
@@ -130,19 +110,13 @@ const shiftDefinitionTemplateService = ref(
   new ShiftDefinitionTemplateService()
 );
 async function loadShiftDefinitionTemplates(
-  searchParams?: ShiftDefinitionTemplateSearchModel
+  searchParams?: InstanceType<typeof ShiftDefinitionTemplateSearchModel>
 ) {
   try {
     if (!searchParams) {
-      searchParams = {
-        pageSize: 2147483647, // Int32.MaxValue
-        pageNo: 0,
-        orderKey: "id",
-        desc: true,
-        resourceTypeId: 0,
+      searchParams = new ShiftDefinitionTemplateSearchModel({
         shiftId: props.shiftDefinitionId,
-        isDeleted: false,
-      } as ShiftDefinitionTemplateSearchModel;
+      });
     }
 
     const shiftDefinitionTemplatesResponse =
@@ -166,11 +140,12 @@ const handleTemplateSubmit = (isFormValid: boolean) => {
     return;
   } else {
     shiftDefinitionTemplateService.value
-      .createShiftDefinitionTemplate({
-        id: 0,
-        shiftId: props.shiftDefinitionId,
-        resourceTypeId: v$.value.job.$model!.id,
-      } as ShiftDefinitionTemplateInputModel)
+      .createShiftDefinitionTemplate(
+        new ShiftDefinitionTemplateInputModel({
+          shiftId: props.shiftDefinitionId,
+          resourceTypeId: v$.value.job.$model?.id,
+        })
+      )
       .then(async (response) => {
         //console.log(response);
         if (!response.data.success) {
@@ -195,14 +170,12 @@ const resetTemplateForm = () => {
 const onDropdownJobFilter = async (event: any) => {
   try {
     jobs.value = (
-      await jobService.value.getResourceTypes({
-        pageNo: 0,
-        pageSize: generalStore.dropdownItemsCount,
-        orderKey: "id",
-        id: 0,
-        desc: true,
-        resourceName: event.value,
-      } as ResourceTypeSearchModel)
+      await jobService.value.getResourceTypes(
+        new ResourceTypeSearchModel({
+          pageSize: generalStore.dropdownItemsCount,
+          resourceName: event.value,
+        })
+      )
     ).data;
   } catch (error: any) {
     if (typeof error.message === "object") {
@@ -229,14 +202,11 @@ const loadEssentials = async () => {
   try {
     // jobs
     jobs.value = (
-      await jobService.value.getResourceTypes({
-        pageSize: generalStore.dropdownItemsCount,
-        orderKey: "id",
-        pageNo: 0,
-        desc: true,
-        id: 0,
-        resourceName: "",
-      } as ResourceTypeSearchModel)
+      await jobService.value.getResourceTypes(
+        new ResourceTypeSearchModel({
+          pageSize: generalStore.dropdownItemsCount,
+        })
+      )
     ).data;
 
     // shiftDefinitionTemplates

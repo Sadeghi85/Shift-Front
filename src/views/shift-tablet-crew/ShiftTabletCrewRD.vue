@@ -1,29 +1,9 @@
 <script lang="ts" setup>
-import { useI18n } from "vue-i18n";
-
 import ShiftTabletService from "@/services/ShiftTabletService";
 import ShiftTabletCrewService from "@/services/ShiftTabletCrewService";
-
 import useApiErrorStore from "@/stores/api-error";
-import {
-  ShiftTabletCrewInputModel,
-  ShiftTabletCrewSearchModel,
-  ShiftTabletCrewViewModel,
-} from "@/models/ShiftTabletCrewModels";
-import { useToast } from "primevue/usetoast";
-import { useConfirm } from "primevue/useconfirm";
-import {
-  ResourceTypeSearchModel,
-  ResourceTypeViewModel,
-} from "@/models/ResourceTypeModels";
-import { AgentSearchModel, AgentViewModel } from "@/models/AgentModels";
-import { useRouter, useRoute } from "vue-router";
 import AgentService from "@/services/AgentService";
 import ResourceTypeService from "@/services/ResourceTypeService";
-import {
-  ShiftTabletSearchModel,
-  ShiftTabletViewModel,
-} from "@/models/ShiftTabletModels";
 import { useGeneralStore } from "@/stores/general";
 import { pdate } from "@/helpers/utilities";
 
@@ -39,7 +19,7 @@ const apiErrorStore = useApiErrorStore();
 
 const pageSize = ref(generalStore.rowPerPage);
 const pageNumber = ref(0);
-const loading = ref(false);
+const loading = ref(true);
 const totalRecords = ref(0);
 
 const cuShiftTabletCrewId = ref(0);
@@ -107,9 +87,11 @@ const gridOperationMenuItems = ref([
             defaultFocus: "reject",
             accept: () => {
               shiftTabletCrewService.value
-                .deleteShiftTabletCrew({
-                  id: gridOperationMenu.value.dataId,
-                } as ShiftTabletCrewInputModel)
+                .deleteShiftTabletCrew(
+                  new ShiftTabletCrewInputModel({
+                    id: gridOperationMenu.value.dataId,
+                  })
+                )
                 .then((response) => {
                   //console.log(response);
                   if (!response.data.success) {
@@ -152,37 +134,26 @@ const showSuccess = (detail: string) => {
   });
 };
 
-const shiftTabletCrews = ref<ShiftTabletCrewViewModel[]>();
-const jobs = ref<ResourceTypeViewModel[]>();
-const agents = ref<AgentViewModel[]>();
-const agent = ref<AgentViewModel>();
-const job = ref<ResourceTypeViewModel>();
-const shiftTablet = ref<ShiftTabletViewModel>();
+const shiftTabletCrews = ref<InstanceType<typeof ShiftTabletCrewViewModel>[]>();
+const jobs = ref<InstanceType<typeof ResourceTypeViewModel>[]>();
+const job = ref<InstanceType<typeof ResourceTypeViewModel>>();
+const agents = ref<InstanceType<typeof AgentViewModel>[]>();
+const agent = ref<InstanceType<typeof AgentViewModel>>();
+const shiftTablet = ref<InstanceType<typeof ShiftTabletViewModel>>();
 
-async function loadShiftTabletCrews(searchParams?: ShiftTabletCrewSearchModel) {
+async function loadShiftTabletCrews(
+  searchParams?: InstanceType<typeof ShiftTabletCrewSearchModel>
+) {
   try {
     loading.value = true;
 
     if (!searchParams) {
-      searchParams = {
+      searchParams = new ShiftTabletCrewSearchModel({
         pageSize: pageSize.value,
         pageNo: pageNumber.value,
-        title: "",
-        agentId: 0,
-        agentName: "",
-        desc: true,
-        entranceTime: "",
-        exitTime: "",
-        fromDate: "",
-        id: 0,
-        isReplaced: null,
         orderKey: "id",
-        resourceTypeId: 0,
-        shifTabletId: 0,
-        shiftTitle: "",
-        toDate: "",
-        isDeleted: false,
-      } as ShiftTabletCrewSearchModel;
+        desc: true,
+      });
     }
 
     const shiftTabletCrewsResponse =
@@ -209,28 +180,18 @@ const onPage = async (event: any) => {
 };
 
 const handleSearch = async () => {
-  await loadShiftTabletCrews({
-    shifTabletId: +route.params.shiftTabletId,
-    pageSize: pageSize.value,
-    pageNo: pageNumber.value,
-    orderKey: "id",
-    desc: true,
+  await loadShiftTabletCrews(
+    new ShiftTabletCrewSearchModel({
+      shifTabletId: +route.params.shiftTabletId,
+      pageSize: pageSize.value,
+      pageNo: pageNumber.value,
+      orderKey: "id",
+      desc: true,
 
-    agentId: agent.value?.id ?? 0,
-    resourceTypeId: job.value?.id ?? 0,
-
-    agentName: "",
-    entranceTime: "",
-    exitTime: "",
-    fromDate: "",
-    toDate: "",
-    shiftTitle: "",
-    isReplaced: null,
-    id: 0,
-
-    title: "",
-    isDeleted: false,
-  } as ShiftTabletCrewSearchModel);
+      agentId: agent.value?.id ?? 0,
+      resourceTypeId: job.value?.id ?? 0,
+    })
+  );
 };
 
 const shiftTabletService = ref(new ShiftTabletService());
@@ -260,14 +221,14 @@ const updateIsDone = async () => {
 const onDropdownAgentFilter = async (event: any) => {
   try {
     agents.value = (
-      await agentService.value.getAgents({
-        pageNo: 0,
-        pageSize: generalStore.dropdownItemsCount,
-        orderKey: "id",
-        id: 0,
-        desc: true,
-        name: event.value,
-      } as AgentSearchModel)
+      await agentService.value.getAgents(
+        new AgentSearchModel({
+          pageSize: generalStore.dropdownItemsCount,
+          orderKey: "id",
+          desc: true,
+          name: event.value,
+        })
+      )
     ).data;
   } catch (error: any) {
     if (typeof error.message === "object") {
@@ -281,14 +242,14 @@ const onDropdownAgentFilter = async (event: any) => {
 const onDropdownJobFilter = async (event: any) => {
   try {
     jobs.value = (
-      await jobService.value.getResourceTypes({
-        pageNo: 0,
-        pageSize: generalStore.dropdownItemsCount,
-        orderKey: "id",
-        id: 0,
-        desc: true,
-        resourceName: event.value,
-      } as ResourceTypeSearchModel)
+      await jobService.value.getResourceTypes(
+        new ResourceTypeSearchModel({
+          pageSize: generalStore.dropdownItemsCount,
+          orderKey: "id",
+          desc: true,
+          resourceName: event.value,
+        })
+      )
     ).data;
   } catch (error: any) {
     if (typeof error.message === "object") {
@@ -303,47 +264,35 @@ const loadEssentials = async () => {
   try {
     // shiftTablet
     shiftTablet.value = (
-      await shiftTabletService.value.getShiftTablets({
-        id: +route.params.shiftTabletId,
-        orderKey: "id",
-        desc: true,
-        pageSize: 1,
-        pageNo: 0,
-        title: "",
-        fromDate: "",
-        toDate: "",
-        productionTypeId: 0,
-        shiftTitle: "",
-        shiftId: 0,
-        shiftTabletCrewId: 0,
-        shiftDate: "",
-        shiftWorthPercent: "",
-        isDeleted: false,
-      } as ShiftTabletSearchModel)
+      await shiftTabletService.value.getShiftTablets(
+        new ShiftTabletSearchModel({
+          id: +route.params.shiftTabletId,
+          orderKey: "id",
+          desc: true,
+        })
+      )
     ).data[0];
 
     // agents
     agents.value = (
-      await agentService.value.getAgents({
-        pageSize: generalStore.dropdownItemsCount,
-        orderKey: "id",
-        pageNo: 0,
-        desc: true,
-        id: 0,
-        name: "",
-      } as AgentSearchModel)
+      await agentService.value.getAgents(
+        new AgentSearchModel({
+          pageSize: generalStore.dropdownItemsCount,
+          orderKey: "id",
+          desc: true,
+        })
+      )
     ).data;
 
     // jobs
     jobs.value = (
-      await jobService.value.getResourceTypes({
-        pageSize: generalStore.dropdownItemsCount,
-        orderKey: "id",
-        pageNo: 0,
-        desc: true,
-        id: 0,
-        resourceName: "",
-      } as ResourceTypeSearchModel)
+      await jobService.value.getResourceTypes(
+        new ResourceTypeSearchModel({
+          pageSize: generalStore.dropdownItemsCount,
+          orderKey: "id",
+          desc: true,
+        })
+      )
     ).data;
 
     // shiftTabletCrews

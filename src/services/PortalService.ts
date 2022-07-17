@@ -1,7 +1,7 @@
 import { Api } from "@/http-client/api";
-import { ApiResponseModel } from "@/models/ApiResponseModel";
-import { PortalViewModel, PortalSearchModel } from "@/models/PortalModels";
 import { AxiosInstance } from "axios";
+import { IApiResponseModel } from "@/models/ApiResponseModel";
+import { PortalViewModel, PortalSearchModel } from "@/models/PortalModels";
 
 export default class PortalService {
   private api: AxiosInstance;
@@ -11,7 +11,7 @@ export default class PortalService {
 
   public getPortals(body: PortalSearchModel) {
     return this.api
-      .post<ApiResponseModel<PortalViewModel>>("/Portal/GetAll", body)
+      .post<IApiResponseModel<PortalViewModel>>("/Portal/GetAll", body)
       .then((response) => {
         if (response.data.success == false) {
           throw {

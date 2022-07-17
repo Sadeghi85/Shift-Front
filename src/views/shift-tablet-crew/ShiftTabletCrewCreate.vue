@@ -1,35 +1,11 @@
 <script lang="ts" setup>
-import { useI18n } from "vue-i18n";
-import { required } from "@vuelidate/validators";
-import { useVuelidate } from "@vuelidate/core";
 import AgentService from "@/services/AgentService";
 import ResourceTypeService from "@/services/ResourceTypeService";
 import ShiftTabletCrewService from "@/services/ShiftTabletCrewService";
 import useApiErrorStore from "@/stores/api-error";
-import { useToast } from "primevue/usetoast";
-import {
-  ShiftTabletCrewViewModel,
-  ShiftTabletCrewInputModel,
-  ShiftTabletCrewSearchModel,
-} from "@/models/ShiftTabletCrewModels";
-import { AgentSearchModel, AgentViewModel } from "@/models/AgentModels";
-import {
-  ResourceTypeSearchModel,
-  ResourceTypeViewModel,
-} from "@/models/ResourceTypeModels";
 import { useGeneralStore } from "@/stores/general";
 import ShiftDefinitionTemplateService from "@/services/ShiftDefinitionTemplateService";
-import {
-  ShiftDefinitionTemplateInputModel,
-  ShiftDefinitionTemplateSearchModel,
-  ShiftDefinitionTemplateViewModel,
-} from "@/models/ShiftDefinitionTemplateModels";
 import ShiftTabletService from "@/services/ShiftTabletService";
-import {
-  ShiftTabletViewModel,
-  ShiftTabletInputModel,
-  ShiftTabletSearchModel,
-} from "@/models/ShiftTabletModels";
 
 const generalStore = useGeneralStore();
 
@@ -51,12 +27,12 @@ const apiErrorStore = useApiErrorStore();
 // reactive state
 const submitted = ref(false);
 
-const agents = ref<AgentViewModel[]>();
-const jobs = ref<ShiftDefinitionTemplateViewModel[]>();
+const agents = ref<InstanceType<typeof AgentViewModel>[]>();
+const jobs = ref<InstanceType<typeof ShiftDefinitionTemplateViewModel>[]>();
 
 const state = reactive({
-  agent: ref<AgentViewModel>(),
-  job: ref<ShiftDefinitionTemplateViewModel>(),
+  agent: ref<InstanceType<typeof AgentViewModel>>(),
+  job: ref<InstanceType<typeof ShiftDefinitionTemplateViewModel>>(),
 });
 
 const rules = {
@@ -90,14 +66,14 @@ const showSuccess = (detail: string) => {
 const onDropdownAgentFilter = async (event: any) => {
   try {
     agents.value = (
-      await agentService.value.getAgents({
-        pageNo: 0,
-        pageSize: generalStore.dropdownItemsCount,
-        orderKey: "id",
-        id: 0,
-        desc: true,
-        name: event.value,
-      } as AgentSearchModel)
+      await agentService.value.getAgents(
+        new AgentSearchModel({
+          pageSize: generalStore.dropdownItemsCount,
+          orderKey: "id",
+          desc: true,
+          name: event.value,
+        })
+      )
     ).data;
   } catch (error: any) {
     if (typeof error.message === "object") {
@@ -116,14 +92,13 @@ const handleSubmit = (isFormValid: boolean) => {
   } else {
     if (props.shiftTabletCrewId == 0) {
       shiftTabletCrewService.value
-        .createShiftTabletCrew({
-          id: 0,
-          agentId: v$.value.agent.$model!.id,
-          entranceTime: null,
-          exitTime: null,
-          shiftTabletId: props.shiftTabletId,
-          resourceTypeId: v$.value.job.$model!.resourceId,
-        } as ShiftTabletCrewInputModel)
+        .createShiftTabletCrew(
+          new ShiftTabletCrewInputModel({
+            agentId: v$.value.agent.$model?.id,
+            shiftTabletId: props.shiftTabletId,
+            resourceTypeId: v$.value.job.$model?.resourceId,
+          })
+        )
         .then((response) => {
           //console.log(response);
           if (!response.data.success) {
@@ -155,36 +130,31 @@ const resetForm = () => {
 const fillForm = async () => {
   try {
     agents.value = (
-      await agentService.value.getAgents({
-        pageNo: 0,
-        pageSize: generalStore.dropdownItemsCount,
-        orderKey: "id",
-        id: 0,
-        desc: true,
-        name: "",
-      } as AgentSearchModel)
+      await agentService.value.getAgents(
+        new AgentSearchModel({
+          pageSize: generalStore.dropdownItemsCount,
+          orderKey: "id",
+          desc: true,
+        })
+      )
     ).data;
 
     const shiftDefititionId = (
-      await shiftTabletService.value.getShiftTablets({
-        pageNo: 0,
-        pageSize: 1,
-        id: props.shiftTabletId,
-        isDeleted: false,
-        shiftId: 0,
-      } as ShiftTabletSearchModel)
+      await shiftTabletService.value.getShiftTablets(
+        new ShiftTabletSearchModel({
+          id: props.shiftTabletId,
+        })
+      )
     ).data[0].shiftId;
 
     jobs.value = (
-      await shiftDefinitionTemplateService.value.getShiftDefinitionTemplates({
-        pageNo: 0,
-        pageSize: 2147483647, // Int32.MaxValue
-        shiftId: shiftDefititionId,
-        orderKey: "id",
-        desc: true,
-        resourceTypeId: 0,
-        isDeleted: false,
-      } as ShiftDefinitionTemplateSearchModel)
+      await shiftDefinitionTemplateService.value.getShiftDefinitionTemplates(
+        new ShiftDefinitionTemplateSearchModel({
+          shiftId: shiftDefititionId,
+          orderKey: "id",
+          desc: true,
+        })
+      )
     ).data;
 
     if (props.shiftTabletCrewId == 0) {

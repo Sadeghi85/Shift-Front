@@ -1,11 +1,11 @@
 import { Api } from "@/http-client/api";
-import { ApiResponseModel } from "@/models/ApiResponseModel";
+import { AxiosInstance } from "axios";
+import { IApiResponseModel } from "@/models/ApiResponseModel";
 import {
   ShiftTabletViewModel,
   ShiftTabletSearchModel,
   ShiftTabletInputModel,
 } from "@/models/ShiftTabletModels";
-import { AxiosInstance } from "axios";
 
 export default class ShiftTabletService {
   private api: AxiosInstance;
@@ -15,7 +15,10 @@ export default class ShiftTabletService {
 
   public getShiftTablets(body: ShiftTabletSearchModel) {
     return this.api
-      .post<ApiResponseModel<ShiftTabletViewModel>>("/ShiftTablet/GetAll", body)
+      .post<IApiResponseModel<ShiftTabletViewModel>>(
+        "/ShiftTablet/GetAll",
+        body
+      )
       .then((response) => {
         if (response.data.success == false) {
           throw {

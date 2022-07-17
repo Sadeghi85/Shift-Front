@@ -1,17 +1,7 @@
 <script lang="ts" setup>
-import { useI18n } from "vue-i18n";
 import PortalService from "@/services/PortalService";
 import ShiftLocationService from "@/services/ShiftLocationService";
-import { PortalViewModel, PortalSearchModel } from "@/models/PortalModels";
-import { useToast } from "primevue/usetoast";
-import { useConfirm } from "primevue/useconfirm";
-import {
-  ShiftLocationViewModel,
-  ShiftLocationInputModel,
-  ShiftLocationSearchModel,
-} from "@/models/ShiftLocationModels";
 import useApiErrorStore from "@/stores/api-error";
-import ShiftLocationCU from "@/views/shift-location/ShiftLocationCU.vue";
 import { useGeneralStore } from "@/stores/general";
 
 const generalStore = useGeneralStore();
@@ -25,7 +15,7 @@ const apiErrorStore = useApiErrorStore();
 
 const pageSize = ref(generalStore.rowPerPage);
 const pageNumber = ref(0);
-const loading = ref(false);
+const loading = ref(true);
 const totalRecords = ref(0);
 
 const cuShiftLocationId = ref(0);
@@ -83,9 +73,11 @@ const gridOperationMenuItems = ref([
             defaultFocus: "reject",
             accept: () => {
               shiftLocationService.value
-                .deleteShiftLocation({
-                  id: gridOperationMenu.value.dataId,
-                } as ShiftLocationInputModel)
+                .deleteShiftLocation(
+                  new ShiftLocationInputModel({
+                    id: gridOperationMenu.value.dataId,
+                  })
+                )
                 .then((response) => {
                   //console.log(response);
                   if (!response.data.success) {
@@ -118,8 +110,8 @@ const toggleGridOperationMenu = (event: any, id: number) => {
   gridOperationMenu.value.toggle(event);
 };
 
-const shiftLocations = ref<ShiftLocationViewModel[]>();
-const portals = ref<PortalViewModel[]>();
+const shiftLocations = ref<InstanceType<typeof ShiftLocationViewModel>[]>();
+const portals = ref<InstanceType<typeof PortalViewModel>[]>();
 
 const showSuccess = (detail: string) => {
   toast.add({
@@ -132,7 +124,7 @@ const showSuccess = (detail: string) => {
 };
 
 const locationName = ref("");
-const portal = ref<PortalViewModel>();
+const portal = ref<InstanceType<typeof PortalViewModel>>();
 
 ////////
 
@@ -148,18 +140,17 @@ const onPage = async (event: any) => {
   await handleSearch();
 };
 
-async function loadShiftLocations(searchParams?: ShiftLocationSearchModel) {
+async function loadShiftLocations(
+  searchParams?: InstanceType<typeof ShiftLocationSearchModel>
+) {
   try {
     loading.value = true;
 
     if (!searchParams) {
-      searchParams = {
+      searchParams = new ShiftLocationSearchModel({
         pageSize: pageSize.value,
         pageNo: pageNumber.value,
-        portalId: 0,
-        title: "",
-        isDeleted: false,
-      } as ShiftLocationSearchModel;
+      });
     }
 
     const shiftLocationResponse =
@@ -178,15 +169,17 @@ async function loadShiftLocations(searchParams?: ShiftLocationSearchModel) {
 }
 
 const handleSearch = async () => {
-  await loadShiftLocations({
-    pageSize: pageSize.value,
-    pageNo: pageNumber.value,
-    portalId: portal.value?.id ?? 0,
-    title: locationName.value ?? "",
-    orderKey: "id",
-    desc: true,
-    isDeleted: false,
-  } as ShiftLocationSearchModel);
+  await loadShiftLocations(
+    new ShiftLocationSearchModel({
+      pageSize: pageSize.value,
+      pageNo: pageNumber.value,
+      portalId: portal.value?.id ?? 0,
+      title: locationName.value ?? "",
+      orderKey: "id",
+      desc: true,
+      isDeleted: false,
+    })
+  );
 };
 
 const resetSearchForm = async () => {
@@ -212,14 +205,7 @@ const loadEssentials = async () => {
   try {
     // portals
     portals.value = (
-      await portalService.value.getPortals({
-        pageSize: 2147483647, // Int32.MaxValue
-        pageNo: 0,
-        orderKey: "id",
-        desc: true,
-        portalId: 0,
-        title: "",
-      } as PortalSearchModel)
+      await portalService.value.getPortals(new PortalSearchModel({}))
     ).data;
 
     // shiftLocations

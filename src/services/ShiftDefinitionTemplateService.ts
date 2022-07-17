@@ -1,11 +1,11 @@
 import { Api } from "@/http-client/api";
-import { ApiResponseModel } from "@/models/ApiResponseModel";
+import { AxiosInstance } from "axios";
+import { IApiResponseModel } from "@/models/ApiResponseModel";
 import {
   ShiftDefinitionTemplateViewModel,
   ShiftDefinitionTemplateSearchModel,
   ShiftDefinitionTemplateInputModel,
 } from "@/models/ShiftDefinitionTemplateModels";
-import { AxiosInstance } from "axios";
 
 export default class ShiftDefinitionService {
   private api: AxiosInstance;
@@ -15,7 +15,7 @@ export default class ShiftDefinitionService {
 
   public getShiftDefinitionTemplates(body: ShiftDefinitionTemplateSearchModel) {
     return this.api
-      .post<ApiResponseModel<ShiftDefinitionTemplateViewModel>>(
+      .post<IApiResponseModel<ShiftDefinitionTemplateViewModel>>(
         "/Shift/NeededResource/GetAll",
         body
       )

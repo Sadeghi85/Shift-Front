@@ -1,16 +1,6 @@
 <script lang="ts" setup>
-import { useI18n } from "vue-i18n";
-import { required } from "@vuelidate/validators";
-import { useVuelidate } from "@vuelidate/core";
 import PortalService from "@/services/PortalService";
 import ShiftLocationService from "@/services/ShiftLocationService";
-import { PortalViewModel, PortalSearchModel } from "@/models/PortalModels";
-import { useToast } from "primevue/usetoast";
-import {
-  ShiftLocationViewModel,
-  ShiftLocationInputModel,
-  ShiftLocationSearchModel,
-} from "@/models/ShiftLocationModels";
 import useApiErrorStore from "@/stores/api-error";
 
 // interface Props {
@@ -33,12 +23,11 @@ const apiErrorStore = useApiErrorStore();
 // reactive state
 const submitted = ref(false);
 
-const portals = ref<PortalViewModel[]>();
+const portals = ref<InstanceType<typeof PortalViewModel>[]>();
 
 const state = reactive({
   locationName: "",
-  //portal: undefined as PortalViewModel | undefined,
-  portal: ref<PortalViewModel>(),
+  portal: ref<InstanceType<typeof PortalViewModel>>(),
 });
 
 const rules = {
@@ -72,11 +61,12 @@ const handleSubmit = (isFormValid: boolean) => {
   } else {
     if (props.shiftLocationId == 0) {
       shiftLocationService.value
-        .createShiftLocation({
-          id: 0,
-          title: v$.value.locationName.$model,
-          portalId: v$.value.portal.$model!.id,
-        } as ShiftLocationInputModel)
+        .createShiftLocation(
+          new ShiftLocationInputModel({
+            title: v$.value.locationName.$model,
+            portalId: v$.value.portal.$model?.id,
+          })
+        )
         .then((response) => {
           //console.log(response);
           if (!response.data.success) {
@@ -94,11 +84,13 @@ const handleSubmit = (isFormValid: boolean) => {
         });
     } else {
       shiftLocationService.value
-        .updateShiftLocation({
-          id: props.shiftLocationId,
-          title: v$.value.locationName.$model,
-          portalId: v$.value.portal.$model!.id,
-        } as ShiftLocationInputModel)
+        .updateShiftLocation(
+          new ShiftLocationInputModel({
+            id: props.shiftLocationId,
+            title: v$.value.locationName.$model,
+            portalId: v$.value.portal.$model?.id,
+          })
+        )
         .then((response) => {
           //console.log(response);
           if (!response.data.success) {
@@ -129,31 +121,22 @@ const fillForm = async () => {
   try {
     // portals
     portals.value = (
-      await portalService.value.getPortals({
-        pageSize: 2147483647, // Int32.MaxValue
-        pageNo: 0,
-        orderKey: "id",
-        desc: true,
-        portalId: 0,
-        title: "",
-      } as PortalSearchModel)
+      await portalService.value.getPortals(new PortalSearchModel({}))
     ).data;
 
     if (props.shiftLocationId == 0) {
       resetForm();
     } else {
       const shiftLocation = (
-        await shiftLocationService.value.getShiftLocations({
-          pageSize: 1,
-          pageNo: 0,
-          id: props.shiftLocationId,
-          orderKey: "id",
-          isDeleted: false,
-        } as ShiftLocationSearchModel)
+        await shiftLocationService.value.getShiftLocations(
+          new ShiftLocationSearchModel({
+            id: props.shiftLocationId,
+          })
+        )
       ).data[0];
 
       state.locationName = shiftLocation.title;
-      state.portal = portals.value!.find((p) => p.id == shiftLocation.portalId);
+      state.portal = portals.value.find((p) => p.id == shiftLocation.portalId);
     }
   } catch (error: any) {
     if (typeof error.message === "object") {

@@ -1,10 +1,10 @@
 import { Api } from "@/http-client/api";
-import { ApiResponseModel } from "@/models/ApiResponseModel";
+import { AxiosInstance } from "axios";
+import { IApiResponseModel } from "@/models/ApiResponseModel";
 import {
   ResourceTypeViewModel,
   ResourceTypeSearchModel,
 } from "@/models/ResourceTypeModels";
-import { AxiosInstance } from "axios";
 
 export default class ResourceTypeService {
   private api: AxiosInstance;
@@ -14,7 +14,7 @@ export default class ResourceTypeService {
 
   public getResourceTypes(body: ResourceTypeSearchModel) {
     return this.api
-      .post<ApiResponseModel<ResourceTypeViewModel>>(
+      .post<IApiResponseModel<ResourceTypeViewModel>>(
         "/ResourceType/GetAll",
         body
       )

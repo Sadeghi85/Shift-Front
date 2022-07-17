@@ -1,7 +1,7 @@
 import { AxiosRequestConfig } from "axios";
 import { HttpClient } from "./http-client";
 import { AppSettings } from "@/config";
-import { TokenViewModel, TokenInputModel } from "@/models/TokenModels";
+import { ITokenViewModel, ITokenInputModel } from "@/models/TokenModels";
 import useTokenStore from "@/stores/token";
 /* import { PortalModel } from "@/models/PortalModel";
 import { ApiResponseModel } from "@/models/ApiResponseModel";
@@ -52,9 +52,13 @@ export class Api extends HttpClient {
       },
       async function (error) {
         const originalRequest = error.config;
-        if (error.response.status === 401 && !originalRequest._retry) {
+        if (
+          error.response.status === 401 &&
+          !originalRequest._retry &&
+          Api.classInstance
+        ) {
           originalRequest._retry = true;
-          let token: TokenViewModel | null = null;
+          let token: ITokenViewModel | null = null;
 
           try {
             const tokenResponse = await fetch(AppSettings.SSO_URL, {
@@ -64,21 +68,24 @@ export class Api extends HttpClient {
               }),
               body: JSON.stringify({
                 refresh_token:
-                  Api.classInstance!.tokenStore.token?.refresh_token,
-              }),
+                  Api.classInstance.tokenStore.token?.refresh_token,
+              } as ITokenInputModel),
             });
 
             token = await tokenResponse.json();
 
-            Api.classInstance!.tokenStore.setToken(token);
+            Api.classInstance.tokenStore.setToken(token);
           } catch (error) {
             console.log(error);
           }
 
-          Api.classInstance!.instance.defaults.headers.common["Authorization"] =
-            "Bearer " + token?.access_token;
+          if (token) {
+            Api.classInstance.instance.defaults.headers.common[
+              "Authorization"
+            ] = "Bearer " + token.access_token;
 
-          return Api.classInstance!.instance(originalRequest);
+            return Api.classInstance.instance(originalRequest);
+          }
         }
 
         return Promise.reject(error);

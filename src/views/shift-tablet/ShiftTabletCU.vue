@@ -1,20 +1,6 @@
 <script lang="ts" setup>
-import { useI18n } from "vue-i18n";
-import { required } from "@vuelidate/validators";
-import { useVuelidate } from "@vuelidate/core";
 import ShiftTabletService from "@/services/ShiftTabletService";
 import useApiErrorStore from "@/stores/api-error";
-import { useToast } from "primevue/usetoast";
-import {
-  ShiftTabletViewModel,
-  ShiftTabletInputModel,
-  ShiftTabletSearchModel,
-} from "@/models/ShiftTabletModels";
-import {
-  ShiftDefinitionViewModel,
-  ShiftDefinitionSearchModel,
-  ShiftDefinitionInputModel,
-} from "@/models/ShiftDefinitionModels";
 import ShiftDefinitionService from "@/services/ShiftDefinitionService";
 
 // interface Props {
@@ -38,13 +24,13 @@ const apiErrorStore = useApiErrorStore();
 // reactive state
 const submitted = ref(false);
 
-const shiftTablets = ref<ShiftTabletViewModel[]>();
-const shiftDefinitions = ref<ShiftDefinitionViewModel[]>();
+const shiftTablets = ref<InstanceType<typeof ShiftTabletViewModel>[]>();
+const shiftDefinitions = ref<InstanceType<typeof ShiftDefinitionViewModel>[]>();
 
 const state = reactive({
-  shiftDefinition: ref<ShiftDefinitionViewModel>(),
-  shiftDate: ref<string>(),
-  shiftWorthPercent: ref<string>(),
+  shiftDefinition: ref<InstanceType<typeof ShiftDefinitionViewModel>>(),
+  shiftDate: "",
+  shiftWorthPercent: "",
 });
 
 const rules = {
@@ -80,14 +66,13 @@ const handleSubmit = (isFormValid: boolean) => {
   } else {
     if (props.shiftTabletId == 0) {
       shiftTabletService.value
-        .createShiftTablet({
-          id: 0,
-          shiftId: v$.value.shiftDefinition.$model!.id,
-          shiftDate: v$.value.shiftDate.$model,
-          shiftWorthPercent: v$.value.shiftWorthPercent.$model,
-          shiftTime: "00:00:00",
-          hasLivePrograms: false,
-        } as ShiftTabletInputModel)
+        .createShiftTablet(
+          new ShiftTabletInputModel({
+            shiftId: v$.value.shiftDefinition.$model?.id,
+            shiftDate: v$.value.shiftDate.$model,
+            shiftWorthPercent: v$.value.shiftWorthPercent.$model,
+          })
+        )
         .then((response) => {
           //console.log(response);
           if (!response.data.success) {
@@ -105,13 +90,14 @@ const handleSubmit = (isFormValid: boolean) => {
         });
     } else {
       shiftTabletService.value
-        .updateShiftTablet({
-          id: props.shiftTabletId,
-          shiftId: v$.value.shiftDefinition.$model!.id,
-          shiftDate: v$.value.shiftDate.$model,
-          shiftWorthPercent: v$.value.shiftWorthPercent.$model,
-          shiftTime: "00:00:00",
-        } as ShiftTabletInputModel)
+        .updateShiftTablet(
+          new ShiftTabletInputModel({
+            id: props.shiftTabletId,
+            shiftId: v$.value.shiftDefinition.$model?.id,
+            shiftDate: v$.value.shiftDate.$model,
+            shiftWorthPercent: v$.value.shiftWorthPercent.$model,
+          })
+        )
         .then((response) => {
           //console.log(response);
           if (!response.data.success) {
@@ -143,38 +129,23 @@ const fillForm = async () => {
   try {
     // load shift definitions
     shiftDefinitions.value = (
-      await shiftDefinitionService.value.getShiftDefinitions({
-        pageNo: 0,
-        pageSize: 2147483647, // Int32.MaxValue
-        orderKey: "",
-        id: 0,
-        title: "",
-        desc: true,
-        portalId: 0,
-        shiftType: 0,
-        isDeleted: false,
-      } as ShiftDefinitionSearchModel)
+      await shiftDefinitionService.value.getShiftDefinitions(
+        new ShiftDefinitionSearchModel({})
+      )
     ).data;
 
     if (props.shiftTabletId == 0) {
       resetForm();
     } else {
       const shiftTablet = (
-        await shiftTabletService.value.getShiftTablets({
-          pageSize: 1,
-          pageNo: 0,
-          id: props.shiftTabletId,
-          orderKey: "id",
-          desc: true,
-          shiftDate: "",
-          shiftId: 0,
-          isDeleted: false,
-          fromDate: "",
-          toDate: "",
-        } as ShiftTabletSearchModel)
+        await shiftTabletService.value.getShiftTablets(
+          new ShiftTabletSearchModel({
+            id: props.shiftTabletId,
+          })
+        )
       ).data[0];
 
-      state.shiftDefinition = shiftDefinitions.value!.find(
+      state.shiftDefinition = shiftDefinitions.value.find(
         (p) => p.id == shiftTablet.shiftId
       );
 

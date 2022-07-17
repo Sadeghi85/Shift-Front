@@ -1,4 +1,4 @@
-export interface ApiResponseModel<T> {
+export interface IApiResponseModel<T> {
   success: boolean;
   failureMessage: string;
   totalCount: number;

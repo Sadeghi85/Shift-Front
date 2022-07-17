@@ -1,6 +1,4 @@
 import { defineStore } from "pinia";
-import { useStorage } from "@vueuse/core";
-import { ref } from "vue";
 
 const useApiErrorStore = defineStore({
   id: "api-error",

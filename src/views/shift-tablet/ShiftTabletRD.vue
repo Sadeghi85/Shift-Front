@@ -1,25 +1,8 @@
 <script lang="ts" setup>
-import { useI18n } from "vue-i18n";
 import useApiErrorStore from "@/stores/api-error";
 import ShiftTabletService from "@/services/ShiftTabletService";
-import { useToast } from "primevue/usetoast";
-import {
-  ShiftTabletViewModel,
-  ShiftTabletInputModel,
-  ShiftTabletSearchModel,
-} from "@/models/ShiftTabletModels";
-import {
-  ShiftDefinitionViewModel,
-  ShiftDefinitionSearchModel,
-  ShiftDefinitionInputModel,
-} from "@/models/ShiftDefinitionModels";
 import ShiftDefinitionService from "@/services/ShiftDefinitionService";
-
-import ShiftTabletCU from "@/views/shift-tablet/ShiftTabletCU.vue";
-import { useConfirm } from "primevue/useconfirm";
-import { useRouter } from "vue-router";
 import ShiftTabletCrewService from "@/services/ShiftTabletCrewService";
-import { ShiftTabletCrewSearchModel } from "@/models/ShiftTabletCrewModels";
 import { useGeneralStore } from "@/stores/general";
 import { pdate } from "@/helpers/utilities";
 
@@ -40,7 +23,7 @@ const shiftDefinitionService = ref(new ShiftDefinitionService());
 const pageSize = ref(generalStore.rowPerPage);
 const pageNumber = ref(0);
 
-const loading = ref(false);
+const loading = ref(true);
 const totalRecords = ref(0);
 
 const cuShiftTabletId = ref(0);
@@ -71,25 +54,18 @@ const toggleSearchForm = () => {
 
 const getShiftTabletReportPdf = () => {
   shiftTabletCrewService.value
-    .getShiftTabletCrewPdf({
-      pageNo: 0,
-      pageSize: 2147483647, // Int32.MaxValue
-      orderKey: "",
-      desc: true,
-      shifTabletId: 0,
-      agentId: 0,
-      agentName: "",
-      entranceTime: "",
-      exitTime: "",
-      fromDate: shiftTabletFromDate.value ?? "",
-      toDate: shiftTabletToDate.value ?? "",
-      shiftTitle: "",
-      isReplaced: null,
-      id: 0,
-      isDeleted: false,
-      title: "",
-      resourceTypeId: 0,
-    } as ShiftTabletCrewSearchModel)
+    .getShiftTabletCrewPdf(
+      new ShiftTabletCrewSearchModel({
+        pageNo: 0,
+        pageSize: 2147483647, // Int32.MaxValue
+        orderKey: "id",
+        desc: true,
+        fromDate: shiftTabletFromDate.value ?? "",
+        toDate: shiftTabletToDate.value ?? "",
+        isReplaced: null,
+        isDeleted: false,
+      })
+    )
     .then((response) => {
       //console.log(response);
 
@@ -109,25 +85,18 @@ const getShiftTabletReportPdf = () => {
 
 const getShiftTabletReportExcel = () => {
   shiftTabletCrewService.value
-    .getShiftTabletCrewExcel({
-      pageNo: 0,
-      pageSize: 2147483647, // Int32.MaxValue
-      orderKey: "",
-      desc: true,
-      shifTabletId: 0,
-      agentId: 0,
-      agentName: "",
-      entranceTime: "",
-      exitTime: "",
-      fromDate: shiftTabletFromDate.value ?? "",
-      toDate: shiftTabletToDate.value ?? "",
-      shiftTitle: "",
-      isReplaced: null,
-      id: 0,
-      isDeleted: false,
-      title: "",
-      resourceTypeId: 0,
-    } as ShiftTabletCrewSearchModel)
+    .getShiftTabletCrewExcel(
+      new ShiftTabletCrewSearchModel({
+        pageNo: 0,
+        pageSize: 2147483647, // Int32.MaxValue
+        orderKey: "id",
+        desc: true,
+        fromDate: shiftTabletFromDate.value ?? "",
+        toDate: shiftTabletToDate.value ?? "",
+        isReplaced: null,
+        isDeleted: false,
+      })
+    )
     .then((response) => {
       //console.log(response);
 
@@ -201,9 +170,11 @@ const gridOperationMenuItems = ref([
             defaultFocus: "reject",
             accept: () => {
               shiftTabletService.value
-                .deleteShiftTablet({
-                  id: gridOperationMenu.value.dataId,
-                } as ShiftTabletInputModel)
+                .deleteShiftTablet(
+                  new ShiftTabletInputModel({
+                    id: gridOperationMenu.value.dataId,
+                  })
+                )
                 .then((response) => {
                   //console.log(response);
                   if (!response.data.success) {
@@ -246,30 +217,27 @@ const showSuccess = (detail: string) => {
   });
 };
 
-const shiftDefinition = ref<ShiftDefinitionViewModel>();
+const shiftDefinition = ref<InstanceType<typeof ShiftDefinitionViewModel>>();
 const shiftTabletFromDate = ref("");
 const shiftTabletToDate = ref("");
 
-const shiftTablets = ref<ShiftTabletViewModel[]>();
-const shiftDefinitions = ref<ShiftDefinitionViewModel[]>();
+const shiftTablets = ref<InstanceType<typeof ShiftTabletViewModel>[]>();
+const shiftDefinitions = ref<InstanceType<typeof ShiftDefinitionViewModel>[]>();
 
-async function loadShiftTablets(searchParams?: ShiftTabletSearchModel) {
+async function loadShiftTablets(
+  searchParams?: InstanceType<typeof ShiftTabletSearchModel>
+) {
   try {
     loading.value = true;
 
     if (!searchParams) {
-      searchParams = {
+      searchParams = new ShiftTabletSearchModel({
         pageNo: pageNumber.value,
         pageSize: pageSize.value,
         orderKey: "id",
         desc: true,
-        shiftId: 0,
-        shiftDate: "",
-        id: 0,
-        fromDate: "",
-        toDate: "",
         isDeleted: false,
-      } as ShiftTabletSearchModel;
+      });
     }
 
     const shiftTabletResponse = await shiftTabletService.value.getShiftTablets(
@@ -297,18 +265,20 @@ const onPage = async (event: any) => {
 };
 
 const handleSearch = async () => {
-  await loadShiftTablets({
-    pageSize: pageSize.value,
-    pageNo: pageNumber.value,
+  await loadShiftTablets(
+    new ShiftTabletSearchModel({
+      pageSize: pageSize.value,
+      pageNo: pageNumber.value,
 
-    shiftId: shiftDefinition.value?.id ?? 0,
-    fromDate: shiftTabletFromDate.value ?? "",
-    toDate: shiftTabletToDate.value ?? "",
+      shiftId: shiftDefinition.value?.id ?? 0,
+      fromDate: shiftTabletFromDate.value ?? "",
+      toDate: shiftTabletToDate.value ?? "",
 
-    orderKey: "id",
-    desc: true,
-    isDeleted: false,
-  } as ShiftTabletSearchModel);
+      orderKey: "id",
+      desc: true,
+      isDeleted: false,
+    })
+  );
 };
 
 const resetSearchForm = async () => {
@@ -335,17 +305,9 @@ const loadEssentials = async () => {
   try {
     // shiftDefinitions
     shiftDefinitions.value = (
-      await shiftDefinitionService.value.getShiftDefinitions({
-        pageSize: 2147483647, // Int32.MaxValue
-        pageNo: 0,
-        title: "",
-        orderKey: "id",
-        desc: true,
-        id: 0,
-        portalId: 0,
-        shiftType: 0,
-        isDeleted: false,
-      } as ShiftDefinitionSearchModel)
+      await shiftDefinitionService.value.getShiftDefinitions(
+        new ShiftDefinitionSearchModel({})
+      )
     ).data;
 
     // shiftTablets

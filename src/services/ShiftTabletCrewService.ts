@@ -1,11 +1,11 @@
 import { Api } from "@/http-client/api";
-import { ApiResponseModel } from "@/models/ApiResponseModel";
+import { AxiosInstance } from "axios";
+import { IApiResponseModel } from "@/models/ApiResponseModel";
 import {
   ShiftTabletCrewViewModel,
   ShiftTabletCrewSearchModel,
   ShiftTabletCrewInputModel,
 } from "@/models/ShiftTabletCrewModels";
-import { AxiosInstance } from "axios";
 
 export default class ShiftTabletCrewService {
   private api: AxiosInstance;
@@ -15,7 +15,7 @@ export default class ShiftTabletCrewService {
 
   public getShiftTabletCrews(body: ShiftTabletCrewSearchModel) {
     return this.api
-      .post<ApiResponseModel<ShiftTabletCrewViewModel>>(
+      .post<IApiResponseModel<ShiftTabletCrewViewModel>>(
         "/ShiftTabletCrew/GetAll",
         body
       )

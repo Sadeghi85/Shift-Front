@@ -1,4 +1,4 @@
-export interface TokenViewModel {
+export interface ITokenViewModel {
   access_token: string;
   expires_in: number;
   token_type: string;
@@ -6,6 +6,6 @@ export interface TokenViewModel {
   scope: string;
 }
 
-export interface TokenInputModel {
+export interface ITokenInputModel {
   refresh_token: string;
 }

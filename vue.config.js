@@ -206,23 +206,62 @@ module.exports = defineConfig({
           // presets
           "vue",
           "vue-router",
+          "@vueuse/core",
+          "vue-i18n",
           // custom
           {
-            "@vueuse/core": [
-              // named imports
-              "useMouse", // import { useMouse } from '@vueuse/core',
-              // alias
-              ["useFetch", "useMyFetch"], // import { useFetch as useMyFetch } from '@vueuse/core',
-            ],
-            axios: [
-              // default imports
-              ["default", "axios"], // import { default as axios } from 'axios',
-            ],
+            // "@vueuse/core": [
+            //   // named imports
+            //   "useMouse", // import { useMouse } from '@vueuse/core',
+            //   // alias
+            //   ["useFetch", "useMyFetch"], // import { useFetch as useMyFetch } from '@vueuse/core',
+            // ],
+            // axios: [
+            //   // default imports
+            //   ["default", "axios"], // import { default as axios } from 'axios',
+            // ],
             // "[package-name]": [
             //   "[import-names]",
             //   // alias
             //   ["[from]", "[alias]"],
             // ],
+            "@vuelidate/core": ["useVuelidate"],
+            "@vuelidate/validators": ["required"],
+            "primevue/usetoast": ["useToast"],
+            "primevue/useconfirm": ["useConfirm"],
+
+            "@/models/PortalModels": ["PortalViewModel", "PortalSearchModel"],
+            "@/models/AgentModels": ["AgentViewModel", "AgentSearchModel"],
+            "@/models/ShiftDefinitionModels": [
+              "ShiftDefinitionViewModel",
+              "ShiftDefinitionInputModel",
+              "ShiftDefinitionSearchModel",
+            ],
+            "@/models/ShiftTypeModels": ["ShiftTypeViewModel"],
+            "@/models/ResourceTypeModels": [
+              "ResourceTypeViewModel",
+              "ResourceTypeSearchModel",
+            ],
+            "@/models/ShiftDefinitionTemplateModels": [
+              "ShiftDefinitionTemplateInputModel",
+              "ShiftDefinitionTemplateSearchModel",
+              "ShiftDefinitionTemplateViewModel",
+            ],
+            "@/models/ShiftLocationModels": [
+              "ShiftLocationViewModel",
+              "ShiftLocationInputModel",
+              "ShiftLocationSearchModel",
+            ],
+            "@/models/ShiftTabletModels": [
+              "ShiftTabletViewModel",
+              "ShiftTabletInputModel",
+              "ShiftTabletSearchModel",
+            ],
+            "@/models/ShiftTabletCrewModels": [
+              "ShiftTabletCrewViewModel",
+              "ShiftTabletCrewInputModel",
+              "ShiftTabletCrewSearchModel",
+            ],
           },
         ],
 
@@ -271,7 +310,7 @@ module.exports = defineConfig({
         onProxyReq: function (proxyReq) {
           proxyReq.setHeader(
             "Cookie",
-            "rtcookie=rui=1krFREj/0UVuMnfxv3FLR5+EuKVYbVwWTWo1TPx4PZixdlaVvdSC4cceLfenXeieq6nGa1F09US7QMgXIbgEJlpMA+T4Wd4w3ogBGk4b64DHgR9myOQIarRIP8xsCOqe"
+            "rtcookie=rui=1krFREj/0UVuMnfxv3FLR5+EuKVYbVwWTWo1TPx4PZixdlaVvdSC4cceLfenXeieq6nGa1F09US7QMgXIbgEJiVtHJtFFQFZWuVsO6rseQe4CPmQ06AAOgov2TbVmnrb"
           );
         },
       },

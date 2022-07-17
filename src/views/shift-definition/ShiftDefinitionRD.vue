@@ -1,19 +1,7 @@
 <script lang="ts" setup>
-import { useI18n } from "vue-i18n";
 import PortalService from "@/services/PortalService";
 import ShiftDefinitionService from "@/services/ShiftDefinitionService";
 import useApiErrorStore from "@/stores/api-error";
-import { PortalSearchModel, PortalViewModel } from "@/models/PortalModels";
-import { useToast } from "primevue/usetoast";
-import {
-  ShiftDefinitionViewModel,
-  ShiftDefinitionInputModel,
-  ShiftDefinitionSearchModel,
-} from "@/models/ShiftDefinitionModels";
-import { ShiftTypeViewModel } from "@/models/ShiftTypeModels";
-
-import ShiftDefinitionCU from "@/views/shift-definition/ShiftDefinitionCU.vue";
-import { useConfirm } from "primevue/useconfirm";
 import { useGeneralStore } from "@/stores/general";
 
 const generalStore = useGeneralStore();
@@ -26,7 +14,7 @@ const apiErrorStore = useApiErrorStore();
 
 const pageSize = ref(generalStore.rowPerPage);
 const pageNumber = ref(0);
-const loading = ref(false);
+const loading = ref(true);
 const totalRecords = ref(0);
 
 const cuShiftDefinitionId = ref(0);
@@ -84,9 +72,11 @@ const gridOperationMenuItems = ref([
             defaultFocus: "reject",
             accept: () => {
               shiftDefinitionService.value
-                .deleteShiftDefinition({
-                  id: gridOperationMenu.value.dataId,
-                } as ShiftDefinitionInputModel)
+                .deleteShiftDefinition(
+                  new ShiftDefinitionInputModel({
+                    id: gridOperationMenu.value.dataId,
+                  })
+                )
                 .then((response) => {
                   //console.log(response);
                   if (!response.data.success) {
@@ -136,24 +126,24 @@ const openShiftDefinitionTemplateModal = async (_shiftDefinitionId: number) => {
 
   displayShiftDefinitionTemplateModal.value = true;
 };
-const shiftDefinitions = ref<ShiftDefinitionViewModel[]>();
-const portals = ref<PortalViewModel[]>();
-const shiftTypes = ref<ShiftTypeViewModel[]>([
+const shiftDefinitions = ref<InstanceType<typeof ShiftDefinitionViewModel>[]>();
+const portals = ref<InstanceType<typeof PortalViewModel>[]>();
+const shiftTypes = ref<InstanceType<typeof ShiftTypeViewModel>[]>([
   { id: 1, title: t("shift.type.regie") },
   { id: 2, title: t("shift.type.coordinator") },
 ]);
 
-async function loadShiftDefinitions(searchParams?: ShiftDefinitionSearchModel) {
+async function loadShiftDefinitions(
+  searchParams?: InstanceType<typeof ShiftDefinitionSearchModel>
+) {
   try {
     loading.value = true;
 
     if (!searchParams) {
-      searchParams = {
+      searchParams = new ShiftDefinitionSearchModel({
         pageSize: pageSize.value,
         pageNo: pageNumber.value,
-        title: "",
-        isDeleted: false,
-      } as ShiftDefinitionSearchModel;
+      });
     }
 
     const shiftDefinitionsResponse =
@@ -180,20 +170,23 @@ const onPage = async (event: any) => {
 };
 
 const handleSearch = async () => {
-  await loadShiftDefinitions({
-    pageSize: pageSize.value,
-    pageNo: pageNumber.value,
-    portalId: portal.value?.id ?? 0,
-    title: shiftTitle.value ?? "",
-    shiftType: shiftType.value?.id ?? 0,
-    orderKey: "id",
-    desc: true,
-    isDeleted: false,
-  } as ShiftDefinitionSearchModel);
+  await loadShiftDefinitions(
+    new ShiftDefinitionSearchModel({
+      pageSize: pageSize.value,
+      pageNo: pageNumber.value,
+      portalId: portal.value?.id ?? 0,
+      title: shiftTitle.value ?? "",
+      shiftType: shiftType.value?.id ?? 0,
+      orderKey: "id",
+      desc: true,
+      isDeleted: false,
+      id: 0,
+    })
+  );
 };
 const shiftTitle = ref("");
-const portal = ref<PortalViewModel>();
-const shiftType = ref<ShiftTypeViewModel>();
+const portal = ref<InstanceType<typeof PortalViewModel>>();
+const shiftType = ref<InstanceType<typeof ShiftTypeViewModel>>();
 
 const portalService = ref(new PortalService());
 const shiftDefinitionService = ref(new ShiftDefinitionService());
@@ -222,14 +215,7 @@ const loadEssentials = async () => {
   try {
     // portals
     portals.value = (
-      await portalService.value.getPortals({
-        pageSize: 2147483647, // Int32.MaxValue
-        pageNo: 0,
-        orderKey: "id",
-        desc: true,
-        portalId: 0,
-        title: "",
-      } as PortalSearchModel)
+      await portalService.value.getPortals(new PortalSearchModel({}))
     ).data;
 
     // shiftDefinitions

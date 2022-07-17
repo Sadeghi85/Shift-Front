@@ -1,18 +1,7 @@
 <script lang="ts" setup>
-import { useI18n } from "vue-i18n";
-import { required } from "@vuelidate/validators";
-import { useVuelidate } from "@vuelidate/core";
 import PortalService from "@/services/PortalService";
 import ShiftDefinitionService from "@/services/ShiftDefinitionService";
 import useApiErrorStore from "@/stores/api-error";
-import { PortalViewModel, PortalSearchModel } from "@/models/PortalModels";
-import { useToast } from "primevue/usetoast";
-import {
-  ShiftDefinitionViewModel,
-  ShiftDefinitionInputModel,
-  ShiftDefinitionSearchModel,
-} from "@/models/ShiftDefinitionModels";
-import { ShiftTypeViewModel } from "@/models/ShiftTypeModels";
 
 const props = defineProps({
   shiftDefinitionId: {
@@ -29,18 +18,18 @@ const submitted = ref(false);
 
 const apiErrorStore = useApiErrorStore();
 
-const portals = ref<PortalViewModel[]>();
-const shiftTypes = ref<ShiftTypeViewModel[]>([
+const portals = ref<InstanceType<typeof PortalViewModel>[]>();
+const shiftTypes = ref<InstanceType<typeof ShiftTypeViewModel>[]>([
   { id: 1, title: t("shift.type.regie") },
   { id: 2, title: t("shift.type.coordinator") },
 ]);
 
 const state = reactive({
   shiftTitle: "",
-  portal: ref<PortalViewModel>(),
+  portal: ref<InstanceType<typeof PortalViewModel>>(),
   startTime: "",
   endTime: "",
-  shiftType: ref<ShiftTypeViewModel>(),
+  shiftType: ref<InstanceType<typeof ShiftTypeViewModel>>(),
 });
 
 const rules = {
@@ -76,13 +65,15 @@ const handleSubmit = (isFormValid: boolean) => {
   } else {
     if (props.shiftDefinitionId == 0) {
       shiftDefinitionService.value
-        .createShiftDefinition({
-          title: v$.value.shiftTitle.$model,
-          portalId: v$.value.portal.$model!.id,
-          startTime: v$.value.startTime.$model,
-          endTime: v$.value.endTime.$model,
-          shiftType: v$.value.shiftType.$model!.id,
-        } as ShiftDefinitionInputModel)
+        .createShiftDefinition(
+          new ShiftDefinitionInputModel({
+            title: v$.value.shiftTitle.$model,
+            portalId: v$.value.portal.$model?.id,
+            startTime: v$.value.startTime.$model,
+            endTime: v$.value.endTime.$model,
+            shiftType: v$.value.shiftType.$model?.id,
+          })
+        )
         .then((response) => {
           //console.log(response);
           if (!response.data.success) {
@@ -100,14 +91,16 @@ const handleSubmit = (isFormValid: boolean) => {
         });
     } else {
       shiftDefinitionService.value
-        .updateShiftDefinition({
-          id: props.shiftDefinitionId,
-          title: v$.value.shiftTitle.$model,
-          portalId: v$.value.portal.$model!.id,
-          startTime: v$.value.startTime.$model,
-          endTime: v$.value.endTime.$model,
-          shiftType: v$.value.shiftType.$model!.id,
-        } as ShiftDefinitionInputModel)
+        .updateShiftDefinition(
+          new ShiftDefinitionInputModel({
+            id: props.shiftDefinitionId,
+            title: v$.value.shiftTitle.$model,
+            portalId: v$.value.portal.$model?.id,
+            startTime: v$.value.startTime.$model,
+            endTime: v$.value.endTime.$model,
+            shiftType: v$.value.shiftType.$model?.id,
+          })
+        )
         .then((response) => {
           //console.log(response);
           if (!response.data.success) {
@@ -141,40 +134,27 @@ const fillForm = async () => {
   try {
     // portals
     portals.value = (
-      await portalService.value.getPortals({
-        pageSize: 2147483647, // Int32.MaxValue
-        pageNo: 0,
-        orderKey: "id",
-        desc: true,
-        portalId: 0,
-        title: "",
-      } as PortalSearchModel)
+      await portalService.value.getPortals(new PortalSearchModel({}))
     ).data;
 
     if (props.shiftDefinitionId == 0) {
       resetForm();
     } else {
       const shiftDefinition = (
-        await shiftDefinitionService.value.getShiftDefinitions({
-          pageSize: 1,
-          pageNo: 0,
-          id: props.shiftDefinitionId,
-          orderKey: "id",
-          desc: true,
-          portalId: 0,
-          shiftType: 0,
-          title: "",
-          isDeleted: false,
-        } as ShiftDefinitionSearchModel)
+        await shiftDefinitionService.value.getShiftDefinitions(
+          new ShiftDefinitionSearchModel({
+            id: props.shiftDefinitionId,
+          })
+        )
       ).data[0];
 
       state.shiftTitle = shiftDefinition.title;
-      state.portal = portals.value!.find(
+      state.portal = portals.value.find(
         (p) => p.id == shiftDefinition.portalId
       );
       state.startTime = shiftDefinition.startTime;
       state.endTime = shiftDefinition.endTime;
-      state.shiftType = shiftTypes.value!.find(
+      state.shiftType = shiftTypes.value.find(
         (s) => s.title == shiftDefinition.shiftTypeTitle
       );
     }

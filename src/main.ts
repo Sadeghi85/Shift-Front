@@ -14,7 +14,7 @@ import PrimeVue from "primevue/config";
 import ToastService from "primevue/toastservice";
 import ConfirmationService from "primevue/confirmationservice";
 
-import { TokenViewModel } from "./models/TokenModels";
+import { ITokenViewModel } from "./models/TokenModels";
 
 //import "primevue/resources/themes/bootstrap4-light-blue/theme.css";
 //import "primevue/resources/themes/lara-light-blue/theme.css";
@@ -41,7 +41,7 @@ fetch(AppSettings.SSO_URL, {
   body: JSON.stringify({ refresh_token: null }),
 })
   .then((response) => response.json())
-  .then(async (data: TokenViewModel) => {
+  .then(async (data: ITokenViewModel) => {
     if (!data.access_token) {
       throw new Error("token is null");
     }
