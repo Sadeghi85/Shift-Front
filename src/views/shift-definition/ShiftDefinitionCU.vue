@@ -1,6 +1,4 @@
 <script lang="ts" setup>
-import PortalService from "@/services/PortalService";
-import ShiftDefinitionService from "@/services/ShiftDefinitionService";
 import useApiErrorStore from "@/stores/api-error";
 
 const props = defineProps({

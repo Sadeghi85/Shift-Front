@@ -3,7 +3,7 @@ import { AxiosInstance } from "axios";
 import { IApiResponseModel } from "@/models/ApiResponseModel";
 import { PortalViewModel, PortalSearchModel } from "@/models/PortalModels";
 
-export default class PortalService {
+export class PortalService {
   private api: AxiosInstance;
   constructor() {
     this.api = Api.getInstance();
@@ -17,7 +17,6 @@ export default class PortalService {
           throw {
             message: response.data,
           };
-          //throw new Error("test");
         }
 
         return response.data;

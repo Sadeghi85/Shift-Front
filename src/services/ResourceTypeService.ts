@@ -6,7 +6,7 @@ import {
   ResourceTypeSearchModel,
 } from "@/models/ResourceTypeModels";
 
-export default class ResourceTypeService {
+export class ResourceTypeService {
   private api: AxiosInstance;
   constructor() {
     this.api = Api.getInstance();
@@ -23,7 +23,6 @@ export default class ResourceTypeService {
           throw {
             message: response.data,
           };
-          //throw new Error("test");
         }
 
         return response.data;

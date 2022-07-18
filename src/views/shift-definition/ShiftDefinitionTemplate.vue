@@ -1,10 +1,6 @@
 <script lang="ts" setup>
-import PortalService from "@/services/PortalService";
-import ShiftDefinitionService from "@/services/ShiftDefinitionService";
 import useApiErrorStore from "@/stores/api-error";
 import { useGeneralStore } from "@/stores/general";
-import ResourceTypeService from "@/services/ResourceTypeService";
-import ShiftDefinitionTemplateService from "@/services/ShiftDefinitionTemplateService";
 
 const props = defineProps({
   shiftDefinitionId: {

@@ -7,7 +7,7 @@ import {
   ShiftLocationSearchModel,
 } from "@/models/ShiftLocationModels";
 
-export default class ShiftLocationService {
+export class ShiftLocationService {
   private api: AxiosInstance;
   constructor() {
     this.api = Api.getInstance();
@@ -24,7 +24,6 @@ export default class ShiftLocationService {
           throw {
             message: response.data,
           };
-          //throw new Error("test");
         }
 
         return response.data;

@@ -1,8 +1,5 @@
 <script lang="ts" setup>
 import useApiErrorStore from "@/stores/api-error";
-import ShiftTabletService from "@/services/ShiftTabletService";
-import ShiftDefinitionService from "@/services/ShiftDefinitionService";
-import ShiftTabletCrewService from "@/services/ShiftTabletCrewService";
 import { useGeneralStore } from "@/stores/general";
 import { pdate } from "@/helpers/utilities";
 

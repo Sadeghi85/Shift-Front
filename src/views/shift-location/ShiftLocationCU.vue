@@ -1,6 +1,4 @@
 <script lang="ts" setup>
-import PortalService from "@/services/PortalService";
-import ShiftLocationService from "@/services/ShiftLocationService";
 import useApiErrorStore from "@/stores/api-error";
 
 // interface Props {

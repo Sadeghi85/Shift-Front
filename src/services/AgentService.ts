@@ -3,7 +3,7 @@ import { AxiosInstance } from "axios";
 import { AgentSearchModel, AgentViewModel } from "@/models/AgentModels";
 import { IApiResponseModel } from "@/models/ApiResponseModel";
 
-export default class AgentService {
+export class AgentService {
   private api: AxiosInstance;
   constructor() {
     this.api = Api.getInstance();
@@ -17,7 +17,6 @@ export default class AgentService {
           throw {
             message: response.data,
           };
-          //throw new Error("test");
         }
 
         return response.data;

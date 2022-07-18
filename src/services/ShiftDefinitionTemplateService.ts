@@ -7,7 +7,7 @@ import {
   ShiftDefinitionTemplateInputModel,
 } from "@/models/ShiftDefinitionTemplateModels";
 
-export default class ShiftDefinitionService {
+export class ShiftDefinitionTemplateService {
   private api: AxiosInstance;
   constructor() {
     this.api = Api.getInstance();
@@ -24,7 +24,6 @@ export default class ShiftDefinitionService {
           throw {
             message: response.data,
           };
-          //throw new Error("test");
         }
 
         return response.data;

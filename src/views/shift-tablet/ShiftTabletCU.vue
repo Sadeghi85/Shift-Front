@@ -1,7 +1,5 @@
 <script lang="ts" setup>
-import ShiftTabletService from "@/services/ShiftTabletService";
 import useApiErrorStore from "@/stores/api-error";
-import ShiftDefinitionService from "@/services/ShiftDefinitionService";
 
 // interface Props {
 //   shiftLocationId?: number;
@@ -24,7 +22,6 @@ const apiErrorStore = useApiErrorStore();
 // reactive state
 const submitted = ref(false);
 
-const shiftTablets = ref<InstanceType<typeof ShiftTabletViewModel>[]>();
 const shiftDefinitions = ref<InstanceType<typeof ShiftDefinitionViewModel>[]>();
 
 const state = reactive({

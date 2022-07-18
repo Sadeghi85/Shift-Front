@@ -7,7 +7,7 @@ import {
   ShiftTabletCrewInputModel,
 } from "@/models/ShiftTabletCrewModels";
 
-export default class ShiftTabletCrewService {
+export class ShiftTabletCrewService {
   private api: AxiosInstance;
   constructor() {
     this.api = Api.getInstance();
@@ -24,7 +24,6 @@ export default class ShiftTabletCrewService {
           throw {
             message: response.data,
           };
-          //throw new Error("test");
         }
 
         return response.data;

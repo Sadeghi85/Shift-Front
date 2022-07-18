@@ -1,11 +1,6 @@
 <script lang="ts" setup>
-import AgentService from "@/services/AgentService";
-import ResourceTypeService from "@/services/ResourceTypeService";
-import ShiftTabletCrewService from "@/services/ShiftTabletCrewService";
 import useApiErrorStore from "@/stores/api-error";
 import { useGeneralStore } from "@/stores/general";
-import ShiftDefinitionTemplateService from "@/services/ShiftDefinitionTemplateService";
-import ShiftTabletService from "@/services/ShiftTabletService";
 
 const generalStore = useGeneralStore();
 
