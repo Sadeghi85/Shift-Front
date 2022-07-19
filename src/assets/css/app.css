@@ -127,12 +127,15 @@ nav a.router-link-exact-active {
 
 .align-right {
   text-align: right !important;
+  justify-content: right !important;
 }
 .align-center {
   text-align: center !important;
+  justify-content: center !important;
 }
 .align-left {
   text-align: left !important;
+  justify-content: left !important;
 }
 .p-datatable th[class*="align-"] .p-column-header-content {
   display: inline-flex;

@@ -219,7 +219,7 @@ watch(
                     }"
                   >
                     <template #empty>
-                      {{ t("dropdown.slot.empty") }}
+                      {{ t("dropdown.crew.slot.empty") }}
                     </template> </Dropdown
                   ><label
                     for="job"
@@ -258,7 +258,7 @@ watch(
                 </div>
               </div>
             </div>
-            <div class="grid formgrid">
+            <div class="grid align-center">
               <div class="col-12 mb-2 md:col-1">
                 <Button
                   class="mt-4"

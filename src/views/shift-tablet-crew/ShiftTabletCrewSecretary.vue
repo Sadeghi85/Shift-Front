@@ -365,7 +365,7 @@ watch(
                   </div>
                 </div>
 
-                <div class="grid">
+                <div class="grid align-center">
                   <div class="col-12 mb-2 md:col-1">
                     <Button
                       type="submit"

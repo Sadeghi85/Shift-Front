@@ -109,6 +109,8 @@ async function loadShiftDefinitionTemplates(
   searchParams?: InstanceType<typeof ShiftDefinitionTemplateSearchModel>
 ) {
   try {
+    loading.value = true;
+
     if (!searchParams) {
       searchParams = new ShiftDefinitionTemplateSearchModel({
         shiftId: props.shiftDefinitionId,
@@ -121,6 +123,8 @@ async function loadShiftDefinitionTemplates(
       );
 
     shiftDefinitionTemplates.value = shiftDefinitionTemplatesResponse.data;
+
+    loading.value = false;
   } catch (error: any) {
     if (typeof error.message === "object") {
       apiErrorStore.setApiErrorMessage(error.message.failureMessage);

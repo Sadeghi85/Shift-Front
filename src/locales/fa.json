@@ -42,6 +42,7 @@
   "_": "dropdown",
   "dropdown.placeholder.portal": "شبکه را انتخاب کنید",
   "dropdown.slot.empty": "هیچ اطلاعاتی وجود ندارد",
+  "dropdown.crew.slot.empty": "الگوی این شیفت را تعریف کنید",
 
   "_": "grid",
   "grid.currentPageReportTemplate": "صفحه {0} از {1}",
