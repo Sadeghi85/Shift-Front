@@ -13,7 +13,7 @@ export class PortalViewModel implements IPortalViewModel {
 }
 
 interface IPortalSearchModel {
-  portalId?: number;
+  id?: number;
   title?: string;
 
   desc?: boolean;
@@ -22,7 +22,7 @@ interface IPortalSearchModel {
   orderKey?: string;
 }
 export class PortalSearchModel implements IPortalSearchModel {
-  portalId: number;
+  id: number;
   title: string;
 
   desc: boolean;
@@ -31,10 +31,10 @@ export class PortalSearchModel implements IPortalSearchModel {
   orderKey: string;
 
   constructor(params: IPortalSearchModel) {
-    this.portalId = params.portalId || 0;
+    this.id = params.id || 0;
     this.title = params.title || "";
 
-    this.desc = params.desc || true;
+    this.desc = params.desc || false;
     this.pageNo = params.pageNo || 0;
     this.pageSize = params.pageSize || 2147483647; // Int32.MaxValue
     this.orderKey = params.orderKey || "id";

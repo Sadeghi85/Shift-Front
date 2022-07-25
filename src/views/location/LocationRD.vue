@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import useApiErrorStore from "@/stores/api-error";
 import { useGeneralStore } from "@/stores/general";
+import { PortalSearchModel, PortalViewModel } from "@/models/PortalModels";
 
 const generalStore = useGeneralStore();
 
@@ -16,7 +17,7 @@ const pageNumber = ref(0);
 const loading = ref(true);
 const totalRecords = ref(0);
 
-const cuShiftLocationId = ref(0);
+const cuLocationId = ref(0);
 
 const createUpdateFormIsVisible = ref(false);
 const searchFormIsVisible = ref(false);
@@ -25,11 +26,11 @@ const openCreateUpdateForm = () => {
   createUpdateFormIsVisible.value = true;
 };
 const closeCreateUpdateForm = () => {
-  cuShiftLocationId.value = 0;
+  cuLocationId.value = 0;
   createUpdateFormIsVisible.value = false;
 };
 const toggleCreateUpdateForm = () => {
-  cuShiftLocationId.value = 0;
+  cuLocationId.value = 0;
   createUpdateFormIsVisible.value = !createUpdateFormIsVisible.value;
 };
 const openSearchForm = () => {
@@ -52,7 +53,7 @@ const gridOperationMenuItems = ref([
         icon: "pi pi-pencil",
         command: () => {
           closeSearchForm();
-          cuShiftLocationId.value = gridOperationMenu.value.dataId;
+          cuLocationId.value = gridOperationMenu.value.dataId;
           openCreateUpdateForm();
         },
       },
@@ -70,9 +71,9 @@ const gridOperationMenuItems = ref([
             rejectLabel: t("confirm.button.reject"),
             defaultFocus: "reject",
             accept: () => {
-              shiftLocationService.value
-                .deleteShiftLocation(
-                  new ShiftLocationInputModel({
+              locationService.value
+                .deleteLocation(
+                  new LocationInputModel({
                     id: gridOperationMenu.value.dataId,
                   })
                 )
@@ -103,12 +104,12 @@ const gridOperationMenuItems = ref([
 ]);
 
 const toggleGridOperationMenu = (event: any, id: number) => {
-  //cuShiftLocationId.value = id;
+  //cuLocationId.value = id;
   gridOperationMenu.value.dataId = id;
   gridOperationMenu.value.toggle(event);
 };
 
-const shiftLocations = ref<InstanceType<typeof ShiftLocationViewModel>[]>();
+const locations = ref<InstanceType<typeof LocationViewModel>[]>();
 const portals = ref<InstanceType<typeof PortalViewModel>[]>();
 
 const showSuccess = (detail: string) => {
@@ -127,7 +128,7 @@ const portal = ref<InstanceType<typeof PortalViewModel>>();
 ////////
 
 const portalService = ref(new PortalService());
-const shiftLocationService = ref(new ShiftLocationService());
+const locationService = ref(new LocationService());
 
 // functions that mutate state and trigger updates
 const onPage = async (event: any) => {
@@ -138,24 +139,25 @@ const onPage = async (event: any) => {
   await handleSearch();
 };
 
-async function loadShiftLocations(
-  searchParams?: InstanceType<typeof ShiftLocationSearchModel>
+async function loadLocations(
+  searchParams?: InstanceType<typeof LocationSearchModel>
 ) {
   try {
     loading.value = true;
 
     if (!searchParams) {
-      searchParams = new ShiftLocationSearchModel({
+      searchParams = new LocationSearchModel({
         pageSize: pageSize.value,
         pageNo: pageNumber.value,
       });
     }
 
-    const shiftLocationResponse =
-      await shiftLocationService.value.getShiftLocations(searchParams);
+    const locationResponse = await locationService.value.getLocations(
+      searchParams
+    );
 
-    shiftLocations.value = shiftLocationResponse.data;
-    totalRecords.value = shiftLocationResponse.totalCount;
+    locations.value = locationResponse.data;
+    totalRecords.value = locationResponse.totalCount;
     loading.value = false;
   } catch (error: any) {
     if (typeof error.message === "object") {
@@ -167,11 +169,10 @@ async function loadShiftLocations(
 }
 
 const handleSearch = async () => {
-  await loadShiftLocations(
-    new ShiftLocationSearchModel({
+  await loadLocations(
+    new LocationSearchModel({
       pageSize: pageSize.value,
       pageNo: pageNumber.value,
-      portalId: portal.value?.id ?? 0,
       title: locationName.value ?? "",
       orderKey: "id",
       desc: true,
@@ -206,7 +207,7 @@ const loadEssentials = async () => {
       await portalService.value.getPortals(new PortalSearchModel({}))
     ).data;
 
-    // shiftLocations
+    // locations
     await handleSearch();
   } catch (error: any) {
     if (typeof error.message === "object") {
@@ -252,13 +253,13 @@ onMounted(async () => {
 
     <Transition>
       <div v-if="createUpdateFormIsVisible">
-        <ShiftLocationCU
-          :shift-location-id="cuShiftLocationId"
+        <LocationCU
+          :shift-location-id="cuLocationId"
           @insert-is-done="insertIsDone"
           @update-is-done="updateIsDone"
           @cu-is-canceled="closeCreateUpdateForm"
         >
-        </ShiftLocationCU>
+        </LocationCU>
       </div>
     </Transition>
 
@@ -327,7 +328,7 @@ onMounted(async () => {
         <div class="col-12 md:col-12">
           <div class="card">
             <DataTable
-              :value="shiftLocations"
+              :value="locations"
               data-key="id"
               :loading="loading"
               show-gridlines

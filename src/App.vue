@@ -29,9 +29,9 @@ const showError = (detail: string) => {
   <nav>
     <router-link
       :to="{
-        name: 'shift-location',
+        name: 'locations',
       }"
-      >{{ t("route.shift-location") }}</router-link
+      >{{ t("route.locations") }}</router-link
     >
     |
     <router-link

@@ -2,13 +2,13 @@
 import useApiErrorStore from "@/stores/api-error";
 
 // interface Props {
-//   shiftLocationId?: number;
+//   LocationId?: number;
 // }
 // const props = withDefaults(defineProps<Props>(), {
-//   shiftLocationId: 0,
+//   LocationId: 0,
 // });
 const props = defineProps({
-  shiftLocationId: {
+  locationId: {
     type: Number,
     required: false,
     default: 0,
@@ -37,7 +37,7 @@ const rules = {
 const { t } = useI18n();
 const v$ = useVuelidate(rules, state);
 const portalService = ref(new PortalService());
-const shiftLocationService = ref(new ShiftLocationService());
+const locationService = ref(new LocationService());
 
 const toast = useToast();
 const showSuccess = (detail: string) => {
@@ -57,12 +57,11 @@ const handleSubmit = (isFormValid: boolean) => {
   if (!isFormValid) {
     return;
   } else {
-    if (props.shiftLocationId == 0) {
-      shiftLocationService.value
-        .createShiftLocation(
-          new ShiftLocationInputModel({
+    if (props.locationId == 0) {
+      locationService.value
+        .createLocation(
+          new LocationInputModel({
             title: v$.value.locationName.$model,
-            portalId: v$.value.portal.$model?.id,
           })
         )
         .then((response) => {
@@ -81,12 +80,11 @@ const handleSubmit = (isFormValid: boolean) => {
           console.log(error);
         });
     } else {
-      shiftLocationService.value
-        .updateShiftLocation(
-          new ShiftLocationInputModel({
-            id: props.shiftLocationId,
+      locationService.value
+        .updateLocation(
+          new LocationInputModel({
+            id: props.locationId,
             title: v$.value.locationName.$model,
-            portalId: v$.value.portal.$model?.id,
           })
         )
         .then((response) => {
@@ -122,19 +120,19 @@ const fillForm = async () => {
       await portalService.value.getPortals(new PortalSearchModel({}))
     ).data;
 
-    if (props.shiftLocationId == 0) {
+    if (props.locationId == 0) {
       resetForm();
     } else {
-      const shiftLocation = (
-        await shiftLocationService.value.getShiftLocations(
-          new ShiftLocationSearchModel({
-            id: props.shiftLocationId,
+      const Location = (
+        await locationService.value.getLocations(
+          new LocationSearchModel({
+            id: props.locationId,
           })
         )
       ).data[0];
 
-      state.locationName = shiftLocation.title;
-      state.portal = portals.value.find((p) => p.id == shiftLocation.portalId);
+      state.locationName = Location.title;
+      //state.portal = portals.value.find((p) => p.id == Location.portalId);
     }
   } catch (error: any) {
     if (typeof error.message === "object") {
@@ -146,14 +144,14 @@ const fillForm = async () => {
 };
 
 const btnSubmitLabel = computed(() => {
-  if (props.shiftLocationId == 0) {
+  if (props.locationId == 0) {
     return t("button.create");
   } else {
     return t("button.update");
   }
 });
 const btnSubmitClass = computed(() => {
-  if (props.shiftLocationId == 0) {
+  if (props.locationId == 0) {
     return "p-button-primary";
   } else {
     return "p-button-warning";
@@ -161,8 +159,8 @@ const btnSubmitClass = computed(() => {
 });
 
 watch(
-  () => props.shiftLocationId,
-  async (shiftLocationId, prevShiftLocationId) => {
+  () => props.locationId,
+  async (locationId, prevLocationId) => {
     await fillForm();
   },
   { immediate: true }

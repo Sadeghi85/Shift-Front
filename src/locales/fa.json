@@ -69,7 +69,7 @@
   "grid.header.exitTime": "ساعت خروج",
 
   "_": "routes",
-  "route.shift-location": "تعریف لوکیشن",
+  "route.locations": "تعریف لوکیشن",
   "route.shift-production-type": "تعریف نوع تولید شیفت",
   "route.shift-definition": "تعریف شیفت",
   "route.shift-tablet": "لوح شیفت",

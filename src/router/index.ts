@@ -1,6 +1,6 @@
 import {
   createRouter,
-  createWebHashHistory,
+  //createWebHashHistory,
   createWebHistory,
   RouteRecordRaw,
 } from "vue-router";
@@ -13,11 +13,11 @@ const routes: Array<RouteRecordRaw> = [
     component: HomeView,
   }, */
   {
-    path: "/shift-location",
-    name: "shift-location",
+    path: "/locations",
+    name: "locations",
     component: () =>
       import(
-        /* webpackChunkName: "shift-location" */ "../views/shift-location/ShiftLocationRD.vue"
+        /* webpackChunkName: "locations" */ "../views/location/LocationRD.vue"
       ),
   },
   {
