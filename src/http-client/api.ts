@@ -52,7 +52,9 @@ export class Api extends HttpClient {
       },
       async function (error) {
         const originalRequest = error.config;
+
         if (
+          error.response &&
           error.response.status === 401 &&
           !originalRequest._retry &&
           Api.classInstance

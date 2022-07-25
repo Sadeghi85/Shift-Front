@@ -1,6 +1,6 @@
 export interface IApiResponseModel<T> {
   success: boolean;
-  failureMessage: string;
+  failureMessage: string | null;
   totalCount: number;
   data: T[];
 }
