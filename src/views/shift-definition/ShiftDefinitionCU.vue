@@ -63,7 +63,7 @@ const handleSubmit = (isFormValid: boolean) => {
   } else {
     if (props.shiftDefinitionId == 0) {
       shiftDefinitionService.value
-        .createShiftDefinition(
+        .create(
           new ShiftDefinitionInputModel({
             title: v$.value.shiftTitle.$model,
             portalId: v$.value.portal.$model?.id,
@@ -89,7 +89,7 @@ const handleSubmit = (isFormValid: boolean) => {
         });
     } else {
       shiftDefinitionService.value
-        .updateShiftDefinition(
+        .update(
           new ShiftDefinitionInputModel({
             id: props.shiftDefinitionId,
             title: v$.value.shiftTitle.$model,
@@ -132,14 +132,14 @@ const fillForm = async () => {
   try {
     // portals
     portals.value = (
-      await portalService.value.getPortals(new PortalSearchModel({}))
+      await portalService.value.getAll(new PortalSearchModel({}))
     ).data;
 
     if (props.shiftDefinitionId == 0) {
       resetForm();
     } else {
       const shiftDefinition = (
-        await shiftDefinitionService.value.getShiftDefinitions(
+        await shiftDefinitionService.value.getAll(
           new ShiftDefinitionSearchModel({
             id: props.shiftDefinitionId,
           })

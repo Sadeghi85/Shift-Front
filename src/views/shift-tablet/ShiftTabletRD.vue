@@ -51,7 +51,7 @@ const toggleSearchForm = () => {
 
 const getShiftTabletReportPdf = () => {
   shiftTabletCrewService.value
-    .getShiftTabletCrewPdf(
+    .getPdf(
       new ShiftTabletCrewSearchModel({
         pageNo: 0,
         pageSize: 2147483647, // Int32.MaxValue
@@ -82,7 +82,7 @@ const getShiftTabletReportPdf = () => {
 
 const getShiftTabletReportExcel = () => {
   shiftTabletCrewService.value
-    .getShiftTabletCrewExcel(
+    .getExcel(
       new ShiftTabletCrewSearchModel({
         pageNo: 0,
         pageSize: 2147483647, // Int32.MaxValue
@@ -167,7 +167,7 @@ const gridOperationMenuItems = ref([
             defaultFocus: "reject",
             accept: () => {
               shiftTabletService.value
-                .deleteShiftTablet(
+                .delete(
                   new ShiftTabletInputModel({
                     id: gridOperationMenu.value.dataId,
                   })
@@ -237,7 +237,7 @@ async function loadShiftTablets(
       });
     }
 
-    const shiftTabletResponse = await shiftTabletService.value.getShiftTablets(
+    const shiftTabletResponse = await shiftTabletService.value.getAll(
       searchParams
     );
 
@@ -302,7 +302,7 @@ const loadEssentials = async () => {
   try {
     // shiftDefinitions
     shiftDefinitions.value = (
-      await shiftDefinitionService.value.getShiftDefinitions(
+      await shiftDefinitionService.value.getAll(
         new ShiftDefinitionSearchModel({})
       )
     ).data;

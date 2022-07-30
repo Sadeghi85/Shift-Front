@@ -54,7 +54,7 @@ const gridTemplateOperationMenuItems = ref([
             defaultFocus: "reject",
             accept: () => {
               shiftDefinitionTemplateService.value
-                .deleteShiftDefinitionTemplate(
+                .delete(
                   new ShiftDefinitionTemplateInputModel({
                     id: gridTemplateOperationMenu.value.dataId,
                   })
@@ -118,9 +118,7 @@ async function loadShiftDefinitionTemplates(
     }
 
     const shiftDefinitionTemplatesResponse =
-      await shiftDefinitionTemplateService.value.getShiftDefinitionTemplates(
-        searchParams
-      );
+      await shiftDefinitionTemplateService.value.getAll(searchParams);
 
     shiftDefinitionTemplates.value = shiftDefinitionTemplatesResponse.data;
 
@@ -140,7 +138,7 @@ const handleTemplateSubmit = (isFormValid: boolean) => {
     return;
   } else {
     shiftDefinitionTemplateService.value
-      .createShiftDefinitionTemplate(
+      .create(
         new ShiftDefinitionTemplateInputModel({
           shiftId: props.shiftDefinitionId,
           resourceTypeId: v$.value.job.$model?.id,
@@ -170,7 +168,7 @@ const resetTemplateForm = () => {
 const onDropdownJobFilter = async (event: any) => {
   try {
     jobs.value = (
-      await jobService.value.getResourceTypes(
+      await jobService.value.getAll(
         new ResourceTypeSearchModel({
           pageSize: generalStore.dropdownItemsCount,
           resourceName: event.value,
@@ -202,7 +200,7 @@ const loadEssentials = async () => {
   try {
     // jobs
     jobs.value = (
-      await jobService.value.getResourceTypes(
+      await jobService.value.getAll(
         new ResourceTypeSearchModel({
           pageSize: generalStore.dropdownItemsCount,
         })

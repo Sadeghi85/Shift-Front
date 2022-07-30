@@ -70,7 +70,7 @@ const gridOperationMenuItems = ref([
             defaultFocus: "reject",
             accept: () => {
               shiftDefinitionService.value
-                .deleteShiftDefinition(
+                .delete(
                   new ShiftDefinitionInputModel({
                     id: gridOperationMenu.value.dataId,
                   })
@@ -144,8 +144,9 @@ async function loadShiftDefinitions(
       });
     }
 
-    const shiftDefinitionsResponse =
-      await shiftDefinitionService.value.getShiftDefinitions(searchParams);
+    const shiftDefinitionsResponse = await shiftDefinitionService.value.getAll(
+      searchParams
+    );
 
     shiftDefinitions.value = shiftDefinitionsResponse.data;
     totalRecords.value = shiftDefinitionsResponse.totalCount;
@@ -213,7 +214,7 @@ const loadEssentials = async () => {
   try {
     // portals
     portals.value = (
-      await portalService.value.getPortals(new PortalSearchModel({}))
+      await portalService.value.getAll(new PortalSearchModel({}))
     ).data;
 
     // shiftDefinitions
@@ -303,7 +304,7 @@ onMounted(async () => {
                         </template></Dropdown
                       >
 
-                      <label for="portal">{{ t("portal.name") }}</label>
+                      <label for="portal">{{ t("portal.title") }}</label>
                     </div>
                   </div>
 

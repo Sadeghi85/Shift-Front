@@ -63,7 +63,7 @@ const onRowEditSave = (event: any) => {
   console.log(newData);
 
   shiftTabletCrewService.value
-    .updateShiftTabletCrew(
+    .update(
       new ShiftTabletCrewInputModel({
         id: newData.id,
         entranceTime: newData.defaultEntranceTime,
@@ -100,8 +100,9 @@ async function loadShiftTabletCrews(
       });
     }
 
-    const shiftTabletCrewsResponse =
-      await shiftTabletCrewService.value.getShiftTabletCrews(searchParams);
+    const shiftTabletCrewsResponse = await shiftTabletCrewService.value.getAll(
+      searchParams
+    );
 
     shiftTabletCrews.value = shiftTabletCrewsResponse.data;
     totalRecords.value = shiftTabletCrewsResponse.totalCount;
@@ -155,7 +156,7 @@ const resetSearchForm = async () => {
 const onDropdownAgentFilter = async (event: any) => {
   try {
     agents.value = (
-      await agentService.value.getAgents(
+      await agentService.value.getAll(
         new AgentSearchModel({
           pageSize: generalStore.dropdownItemsCount,
           orderKey: "id",
@@ -176,7 +177,7 @@ const onDropdownAgentFilter = async (event: any) => {
 const onDropdownJobFilter = async (event: any) => {
   try {
     jobs.value = (
-      await jobService.value.getResourceTypes(
+      await jobService.value.getAll(
         new ResourceTypeSearchModel({
           pageSize: generalStore.dropdownItemsCount,
           orderKey: "id",
@@ -198,7 +199,7 @@ const loadEssentials = async () => {
   try {
     // shiftTablet
     shiftTablet.value = (
-      await shiftTabletService.value.getShiftTablets(
+      await shiftTabletService.value.getAll(
         new ShiftTabletSearchModel({
           id: +route.params.shiftTabletId,
           orderKey: "id",
@@ -209,7 +210,7 @@ const loadEssentials = async () => {
 
     // agents
     agents.value = (
-      await agentService.value.getAgents(
+      await agentService.value.getAll(
         new AgentSearchModel({
           pageSize: generalStore.dropdownItemsCount,
           orderKey: "id",
@@ -220,7 +221,7 @@ const loadEssentials = async () => {
 
     // jobs
     jobs.value = (
-      await jobService.value.getResourceTypes(
+      await jobService.value.getAll(
         new ResourceTypeSearchModel({
           pageSize: generalStore.dropdownItemsCount,
           orderKey: "id",
@@ -289,7 +290,7 @@ watch(
           <div class="card info">
             <div class="grid">
               <div class="col">
-                {{ t("portal.name") }}:
+                {{ t("portal.title") }}:
                 <strong>{{ shiftTablet?.portalName }}</strong>
               </div>
               <div class="col">

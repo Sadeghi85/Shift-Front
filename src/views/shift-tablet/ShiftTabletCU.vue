@@ -63,7 +63,7 @@ const handleSubmit = (isFormValid: boolean) => {
   } else {
     if (props.shiftTabletId == 0) {
       shiftTabletService.value
-        .createShiftTablet(
+        .create(
           new ShiftTabletInputModel({
             shiftId: v$.value.shiftDefinition.$model?.id,
             shiftDate: v$.value.shiftDate.$model,
@@ -87,7 +87,7 @@ const handleSubmit = (isFormValid: boolean) => {
         });
     } else {
       shiftTabletService.value
-        .updateShiftTablet(
+        .update(
           new ShiftTabletInputModel({
             id: props.shiftTabletId,
             shiftId: v$.value.shiftDefinition.$model?.id,
@@ -126,7 +126,7 @@ const fillForm = async () => {
   try {
     // load shift definitions
     shiftDefinitions.value = (
-      await shiftDefinitionService.value.getShiftDefinitions(
+      await shiftDefinitionService.value.getAll(
         new ShiftDefinitionSearchModel({})
       )
     ).data;
@@ -135,7 +135,7 @@ const fillForm = async () => {
       resetForm();
     } else {
       const shiftTablet = (
-        await shiftTabletService.value.getShiftTablets(
+        await shiftTabletService.value.getAll(
           new ShiftTabletSearchModel({
             id: props.shiftTabletId,
           })

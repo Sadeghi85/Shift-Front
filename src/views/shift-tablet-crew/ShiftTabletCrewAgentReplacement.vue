@@ -56,7 +56,7 @@ const showSuccess = (detail: string) => {
 const onDropdownAgentFilter = async (event: any) => {
   try {
     agents.value = (
-      await agentService.value.getAgents(
+      await agentService.value.getAll(
         new AgentSearchModel({
           pageNo: 0,
           pageSize: generalStore.dropdownItemsCount,
@@ -78,7 +78,7 @@ const onDropdownAgentFilter = async (event: any) => {
 const onDropdownJobFilter = async (event: any) => {
   try {
     jobs.value = (
-      await jobService.value.getResourceTypes(
+      await jobService.value.getAll(
         new ResourceTypeSearchModel({
           pageNo: 0,
           pageSize: generalStore.dropdownItemsCount,
@@ -107,7 +107,7 @@ const handleSubmit = (isFormValid: boolean) => {
       //
     } else {
       shiftTabletCrewService.value
-        .updateShiftTabletCrew(
+        .update(
           new ShiftTabletCrewInputModel({
             id: props.shiftTabletCrewId,
             agentId: v$.value.agent.$model?.id,
@@ -144,7 +144,7 @@ const resetForm = () => {
 const fillForm = async () => {
   try {
     agents.value = (
-      await agentService.value.getAgents(
+      await agentService.value.getAll(
         new AgentSearchModel({
           pageSize: generalStore.dropdownItemsCount,
         })
@@ -152,7 +152,7 @@ const fillForm = async () => {
     ).data;
 
     jobs.value = (
-      await jobService.value.getResourceTypes(
+      await jobService.value.getAll(
         new ResourceTypeSearchModel({
           pageSize: generalStore.dropdownItemsCount,
         })
@@ -163,7 +163,7 @@ const fillForm = async () => {
       resetForm();
     } else {
       const shiftTabletCrew = (
-        await shiftTabletCrewService.value.getShiftTabletCrews(
+        await shiftTabletCrewService.value.getAll(
           new ShiftTabletCrewSearchModel({
             id: props.shiftTabletCrewId,
           })

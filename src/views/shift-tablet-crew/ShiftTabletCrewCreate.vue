@@ -61,7 +61,7 @@ const showSuccess = (detail: string) => {
 const onDropdownAgentFilter = async (event: any) => {
   try {
     agents.value = (
-      await agentService.value.getAgents(
+      await agentService.value.getAll(
         new AgentSearchModel({
           pageSize: generalStore.dropdownItemsCount,
           orderKey: "id",
@@ -87,7 +87,7 @@ const handleSubmit = (isFormValid: boolean) => {
   } else {
     if (props.shiftTabletCrewId == 0) {
       shiftTabletCrewService.value
-        .createShiftTabletCrew(
+        .create(
           new ShiftTabletCrewInputModel({
             agentId: v$.value.agent.$model?.id,
             shiftTabletId: props.shiftTabletId,
@@ -125,7 +125,7 @@ const resetForm = () => {
 const fillForm = async () => {
   try {
     agents.value = (
-      await agentService.value.getAgents(
+      await agentService.value.getAll(
         new AgentSearchModel({
           pageSize: generalStore.dropdownItemsCount,
           orderKey: "id",
@@ -135,7 +135,7 @@ const fillForm = async () => {
     ).data;
 
     const shiftDefititionId = (
-      await shiftTabletService.value.getShiftTablets(
+      await shiftTabletService.value.getAll(
         new ShiftTabletSearchModel({
           id: props.shiftTabletId,
         })
@@ -143,7 +143,7 @@ const fillForm = async () => {
     ).data[0].shiftId;
 
     jobs.value = (
-      await shiftDefinitionTemplateService.value.getShiftDefinitionTemplates(
+      await shiftDefinitionTemplateService.value.getAll(
         new ShiftDefinitionTemplateSearchModel({
           shiftId: shiftDefititionId,
           orderKey: "id",
