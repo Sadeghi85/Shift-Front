@@ -238,6 +238,7 @@ module.exports = defineConfig({
               "ShiftDefinitionTemplateService",
             ],
             "@/services/LocationService": ["LocationService"],
+            "@/services/PortalLocationService": ["PortalLocationService"],
             "@/services/ShiftTabletService": ["ShiftTabletService"],
             "@/services/ShiftTabletCrewService": ["ShiftTabletCrewService"],
             "@/services/AgentService": ["AgentService"],
@@ -264,6 +265,11 @@ module.exports = defineConfig({
               "LocationViewModel",
               "LocationInputModel",
               "LocationSearchModel",
+            ],
+            "@/models/PortalLocationModels": [
+              "PortalLocationViewModel",
+              "PortalLocationInputModel",
+              "PortalLocationSearchModel",
             ],
             "@/models/ShiftTabletModels": [
               "ShiftTabletViewModel",
@@ -323,7 +329,7 @@ module.exports = defineConfig({
         onProxyReq: function (proxyReq) {
           proxyReq.setHeader(
             "Cookie",
-            "rtcookie=rui=1krFREj/0UVuMnfxv3FLR5+EuKVYbVwWTWo1TPx4PZixdlaVvdSC4cceLfenXeieq6nGa1F09US7QMgXIbgEJlWwzcl0M60467ttsC889egy4+FjHkCzi7iJMniMA1K4"
+            "rtcookie=rui=1krFREj/0UVuMnfxv3FLR5+EuKVYbVwWTWo1TPx4PZixdlaVvdSC4cceLfenXeieq6nGa1F09US7QMgXIbgEJnTLJhWtAxENqxbvXiHHlvIELzAm5H+zXnN117YGIq6h"
           );
         },
       },

@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import useApiErrorStore from "@/stores/api-error";
 import { useGeneralStore } from "@/stores/general";
+import { PortalSearchModel, PortalViewModel } from "@/models/PortalModels";
 
 const generalStore = useGeneralStore();
 
@@ -16,7 +17,7 @@ const pageNumber = ref(0);
 const loading = ref(true);
 const totalRecords = ref(0);
 
-const cuLocationId = ref(0);
+const cuPortalLocationId = ref(0);
 
 const createUpdateFormIsVisible = ref(false);
 const searchFormIsVisible = ref(false);
@@ -25,11 +26,11 @@ const openCreateUpdateForm = () => {
   createUpdateFormIsVisible.value = true;
 };
 const closeCreateUpdateForm = () => {
-  cuLocationId.value = 0;
+  cuPortalLocationId.value = 0;
   createUpdateFormIsVisible.value = false;
 };
 const toggleCreateUpdateForm = () => {
-  cuLocationId.value = 0;
+  cuPortalLocationId.value = 0;
   createUpdateFormIsVisible.value = !createUpdateFormIsVisible.value;
 };
 const openSearchForm = () => {
@@ -52,7 +53,7 @@ const gridOperationMenuItems = ref([
         icon: "pi pi-pencil",
         command: () => {
           closeSearchForm();
-          cuLocationId.value = gridOperationMenu.value.dataId;
+          cuPortalLocationId.value = gridOperationMenu.value.data;
           openCreateUpdateForm();
         },
       },
@@ -70,11 +71,10 @@ const gridOperationMenuItems = ref([
             rejectLabel: t("confirm.button.reject"),
             defaultFocus: "reject",
             accept: () => {
-              locationService.value
+              portalLocationService.value
                 .delete(
-                  new LocationInputModel({
+                  new PortalLocationInputModel({
                     id: gridOperationMenu.value.data.id,
-                    title: gridOperationMenu.value.data.title,
                   })
                 )
                 .then((response) => {
@@ -110,6 +110,8 @@ const toggleGridOperationMenu = (event: any, data: any) => {
 };
 
 const locations = ref<InstanceType<typeof LocationViewModel>[]>();
+const portals = ref<InstanceType<typeof PortalViewModel>[]>();
+const portalLocations = ref<InstanceType<typeof PortalLocationViewModel>[]>();
 
 const showSuccess = (detail: string) => {
   toast.add({
@@ -121,11 +123,14 @@ const showSuccess = (detail: string) => {
   });
 };
 
-const locationTitle = ref("");
+const location = ref<InstanceType<typeof LocationViewModel>>();
+const portal = ref<InstanceType<typeof PortalViewModel>>();
 
 ////////
 
+const portalService = ref(new PortalService());
 const locationService = ref(new LocationService());
+const portalLocationService = ref(new PortalLocationService());
 
 // functions that mutate state and trigger updates
 const onPage = async (event: any) => {
@@ -136,23 +141,25 @@ const onPage = async (event: any) => {
   await handleSearch();
 };
 
-async function loadLocations(
-  searchParams?: InstanceType<typeof LocationSearchModel>
+async function loadPortalLocations(
+  searchParams?: InstanceType<typeof PortalLocationSearchModel>
 ) {
   try {
     loading.value = true;
 
     if (!searchParams) {
-      searchParams = new LocationSearchModel({
+      searchParams = new PortalLocationSearchModel({
         pageSize: pageSize.value,
         pageNo: pageNumber.value,
       });
     }
 
-    const locationResponse = await locationService.value.getAll(searchParams);
+    const portalLocationResponse = await portalLocationService.value.getAll(
+      searchParams
+    );
 
-    locations.value = locationResponse.data;
-    totalRecords.value = locationResponse.totalCount;
+    portalLocations.value = portalLocationResponse.data;
+    totalRecords.value = portalLocationResponse.totalCount;
     loading.value = false;
   } catch (error: any) {
     if (typeof error.message === "object") {
@@ -164,11 +171,12 @@ async function loadLocations(
 }
 
 const handleSearch = async () => {
-  await loadLocations(
-    new LocationSearchModel({
+  await loadPortalLocations(
+    new PortalLocationSearchModel({
       pageSize: pageSize.value,
       pageNo: pageNumber.value,
-      title: locationTitle.value ?? "",
+      portalId: portal.value?.id ?? 0,
+      locationId: location.value?.id ?? 0,
       orderKey: "id",
       desc: true,
       isDeleted: false,
@@ -177,7 +185,8 @@ const handleSearch = async () => {
 };
 
 const resetSearchForm = async () => {
-  locationTitle.value = "";
+  portal.value = undefined;
+  location.value = undefined;
 
   searchFormIsVisible.value = false;
 
@@ -196,7 +205,21 @@ const updateIsDone = async () => {
 
 const loadEssentials = async () => {
   try {
+    // portals
+    portals.value = (
+      await portalService.value.getAll(new PortalSearchModel({}))
+    ).data;
+
+    if (portals.value.length == 1) {
+      portal.value = portals.value[0];
+    }
+
     // locations
+    locations.value = (
+      await locationService.value.getAll(new LocationSearchModel({}))
+    ).data;
+
+    // portalLocations
     await handleSearch();
   } catch (error: any) {
     if (typeof error.message === "object") {
@@ -242,13 +265,13 @@ onMounted(async () => {
 
     <Transition>
       <div v-if="createUpdateFormIsVisible">
-        <LocationCU
-          :location-id="cuLocationId"
+        <PortalLocationCU
+          :portal-location-id="cuPortalLocationId"
           @insert-is-done="insertIsDone"
           @update-is-done="updateIsDone"
           @cu-is-canceled="closeCreateUpdateForm"
         >
-        </LocationCU>
+        </PortalLocationCU>
       </div>
     </Transition>
 
@@ -263,12 +286,38 @@ onMounted(async () => {
                 @submit.prevent="handleSearch()"
               >
                 <div class="grid formgrid">
-                  <div class="col-12 mb-2 md:col-4">
+                  <div class="field col-12 mb-2 md:col-4">
                     <div class="p-float-label">
-                      <InputText id="locationTitle" v-model="locationTitle" />
-                      <label for="locationTitle">{{
-                        t("location.title")
-                      }}</label>
+                      <Dropdown
+                        id="portal"
+                        v-model="portal"
+                        :options="portals"
+                        option-label="title"
+                        :filter="true"
+                        :show-clear="true"
+                        ><template #empty>
+                          {{ t("dropdown.slot.empty") }}
+                        </template></Dropdown
+                      >
+
+                      <label for="portal">{{ t("portal.title") }}</label>
+                    </div>
+                  </div>
+                  <div class="field col-12 mb-2 md:col-4">
+                    <div class="p-float-label">
+                      <Dropdown
+                        id="location"
+                        v-model="location"
+                        :options="locations"
+                        option-label="title"
+                        :filter="true"
+                        :show-clear="true"
+                        ><template #empty>
+                          {{ t("dropdown.slot.empty") }}
+                        </template></Dropdown
+                      >
+
+                      <label for="location">{{ t("location.title") }}</label>
                     </div>
                   </div>
                 </div>
@@ -302,7 +351,7 @@ onMounted(async () => {
         <div class="col-12 md:col-12">
           <div class="card">
             <DataTable
-              :value="locations"
+              :value="portalLocations"
               data-key="id"
               :loading="loading"
               show-gridlines
@@ -323,9 +372,14 @@ onMounted(async () => {
               >
 
               <Column
-                field="title"
+                field="portalTitle"
+                :header="t('grid.header.portal')"
+              ></Column>
+              <Column
+                field="locationTitle"
                 :header="t('grid.header.location')"
               ></Column>
+
               <Column
                 header-style="width: 8em;"
                 header-class="align-center"
@@ -340,7 +394,7 @@ onMounted(async () => {
                     class="p-button-rounded p-button-secondary"
                     icon="pi pi-cog"
                     @click.prevent="
-                      toggleGridOperationMenu($event, slotProps.data)
+                      toggleGridOperationMenu($event, slotProps.data.id)
                     "
                   />
                 </template>

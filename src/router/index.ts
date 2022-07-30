@@ -21,6 +21,14 @@ const routes: Array<RouteRecordRaw> = [
       ),
   },
   {
+    path: "/portal-locations",
+    name: "portal-locations",
+    component: () =>
+      import(
+        /* webpackChunkName: "portal-locations" */ "../views/location/PortalLocationRD.vue"
+      ),
+  },
+  {
     path: "/shift-definition",
     name: "shift-definition",
     component: () =>

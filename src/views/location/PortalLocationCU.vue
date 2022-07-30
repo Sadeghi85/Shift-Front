@@ -8,7 +8,7 @@ import useApiErrorStore from "@/stores/api-error";
 //   LocationId: 0,
 // });
 const props = defineProps({
-  locationId: {
+  portalLocationId: {
     type: Number,
     required: false,
     default: 0,
@@ -21,18 +21,25 @@ const apiErrorStore = useApiErrorStore();
 // reactive state
 const submitted = ref(false);
 
+const locations = ref<InstanceType<typeof LocationViewModel>[]>();
+const portals = ref<InstanceType<typeof PortalViewModel>[]>();
+
 const state = reactive({
-  locationTitle: "",
+  location: ref<InstanceType<typeof LocationViewModel>>(),
+  portal: ref<InstanceType<typeof PortalViewModel>>(),
 });
 
 const rules = {
-  locationTitle: { required },
+  location: { required },
+  portal: { required },
 };
 
 ////////
 const { t } = useI18n();
 const v$ = useVuelidate(rules, state);
+const portalService = ref(new PortalService());
 const locationService = ref(new LocationService());
+const portalLocationService = ref(new PortalLocationService());
 
 const toast = useToast();
 const showSuccess = (detail: string) => {
@@ -52,11 +59,12 @@ const handleSubmit = (isFormValid: boolean) => {
   if (!isFormValid) {
     return;
   } else {
-    if (props.locationId == 0) {
-      locationService.value
+    if (props.portalLocationId == 0) {
+      portalLocationService.value
         .create(
-          new LocationInputModel({
-            title: v$.value.locationTitle.$model,
+          new PortalLocationInputModel({
+            portalId: v$.value.portal.$model?.id,
+            locationId: v$.value.location.$model?.id,
           })
         )
         .then((response) => {
@@ -75,11 +83,12 @@ const handleSubmit = (isFormValid: boolean) => {
           console.log(error);
         });
     } else {
-      locationService.value
+      portalLocationService.value
         .update(
-          new LocationInputModel({
-            id: props.locationId,
-            title: v$.value.locationTitle.$model,
+          new PortalLocationInputModel({
+            id: props.portalLocationId,
+            portalId: v$.value.portal.$model?.id,
+            locationId: v$.value.location.$model?.id,
           })
         )
         .then((response) => {
@@ -102,25 +111,43 @@ const handleSubmit = (isFormValid: boolean) => {
 };
 
 const resetForm = () => {
-  state.locationTitle = "";
+  state.location = undefined;
+  state.portal = undefined;
 
   submitted.value = false;
 };
 
 const fillForm = async () => {
   try {
-    if (props.locationId == 0) {
+    // portals
+    portals.value = (
+      await portalService.value.getAll(new PortalSearchModel({}))
+    ).data;
+
+    // locations
+    locations.value = (
+      await locationService.value.getAll(new LocationSearchModel({}))
+    ).data;
+
+    if (props.portalLocationId == 0) {
       resetForm();
+
+      if (portals.value.length == 1) {
+        state.portal = portals.value[0];
+      }
     } else {
-      const location = (
-        await locationService.value.getAll(
-          new LocationSearchModel({
-            id: props.locationId,
+      const portalLocation = (
+        await portalLocationService.value.getAll(
+          new PortalLocationSearchModel({
+            id: props.portalLocationId,
           })
         )
       ).data[0];
 
-      state.locationTitle = location.title;
+      state.portal = portals.value.find((p) => p.id == portalLocation.portalId);
+      state.location = locations.value.find(
+        (p) => p.id == portalLocation.locationId
+      );
     }
   } catch (error: any) {
     if (typeof error.message === "object") {
@@ -132,14 +159,14 @@ const fillForm = async () => {
 };
 
 const btnSubmitLabel = computed(() => {
-  if (props.locationId == 0) {
+  if (props.portalLocationId == 0) {
     return t("button.create");
   } else {
     return t("button.update");
   }
 });
 const btnSubmitClass = computed(() => {
-  if (props.locationId == 0) {
+  if (props.portalLocationId == 0) {
     return "p-button-primary";
   } else {
     return "p-button-warning";
@@ -147,8 +174,8 @@ const btnSubmitClass = computed(() => {
 });
 
 watch(
-  () => props.locationId,
-  async (locationId, prevLocationId) => {
+  () => props.portalLocationId,
+  async (portalLocationId, prevPortalLocationId) => {
     await fillForm();
   },
   { immediate: true }
@@ -170,19 +197,54 @@ watch(
             @submit.prevent="handleSubmit(!v$.$invalid)"
           >
             <div class="grid formgrid">
-              <div class="col-12 mb-2 md:col-4">
+              <div class="field col-12 mb-2 md:col-4">
                 <div class="p-float-label">
-                  <InputText
-                    id="locationTitle"
-                    v-model="v$.locationTitle.$model"
+                  <Dropdown
+                    id="portal"
+                    v-model="v$.portal.$model"
+                    :options="portals"
+                    option-label="title"
+                    :filter="true"
+                    :show-clear="true"
                     :class="{
-                      'p-invalid': v$.locationTitle.$invalid && submitted,
+                      'p-invalid': v$.portal.$invalid && submitted,
                     }"
-                  />
+                    ><template #empty>
+                      {{ t("dropdown.slot.empty") }}
+                    </template></Dropdown
+                  >
+
                   <label
-                    for="locationTitle"
+                    for="portal"
                     :class="{
-                      'p-error': v$.locationTitle.$invalid && submitted,
+                      'p-error': v$.portal.$invalid && submitted,
+                    }"
+                    >{{ t("portal.title")
+                    }}<span :style="{ color: 'var(--red-500)' }">*</span></label
+                  >
+                </div>
+              </div>
+              <div class="field col-12 mb-2 md:col-4">
+                <div class="p-float-label">
+                  <Dropdown
+                    id="location"
+                    v-model="v$.location.$model"
+                    :options="locations"
+                    option-label="title"
+                    :filter="true"
+                    :show-clear="true"
+                    :class="{
+                      'p-invalid': v$.location.$invalid && submitted,
+                    }"
+                    ><template #empty>
+                      {{ t("dropdown.slot.empty") }}
+                    </template></Dropdown
+                  >
+
+                  <label
+                    for="location"
+                    :class="{
+                      'p-error': v$.location.$invalid && submitted,
                     }"
                     >{{ t("location.title")
                     }}<span :style="{ color: 'var(--red-500)' }">*</span></label

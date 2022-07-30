@@ -18,6 +18,8 @@ declare module '@vue/runtime-core' {
     LocationRD: typeof import('./src/views/location/LocationRD.vue')['default']
     Menu: typeof import('primevue/menu')['default']
     Paginator: typeof import('primevue/paginator')['default']
+    PortalLocationCU: typeof import('./src/views/location/PortalLocationCU.vue')['default']
+    PortalLocationRD: typeof import('./src/views/location/PortalLocationRD.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
     ShiftDefinitionCU: typeof import('./src/views/shift-definition/ShiftDefinitionCU.vue')['default']
