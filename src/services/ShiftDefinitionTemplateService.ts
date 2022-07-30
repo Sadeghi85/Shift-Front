@@ -13,7 +13,7 @@ export class ShiftDefinitionTemplateService {
     this.api = Api.getInstance();
   }
 
-  public getShiftDefinitionTemplates(body: ShiftDefinitionTemplateSearchModel) {
+  public getAll(body: ShiftDefinitionTemplateSearchModel) {
     return this.api
       .post<IApiResponseModel<ShiftDefinitionTemplateViewModel>>(
         "/Shift/NeededResource/GetAll",
@@ -30,19 +30,15 @@ export class ShiftDefinitionTemplateService {
       });
   }
 
-  public createShiftDefinitionTemplate(
-    body: ShiftDefinitionTemplateInputModel
-  ) {
+  public create(body: ShiftDefinitionTemplateInputModel) {
     return this.api.post("/Shift/NeededResource/Register", body);
   }
 
-  // public updateShiftDefinition(body: ShiftDefinitionInputModel) {
+  // public update(body: ShiftDefinitionInputModel) {
   //   return this.api.post("/Shift/Update", body);
   // }
 
-  public deleteShiftDefinitionTemplate(
-    body: ShiftDefinitionTemplateInputModel
-  ) {
+  public delete(body: ShiftDefinitionTemplateInputModel) {
     return this.api.post("/Shift/NeededResource/Delete", body);
   }
 }

@@ -9,7 +9,7 @@ export class AgentService {
     this.api = Api.getInstance();
   }
 
-  public getAgents(body: AgentSearchModel) {
+  public getAll(body: AgentSearchModel) {
     return this.api
       .post<IApiResponseModel<AgentViewModel>>("/Agent/GetAll", body)
       .then((response) => {

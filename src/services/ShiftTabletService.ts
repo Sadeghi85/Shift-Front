@@ -13,7 +13,7 @@ export class ShiftTabletService {
     this.api = Api.getInstance();
   }
 
-  public getShiftTablets(body: ShiftTabletSearchModel) {
+  public getAll(body: ShiftTabletSearchModel) {
     return this.api
       .post<IApiResponseModel<ShiftTabletViewModel>>(
         "/ShiftTablet/GetAll",
@@ -30,15 +30,15 @@ export class ShiftTabletService {
       });
   }
 
-  public createShiftTablet(body: ShiftTabletInputModel) {
+  public create(body: ShiftTabletInputModel) {
     return this.api.post("/ShiftTablet/Register", body);
   }
 
-  public updateShiftTablet(body: ShiftTabletInputModel) {
+  public update(body: ShiftTabletInputModel) {
     return this.api.post("/ShiftTablet/Update", body);
   }
 
-  public deleteShiftTablet(body: ShiftTabletInputModel) {
+  public delete(body: ShiftTabletInputModel) {
     return this.api.post("/ShiftTablet/Delete", body);
   }
 }

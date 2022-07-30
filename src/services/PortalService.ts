@@ -9,7 +9,7 @@ export class PortalService {
     this.api = Api.getInstance();
   }
 
-  public getPortals(body: PortalSearchModel) {
+  public getAll(body: PortalSearchModel) {
     return this.api
       .post<IApiResponseModel<PortalViewModel>>("/Portal/GetAll", body)
       .then((response) => {

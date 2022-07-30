@@ -12,7 +12,7 @@ export class ResourceTypeService {
     this.api = Api.getInstance();
   }
 
-  public getResourceTypes(body: ResourceTypeSearchModel) {
+  public getAll(body: ResourceTypeSearchModel) {
     return this.api
       .post<IApiResponseModel<ResourceTypeViewModel>>(
         "/ResourceType/GetAll",

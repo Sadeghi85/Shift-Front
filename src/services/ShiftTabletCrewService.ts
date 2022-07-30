@@ -13,7 +13,7 @@ export class ShiftTabletCrewService {
     this.api = Api.getInstance();
   }
 
-  public getShiftTabletCrews(body: ShiftTabletCrewSearchModel) {
+  public getAll(body: ShiftTabletCrewSearchModel) {
     return this.api
       .post<IApiResponseModel<ShiftTabletCrewViewModel>>(
         "/ShiftTabletCrew/GetAll",
@@ -30,27 +30,27 @@ export class ShiftTabletCrewService {
       });
   }
 
-  public getShiftTabletCrewExcel(body: ShiftTabletCrewSearchModel) {
+  public getExcel(body: ShiftTabletCrewSearchModel) {
     return this.api.post("/ShiftTabletCrew/GetGeExcel", body, {
       responseType: "blob",
     });
   }
 
-  public getShiftTabletCrewPdf(body: ShiftTabletCrewSearchModel) {
+  public getPdf(body: ShiftTabletCrewSearchModel) {
     return this.api.post("/ShiftTabletCrew/Getpdf", body, {
       responseType: "blob",
     });
   }
 
-  public createShiftTabletCrew(body: ShiftTabletCrewInputModel) {
+  public create(body: ShiftTabletCrewInputModel) {
     return this.api.post("/ShiftTabletCrew/Register", body);
   }
 
-  public updateShiftTabletCrew(body: ShiftTabletCrewInputModel) {
+  public update(body: ShiftTabletCrewInputModel) {
     return this.api.post("/ShiftTabletCrew/Update", body);
   }
 
-  public deleteShiftTabletCrew(body: ShiftTabletCrewInputModel) {
+  public delete(body: ShiftTabletCrewInputModel) {
     return this.api.post("/ShiftTabletCrew/Delete", body);
   }
 }

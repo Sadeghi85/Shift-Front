@@ -13,7 +13,7 @@ export class LocationService {
     this.api = Api.getInstance();
   }
 
-  public getLocations(body: LocationSearchModel) {
+  public getAll(body: LocationSearchModel) {
     return this.api
       .post<IApiResponseModel<LocationViewModel>>("/Location/GetAll", body)
       .then((response) => {
@@ -27,15 +27,15 @@ export class LocationService {
       });
   }
 
-  public createLocation(body: LocationInputModel) {
+  public create(body: LocationInputModel) {
     return this.api.post("/Location/Register", body);
   }
 
-  public updateLocation(body: LocationInputModel) {
+  public update(body: LocationInputModel) {
     return this.api.post("/Location/Update", body);
   }
 
-  public deleteLocation(body: LocationInputModel) {
+  public delete(body: LocationInputModel) {
     return this.api.post("/Location/Delete", body);
   }
 }
