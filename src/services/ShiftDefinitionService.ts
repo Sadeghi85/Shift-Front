@@ -35,7 +35,7 @@ export class ShiftDefinitionService {
     return this.api.post("/Shift/Update", body);
   }
 
-  public delete(body: ShiftDefinitionInputModel) {
-    return this.api.post("/Shift/Delete", body);
+  public delete(id: number) {
+    return this.api.post("/Shift/Delete?id=" + id, null);
   }
 }

@@ -35,7 +35,7 @@ export class LocationService {
     return this.api.post("/Location/Update", body);
   }
 
-  public delete(body: LocationInputModel) {
-    return this.api.post("/Location/Delete", body);
+  public delete(id: number) {
+    return this.api.post("/Location/Delete?id=" + id, null);
   }
 }

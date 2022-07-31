@@ -53,7 +53,7 @@ const gridOperationMenuItems = ref([
         icon: "pi pi-pencil",
         command: () => {
           closeSearchForm();
-          cuPortalLocationId.value = gridOperationMenu.value.data;
+          cuPortalLocationId.value = gridOperationMenu.value.data.id;
           openCreateUpdateForm();
         },
       },
@@ -72,11 +72,7 @@ const gridOperationMenuItems = ref([
             defaultFocus: "reject",
             accept: () => {
               portalLocationService.value
-                .delete(
-                  new PortalLocationInputModel({
-                    id: gridOperationMenu.value.data.id,
-                  })
-                )
+                .delete(gridOperationMenu.value.data.id)
                 .then((response) => {
                   //console.log(response);
                   if (!response.data.success) {
@@ -394,7 +390,7 @@ onMounted(async () => {
                     class="p-button-rounded p-button-secondary"
                     icon="pi pi-cog"
                     @click.prevent="
-                      toggleGridOperationMenu($event, slotProps.data.id)
+                      toggleGridOperationMenu($event, slotProps.data)
                     "
                   />
                 </template>

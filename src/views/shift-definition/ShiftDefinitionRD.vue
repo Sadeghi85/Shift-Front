@@ -51,7 +51,7 @@ const gridOperationMenuItems = ref([
         icon: "pi pi-pencil",
         command: () => {
           closeSearchForm();
-          cuShiftDefinitionId.value = gridOperationMenu.value.dataId;
+          cuShiftDefinitionId.value = gridOperationMenu.value.data.id;
           openCreateUpdateForm();
         },
       },
@@ -70,11 +70,7 @@ const gridOperationMenuItems = ref([
             defaultFocus: "reject",
             accept: () => {
               shiftDefinitionService.value
-                .delete(
-                  new ShiftDefinitionInputModel({
-                    id: gridOperationMenu.value.dataId,
-                  })
-                )
+                .delete(gridOperationMenu.value.data.id)
                 .then((response) => {
                   //console.log(response);
                   if (!response.data.success) {
@@ -101,9 +97,9 @@ const gridOperationMenuItems = ref([
   },
 ]);
 
-const toggleGridOperationMenu = (event: any, id: number) => {
+const toggleGridOperationMenu = (event: any, data: any) => {
   //cuShiftLocationId.value = id;
-  gridOperationMenu.value.dataId = id;
+  gridOperationMenu.value.data = data;
   gridOperationMenu.value.toggle(event);
 };
 
@@ -175,7 +171,7 @@ const handleSearch = async () => {
       pageNo: pageNumber.value,
       portalId: portal.value?.id ?? 0,
       title: shiftTitle.value ?? "",
-      shiftType: shiftType.value?.id ?? 0,
+      shiftTypeId: shiftType.value?.id ?? 0,
       orderKey: "id",
       desc: true,
       isDeleted: false,
@@ -427,7 +423,7 @@ onMounted(async () => {
                     class="p-button-rounded p-button-secondary"
                     icon="pi pi-cog"
                     @click.prevent="
-                      toggleGridOperationMenu($event, slotProps.data.id)
+                      toggleGridOperationMenu($event, slotProps.data)
                     "
                   />
                 </template>

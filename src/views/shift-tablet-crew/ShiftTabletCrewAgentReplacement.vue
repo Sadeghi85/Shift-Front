@@ -22,11 +22,11 @@ const apiErrorStore = useApiErrorStore();
 const submitted = ref(false);
 
 const agents = ref<InstanceType<typeof AgentViewModel>[]>();
-const jobs = ref<InstanceType<typeof ResourceTypeViewModel>[]>();
+const jobs = ref<InstanceType<typeof JobViewModel>[]>();
 
 const state = reactive({
   agent: ref<InstanceType<typeof AgentViewModel>>(),
-  job: ref<InstanceType<typeof ResourceTypeViewModel>>(),
+  job: ref<InstanceType<typeof JobViewModel>>(),
 });
 
 const rules = {
@@ -38,7 +38,7 @@ const rules = {
 const { t } = useI18n();
 const v$ = useVuelidate(rules, state);
 const agentService = ref(new AgentService());
-const jobService = ref(new ResourceTypeService());
+const jobService = ref(new JobService());
 const shiftTabletCrewService = ref(new ShiftTabletCrewService());
 
 const toast = useToast();
@@ -79,7 +79,7 @@ const onDropdownJobFilter = async (event: any) => {
   try {
     jobs.value = (
       await jobService.value.getAll(
-        new ResourceTypeSearchModel({
+        new JobSearchModel({
           pageNo: 0,
           pageSize: generalStore.dropdownItemsCount,
           orderKey: "id",
@@ -112,7 +112,7 @@ const handleSubmit = (isFormValid: boolean) => {
             id: props.shiftTabletCrewId,
             agentId: v$.value.agent.$model?.id,
             shiftTabletId: props.shiftTabletId,
-            resourceTypeId: v$.value.job.$model?.id,
+            jobId: v$.value.job.$model?.id,
           })
         )
         .then((response) => {
@@ -153,7 +153,7 @@ const fillForm = async () => {
 
     jobs.value = (
       await jobService.value.getAll(
-        new ResourceTypeSearchModel({
+        new JobSearchModel({
           pageSize: generalStore.dropdownItemsCount,
         })
       )
@@ -171,9 +171,7 @@ const fillForm = async () => {
       ).data[0];
 
       state.agent = agents.value.find((x) => x.id == shiftTabletCrew.agentId);
-      state.job = jobs.value.find(
-        (x) => x.id == shiftTabletCrew.resourceTypeId
-      );
+      state.job = jobs.value.find((x) => x.id == shiftTabletCrew.jobId);
     }
   } catch (error: any) {
     if (typeof error.message === "object") {

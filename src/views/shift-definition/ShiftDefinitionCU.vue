@@ -69,7 +69,7 @@ const handleSubmit = (isFormValid: boolean) => {
             portalId: v$.value.portal.$model?.id,
             startTime: v$.value.startTime.$model,
             endTime: v$.value.endTime.$model,
-            shiftType: v$.value.shiftType.$model?.id,
+            shiftTypeId: v$.value.shiftType.$model?.id,
           })
         )
         .then((response) => {
@@ -96,7 +96,7 @@ const handleSubmit = (isFormValid: boolean) => {
             portalId: v$.value.portal.$model?.id,
             startTime: v$.value.startTime.$model,
             endTime: v$.value.endTime.$model,
-            shiftType: v$.value.shiftType.$model?.id,
+            shiftTypeId: v$.value.shiftType.$model?.id,
           })
         )
         .then((response) => {
@@ -243,7 +243,7 @@ watch(
                     :class="{
                       'p-error': v$.portal.$invalid && submitted,
                     }"
-                    >{{ t("portal.name")
+                    >{{ t("portal.title")
                     }}<span :style="{ color: 'var(--red-500)' }">*</span></label
                   >
                 </div>

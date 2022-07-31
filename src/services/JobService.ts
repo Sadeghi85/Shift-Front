@@ -1,23 +1,17 @@
 import { Api } from "@/http-client/api";
 import { AxiosInstance } from "axios";
 import { IApiResponseModel } from "@/models/ApiResponseModel";
-import {
-  ResourceTypeViewModel,
-  ResourceTypeSearchModel,
-} from "@/models/ResourceTypeModels";
+import { JobViewModel, JobSearchModel } from "@/models/JobModels";
 
-export class ResourceTypeService {
+export class JobService {
   private api: AxiosInstance;
   constructor() {
     this.api = Api.getInstance();
   }
 
-  public getAll(body: ResourceTypeSearchModel) {
+  public getAll(body: JobSearchModel) {
     return this.api
-      .post<IApiResponseModel<ResourceTypeViewModel>>(
-        "/ResourceType/GetAll",
-        body
-      )
+      .post<IApiResponseModel<JobViewModel>>("/Job/GetAll", body)
       .then((response) => {
         if (response.data.success == false) {
           throw {

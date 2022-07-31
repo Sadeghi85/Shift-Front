@@ -38,7 +38,7 @@ export class ShiftTabletService {
     return this.api.post("/ShiftTablet/Update", body);
   }
 
-  public delete(body: ShiftTabletInputModel) {
-    return this.api.post("/ShiftTablet/Delete", body);
+  public delete(id: number) {
+    return this.api.post("/ShiftTablet/Delete?id=" + id, null);
   }
 }

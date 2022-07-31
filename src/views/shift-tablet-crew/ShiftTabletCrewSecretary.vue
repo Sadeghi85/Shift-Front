@@ -41,10 +41,10 @@ const showSuccess = (detail: string) => {
 };
 
 const shiftTabletCrews = ref<InstanceType<typeof ShiftTabletCrewViewModel>[]>();
-const jobs = ref<InstanceType<typeof ResourceTypeViewModel>[]>();
+const jobs = ref<InstanceType<typeof JobViewModel>[]>();
 const agents = ref<InstanceType<typeof AgentViewModel>[]>();
 const agent = ref<InstanceType<typeof AgentViewModel>>();
-const job = ref<InstanceType<typeof ResourceTypeViewModel>>();
+const job = ref<InstanceType<typeof JobViewModel>>();
 const shiftTablet = ref<InstanceType<typeof ShiftTabletViewModel>>();
 
 const editingRows = ref<[]>();
@@ -70,7 +70,7 @@ const onRowEditSave = (event: any) => {
         exitTime: newData.defaultExitTime,
         agentId: newData.agentId,
         shiftTabletId: newData.shiftTabletId,
-        resourceTypeId: newData.resourceTypeId,
+        jobId: newData.jobId,
       })
     )
     .then((response) => {
@@ -134,7 +134,7 @@ const handleSearch = async () => {
       desc: true,
 
       agentId: agent.value?.id ?? 0,
-      resourceTypeId: job.value?.id ?? 0,
+      jobId: job.value?.id ?? 0,
     })
   );
 };
@@ -142,7 +142,7 @@ const handleSearch = async () => {
 const shiftTabletService = ref(new ShiftTabletService());
 const shiftTabletCrewService = ref(new ShiftTabletCrewService());
 const agentService = ref(new AgentService());
-const jobService = ref(new ResourceTypeService());
+const jobService = ref(new JobService());
 
 const resetSearchForm = async () => {
   agent.value = undefined;
@@ -178,7 +178,7 @@ const onDropdownJobFilter = async (event: any) => {
   try {
     jobs.value = (
       await jobService.value.getAll(
-        new ResourceTypeSearchModel({
+        new JobSearchModel({
           pageSize: generalStore.dropdownItemsCount,
           orderKey: "id",
           desc: true,
@@ -222,7 +222,7 @@ const loadEssentials = async () => {
     // jobs
     jobs.value = (
       await jobService.value.getAll(
-        new ResourceTypeSearchModel({
+        new JobSearchModel({
           pageSize: generalStore.dropdownItemsCount,
           orderKey: "id",
           desc: true,

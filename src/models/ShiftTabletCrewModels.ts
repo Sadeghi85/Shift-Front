@@ -1,7 +1,7 @@
 interface IShiftTabletCrewInputModel {
   id?: number;
   agentId?: number;
-  resourceTypeId?: number;
+  jobId?: number;
   entranceTime?: string | null;
   exitTime?: string | null;
   shiftTabletId?: number;
@@ -9,7 +9,7 @@ interface IShiftTabletCrewInputModel {
 export class ShiftTabletCrewInputModel implements IShiftTabletCrewInputModel {
   id: number;
   agentId: number;
-  resourceTypeId: number;
+  jobId: number;
   entranceTime: string | null;
   exitTime: string | null;
   shiftTabletId: number;
@@ -17,7 +17,7 @@ export class ShiftTabletCrewInputModel implements IShiftTabletCrewInputModel {
   constructor(params: IShiftTabletCrewInputModel) {
     this.id = params.id || 0;
     this.agentId = params.agentId || 0;
-    this.resourceTypeId = params.resourceTypeId || 0;
+    this.jobId = params.jobId || 0;
     this.entranceTime = params.entranceTime || null;
     this.exitTime = params.exitTime || null;
     this.shiftTabletId = params.shiftTabletId || 0;
@@ -37,7 +37,7 @@ interface IShiftTabletCrewSearchModel {
   fromDate?: string;
   toDate?: string;
   agentId?: number;
-  resourceTypeId?: number;
+  jobId?: number;
   shifTabletId?: number;
   entranceTime?: string;
   exitTime?: string;
@@ -57,7 +57,7 @@ export class ShiftTabletCrewSearchModel implements IShiftTabletCrewSearchModel {
   fromDate: string;
   toDate: string;
   agentId: number;
-  resourceTypeId: number;
+  jobId: number;
   shifTabletId: number;
   entranceTime: string;
   exitTime: string;
@@ -77,7 +77,7 @@ export class ShiftTabletCrewSearchModel implements IShiftTabletCrewSearchModel {
     this.fromDate = params.fromDate || "";
     this.toDate = params.toDate || "";
     this.agentId = params.agentId || 0;
-    this.resourceTypeId = params.resourceTypeId || 0;
+    this.jobId = params.jobId || 0;
     this.shifTabletId = params.shifTabletId || 0;
     this.entranceTime = params.entranceTime || "";
     this.exitTime = params.exitTime || "";
@@ -102,7 +102,7 @@ interface IShiftTabletCrewViewModel {
   weekDay?: string;
   portalName?: string;
   agentId?: number;
-  resourceTypeId?: number;
+  jobId?: number;
 }
 export class ShiftTabletCrewViewModel implements IShiftTabletCrewViewModel {
   id: number;
@@ -120,7 +120,7 @@ export class ShiftTabletCrewViewModel implements IShiftTabletCrewViewModel {
   weekDay: string;
   portalName: string;
   agentId: number;
-  resourceTypeId: number;
+  jobId: number;
 
   constructor(params: IShiftTabletCrewViewModel) {
     this.id = params.id || 0;
@@ -138,6 +138,6 @@ export class ShiftTabletCrewViewModel implements IShiftTabletCrewViewModel {
     this.weekDay = params.weekDay || "";
     this.portalName = params.portalName || "";
     this.agentId = params.agentId || 0;
-    this.resourceTypeId = params.resourceTypeId || 0;
+    this.jobId = params.jobId || 0;
   }
 }

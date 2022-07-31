@@ -52,7 +52,7 @@ const gridOperationMenuItems = ref([
         icon: "pi pi-pencil",
         command: () => {
           closeSearchForm();
-          cuLocationId.value = gridOperationMenu.value.dataId;
+          cuLocationId.value = gridOperationMenu.value.data.id;
           openCreateUpdateForm();
         },
       },
@@ -71,12 +71,7 @@ const gridOperationMenuItems = ref([
             defaultFocus: "reject",
             accept: () => {
               locationService.value
-                .delete(
-                  new LocationInputModel({
-                    id: gridOperationMenu.value.data.id,
-                    title: gridOperationMenu.value.data.title,
-                  })
-                )
+                .delete(gridOperationMenu.value.data.id)
                 .then((response) => {
                   //console.log(response);
                   if (!response.data.success) {

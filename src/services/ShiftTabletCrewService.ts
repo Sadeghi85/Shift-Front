@@ -50,7 +50,7 @@ export class ShiftTabletCrewService {
     return this.api.post("/ShiftTabletCrew/Update", body);
   }
 
-  public delete(body: ShiftTabletCrewInputModel) {
-    return this.api.post("/ShiftTabletCrew/Delete", body);
+  public delete(id: number) {
+    return this.api.post("/ShiftTabletCrew/Delete?id=" + id, null);
   }
 }

@@ -148,7 +148,7 @@ const gridOperationMenuItems = ref([
         icon: "pi pi-pencil",
         command: () => {
           closeSearchForm();
-          cuShiftTabletId.value = gridOperationMenu.value.dataId;
+          cuShiftTabletId.value = gridOperationMenu.value.data.id;
           openCreateUpdateForm();
         },
       },
@@ -167,11 +167,7 @@ const gridOperationMenuItems = ref([
             defaultFocus: "reject",
             accept: () => {
               shiftTabletService.value
-                .delete(
-                  new ShiftTabletInputModel({
-                    id: gridOperationMenu.value.dataId,
-                  })
-                )
+                .delete(gridOperationMenu.value.data.id)
                 .then((response) => {
                   //console.log(response);
                   if (!response.data.success) {
@@ -198,9 +194,9 @@ const gridOperationMenuItems = ref([
   },
 ]);
 
-const toggleGridOperationMenu = (event: any, id: number) => {
+const toggleGridOperationMenu = (event: any, data: any) => {
   //cuShiftLocationId.value = id;
-  gridOperationMenu.value.dataId = id;
+  gridOperationMenu.value.data = data;
   gridOperationMenu.value.toggle(event);
 };
 
@@ -561,7 +557,7 @@ onMounted(async () => {
                     class="p-button-rounded p-button-secondary"
                     icon="pi pi-cog"
                     @click.prevent="
-                      toggleGridOperationMenu($event, slotProps.data.id)
+                      toggleGridOperationMenu($event, slotProps.data)
                     "
                   />
                 </template>

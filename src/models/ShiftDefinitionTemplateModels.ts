@@ -1,22 +1,19 @@
 interface IShiftDefinitionTemplateInputModel {
   id?: number;
-  resourceTypeId?: number;
+  jobId?: number;
   shiftId?: number;
-  isDeleted?: boolean | null;
 }
 export class ShiftDefinitionTemplateInputModel
   implements IShiftDefinitionTemplateInputModel
 {
   id: number;
-  resourceTypeId: number;
+  jobId: number;
   shiftId: number;
-  isDeleted: boolean | null;
 
   constructor(params: IShiftDefinitionTemplateInputModel) {
     this.id = params.id || 0;
-    this.resourceTypeId = params.resourceTypeId || 0;
+    this.jobId = params.jobId || 0;
     this.shiftId = params.shiftId || 0;
-    this.isDeleted = params.isDeleted || false;
   }
 }
 
@@ -26,7 +23,7 @@ interface IShiftDefinitionTemplateSearchModel {
   orderKey?: string;
   desc?: boolean;
   shiftId?: number;
-  resourceTypeId?: number;
+  jobId?: number;
   isDeleted?: boolean | null;
 }
 export class ShiftDefinitionTemplateSearchModel
@@ -37,7 +34,7 @@ export class ShiftDefinitionTemplateSearchModel
   orderKey: string;
   desc: boolean;
   shiftId: number;
-  resourceTypeId: number;
+  jobId: number;
   isDeleted: boolean | null;
 
   constructor(params: IShiftDefinitionTemplateSearchModel) {
@@ -46,29 +43,32 @@ export class ShiftDefinitionTemplateSearchModel
     this.orderKey = params.orderKey || "id";
     this.desc = params.desc || true;
     this.shiftId = params.shiftId || 0;
-    this.resourceTypeId = params.resourceTypeId || 0;
+    this.jobId = params.jobId || 0;
     this.isDeleted = params.isDeleted || false;
   }
 }
 
 interface IShiftDefinitionTemplateViewModel {
+  id?: number;
   shiftId?: number;
-  resourceId?: number;
-  shiftName?: string;
-  resourceTypeName?: string;
+  jobId?: number;
+  shiftTitle?: string;
+  jobTitle?: string;
 }
 export class ShiftDefinitionTemplateViewModel
   implements IShiftDefinitionTemplateViewModel
 {
+  id: number;
   shiftId: number;
-  resourceId: number;
-  shiftName: string;
-  resourceTypeName: string;
+  jobId: number;
+  shiftTitle: string;
+  jobTitle: string;
 
   constructor(params: IShiftDefinitionTemplateViewModel) {
+    this.id = params.id || 0;
     this.shiftId = params.shiftId || 0;
-    this.resourceId = params.resourceId || 0;
-    this.shiftName = params.shiftName || "";
-    this.resourceTypeName = params.resourceTypeName || "";
+    this.jobId = params.jobId || 0;
+    this.shiftTitle = params.shiftTitle || "";
+    this.jobTitle = params.jobTitle || "";
   }
 }

@@ -39,7 +39,7 @@ const rules = {
 const { t } = useI18n();
 const v$ = useVuelidate(rules, state);
 const agentService = ref(new AgentService());
-const jobService = ref(new ResourceTypeService());
+const jobService = ref(new JobService());
 const shiftTabletCrewService = ref(new ShiftTabletCrewService());
 const shiftTabletService = ref(new ShiftTabletService());
 const shiftDefinitionTemplateService = ref(
@@ -91,7 +91,7 @@ const handleSubmit = (isFormValid: boolean) => {
           new ShiftTabletCrewInputModel({
             agentId: v$.value.agent.$model?.id,
             shiftTabletId: props.shiftTabletId,
-            resourceTypeId: v$.value.job.$model?.resourceId,
+            jobId: v$.value.job.$model?.jobId,
           })
         )
         .then((response) => {
@@ -211,7 +211,7 @@ watch(
                     id="job"
                     v-model="v$.job.$model"
                     :options="jobs"
-                    option-label="resourceTypeName"
+                    option-label="jobTitle"
                     :filter="true"
                     :show-clear="true"
                     :class="{

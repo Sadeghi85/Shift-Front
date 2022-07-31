@@ -233,7 +233,7 @@ module.exports = defineConfig({
 
             "@/services/PortalService": ["PortalService"],
             "@/services/ShiftDefinitionService": ["ShiftDefinitionService"],
-            "@/services/ResourceTypeService": ["ResourceTypeService"],
+            "@/services/JobService": ["JobService"],
             "@/services/ShiftDefinitionTemplateService": [
               "ShiftDefinitionTemplateService",
             ],
@@ -252,10 +252,7 @@ module.exports = defineConfig({
               "ShiftDefinitionSearchModel",
             ],
             "@/models/ShiftTypeModels": ["ShiftTypeViewModel"],
-            "@/models/ResourceTypeModels": [
-              "ResourceTypeViewModel",
-              "ResourceTypeSearchModel",
-            ],
+            "@/models/JobModels": ["JobViewModel", "JobSearchModel"],
             "@/models/ShiftDefinitionTemplateModels": [
               "ShiftDefinitionTemplateInputModel",
               "ShiftDefinitionTemplateSearchModel",
@@ -329,7 +326,7 @@ module.exports = defineConfig({
         onProxyReq: function (proxyReq) {
           proxyReq.setHeader(
             "Cookie",
-            "rtcookie=rui=1krFREj/0UVuMnfxv3FLR5+EuKVYbVwWTWo1TPx4PZixdlaVvdSC4cceLfenXeieq6nGa1F09US7QMgXIbgEJnTLJhWtAxENqxbvXiHHlvIELzAm5H+zXnN117YGIq6h"
+            "rtcookie=rui=1krFREj/0UVuMnfxv3FLR5+EuKVYbVwWTWo1TPx4PZixdlaVvdSC4cceLfenXeieq6nGa1F09US7QMgXIbgEJnBPfdmONukmfT2jruCFqA7c2nMixvnStRRr08YE7OEw"
           );
         },
       },

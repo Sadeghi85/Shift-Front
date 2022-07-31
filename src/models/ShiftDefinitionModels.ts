@@ -2,7 +2,7 @@ interface IShiftDefinitionInputModel {
   id?: number;
   title?: string;
   portalId?: number;
-  shiftType?: number;
+  shiftTypeId?: number;
   startTime?: string;
   endTime?: string;
 }
@@ -10,7 +10,7 @@ export class ShiftDefinitionInputModel implements IShiftDefinitionInputModel {
   id: number;
   title: string;
   portalId: number;
-  shiftType: number;
+  shiftTypeId: number;
   startTime: string;
   endTime: string;
 
@@ -18,17 +18,19 @@ export class ShiftDefinitionInputModel implements IShiftDefinitionInputModel {
     this.id = params.id || 0;
     this.title = params.title || "";
     this.portalId = params.portalId || 0;
-    this.shiftType = params.shiftType || 0;
-    this.startTime = params.startTime || "";
-    this.endTime = params.endTime || "";
+    this.shiftTypeId = params.shiftTypeId || 0;
+    this.startTime = params.startTime || "00:00:00";
+    this.endTime = params.endTime || "00:00:00";
   }
 }
 
 interface IShiftDefinitionSearchModel {
   id?: number;
   portalId?: number;
-  shiftType?: number;
+  shiftTypeId?: number;
   title?: string;
+  startTime?: string | null;
+  endTime?: string | null;
   pageNo?: number;
   pageSize?: number;
   orderKey?: string;
@@ -38,8 +40,10 @@ interface IShiftDefinitionSearchModel {
 export class ShiftDefinitionSearchModel implements IShiftDefinitionSearchModel {
   id: number;
   portalId: number;
-  shiftType: number;
+  shiftTypeId: number;
   title: string;
+  startTime: string | null;
+  endTime: string | null;
   pageNo: number;
   pageSize: number;
   orderKey: string;
@@ -49,8 +53,10 @@ export class ShiftDefinitionSearchModel implements IShiftDefinitionSearchModel {
   constructor(params: IShiftDefinitionSearchModel) {
     this.id = params.id || 0;
     this.portalId = params.portalId || 0;
-    this.shiftType = params.shiftType || 0;
+    this.shiftTypeId = params.shiftTypeId || 0;
     this.title = params.title || "";
+    this.startTime = params.startTime || null;
+    this.endTime = params.endTime || null;
     this.pageNo = params.pageNo || 0;
     this.pageSize = params.pageSize || 2147483647; // Int32.MaxValue
     this.orderKey = params.orderKey || "id";
@@ -66,6 +72,7 @@ interface IShiftDefinitionViewModel {
   portalTitle?: string;
   startTime?: string;
   endTime?: string;
+  shiftTypeId?: number;
   shiftTypeTitle?: string;
 }
 export class ShiftDefinitionViewModel implements IShiftDefinitionViewModel {
@@ -75,6 +82,7 @@ export class ShiftDefinitionViewModel implements IShiftDefinitionViewModel {
   portalTitle: string;
   startTime: string;
   endTime: string;
+  shiftTypeId: number;
   shiftTypeTitle: string;
 
   constructor(params: IShiftDefinitionViewModel) {
@@ -84,6 +92,7 @@ export class ShiftDefinitionViewModel implements IShiftDefinitionViewModel {
     this.portalTitle = params.portalTitle || "";
     this.startTime = params.startTime || "";
     this.endTime = params.endTime || "";
+    this.shiftTypeId = params.shiftTypeId || 0;
     this.shiftTypeTitle = params.shiftTypeTitle || "";
   }
 }

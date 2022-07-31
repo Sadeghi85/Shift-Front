@@ -38,7 +38,7 @@ export class PortalLocationService {
     return this.api.post("/PortalLocation/Update", body);
   }
 
-  public delete(body: PortalLocationInputModel) {
-    return this.api.post("/PortalLocation/Delete", body);
+  public delete(id: number) {
+    return this.api.post("/PortalLocation/Delete?id=" + id, null);
   }
 }

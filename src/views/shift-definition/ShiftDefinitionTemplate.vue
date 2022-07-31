@@ -6,7 +6,6 @@ const props = defineProps({
   shiftDefinitionId: {
     type: Number,
     required: true,
-    default: 0,
   },
 });
 //const emit = defineEmits(["updateIsDone", "insertIsDone", "cuIsCanceled"]);
@@ -54,11 +53,7 @@ const gridTemplateOperationMenuItems = ref([
             defaultFocus: "reject",
             accept: () => {
               shiftDefinitionTemplateService.value
-                .delete(
-                  new ShiftDefinitionTemplateInputModel({
-                    id: gridTemplateOperationMenu.value.dataId,
-                  })
-                )
+                .delete(gridTemplateOperationMenu.value.data.id)
                 .then(async (response) => {
                   //console.log(response);
                   if (!response.data.success) {
@@ -84,24 +79,24 @@ const gridTemplateOperationMenuItems = ref([
     ],
   },
 ]);
-const toggleGridTemplateOperationMenu = (event: any, id: number) => {
-  gridTemplateOperationMenu.value.dataId = id;
-  console.log(id);
+const toggleGridTemplateOperationMenu = (event: any, data: any) => {
+  gridTemplateOperationMenu.value.data = data;
+
   gridTemplateOperationMenu.value.toggle(event);
 };
 
 const shiftDefinitionTemplates =
   ref<InstanceType<typeof ShiftDefinitionTemplateViewModel>[]>();
 const submitted = ref(false);
-const jobs = ref<InstanceType<typeof ResourceTypeViewModel>[]>();
+const jobs = ref<InstanceType<typeof JobViewModel>[]>();
 const state = reactive({
-  job: ref<InstanceType<typeof ResourceTypeViewModel>>(),
+  job: ref<InstanceType<typeof JobViewModel>>(),
 });
 const rules = {
   job: { required },
 };
 const v$ = useVuelidate(rules, state);
-const jobService = ref(new ResourceTypeService());
+const jobService = ref(new JobService());
 const shiftDefinitionTemplateService = ref(
   new ShiftDefinitionTemplateService()
 );
@@ -141,7 +136,7 @@ const handleTemplateSubmit = (isFormValid: boolean) => {
       .create(
         new ShiftDefinitionTemplateInputModel({
           shiftId: props.shiftDefinitionId,
-          resourceTypeId: v$.value.job.$model?.id,
+          jobId: v$.value.job.$model?.id,
         })
       )
       .then(async (response) => {
@@ -169,9 +164,9 @@ const onDropdownJobFilter = async (event: any) => {
   try {
     jobs.value = (
       await jobService.value.getAll(
-        new ResourceTypeSearchModel({
+        new JobSearchModel({
           pageSize: generalStore.dropdownItemsCount,
-          resourceName: event.value,
+          title: event.value,
         })
       )
     ).data;
@@ -185,15 +180,7 @@ const onDropdownJobFilter = async (event: any) => {
 };
 
 const handleSearch = async () => {
-  await loadShiftDefinitionTemplates(); // {
-  // pageSize: pageSize.value,
-  // pageNo: pageNumber.value,
-  // orderKey: "id",
-  // desc: true,
-  // resourceTypeId: 0,
-  // shiftId: props.shiftDefinitionId,
-  // isDeleted: false,
-  // } as ShiftDefinitionTemplateSearchModel
+  await loadShiftDefinitionTemplates();
 };
 
 const loadEssentials = async () => {
@@ -201,7 +188,7 @@ const loadEssentials = async () => {
     // jobs
     jobs.value = (
       await jobService.value.getAll(
-        new ResourceTypeSearchModel({
+        new JobSearchModel({
           pageSize: generalStore.dropdownItemsCount,
         })
       )
@@ -312,7 +299,7 @@ watch(
               >
 
               <Column
-                field="resourceTypeName"
+                field="jobTitle"
                 :header="t('grid.header.jobName')"
               ></Column>
 
@@ -330,7 +317,7 @@ watch(
                     class="p-button-rounded p-button-secondary"
                     icon="pi pi-cog"
                     @click.prevent="
-                      toggleGridTemplateOperationMenu($event, slotProps.data.id)
+                      toggleGridTemplateOperationMenu($event, slotProps.data)
                     "
                   />
                 </template>

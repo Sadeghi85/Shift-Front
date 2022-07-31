@@ -83,11 +83,7 @@ const gridOperationMenuItems = ref([
             defaultFocus: "reject",
             accept: () => {
               shiftTabletCrewService.value
-                .delete(
-                  new ShiftTabletCrewInputModel({
-                    id: gridOperationMenu.value.dataId,
-                  })
-                )
+                .delete(gridOperationMenu.value.data.id)
                 .then((response) => {
                   //console.log(response);
                   if (!response.data.success) {
@@ -114,9 +110,9 @@ const gridOperationMenuItems = ref([
   },
 ]);
 
-const toggleGridOperationMenu = (event: any, id: number) => {
+const toggleGridOperationMenu = (event: any, data: any) => {
   //cuShiftLocationId.value = id;
-  gridOperationMenu.value.dataId = id;
+  gridOperationMenu.value.data = data;
   gridOperationMenu.value.toggle(event);
 };
 
@@ -131,8 +127,8 @@ const showSuccess = (detail: string) => {
 };
 
 const shiftTabletCrews = ref<InstanceType<typeof ShiftTabletCrewViewModel>[]>();
-const jobs = ref<InstanceType<typeof ResourceTypeViewModel>[]>();
-const job = ref<InstanceType<typeof ResourceTypeViewModel>>();
+const jobs = ref<InstanceType<typeof JobViewModel>[]>();
+const job = ref<InstanceType<typeof JobViewModel>>();
 const agents = ref<InstanceType<typeof AgentViewModel>[]>();
 const agent = ref<InstanceType<typeof AgentViewModel>>();
 const shiftTablet = ref<InstanceType<typeof ShiftTabletViewModel>>();
@@ -186,7 +182,7 @@ const handleSearch = async () => {
       desc: true,
 
       agentId: agent.value?.id ?? 0,
-      resourceTypeId: job.value?.id ?? 0,
+      jobId: job.value?.id ?? 0,
     })
   );
 };
@@ -194,7 +190,7 @@ const handleSearch = async () => {
 const shiftTabletService = ref(new ShiftTabletService());
 const shiftTabletCrewService = ref(new ShiftTabletCrewService());
 const agentService = ref(new AgentService());
-const jobService = ref(new ResourceTypeService());
+const jobService = ref(new JobService());
 
 const resetSearchForm = async () => {
   agent.value = undefined;
@@ -240,11 +236,11 @@ const onDropdownJobFilter = async (event: any) => {
   try {
     jobs.value = (
       await jobService.value.getAll(
-        new ResourceTypeSearchModel({
+        new JobSearchModel({
           pageSize: generalStore.dropdownItemsCount,
           orderKey: "id",
           desc: true,
-          resourceName: event.value,
+          title: event.value,
         })
       )
     ).data;
@@ -284,7 +280,7 @@ const loadEssentials = async () => {
     // jobs
     jobs.value = (
       await jobService.value.getAll(
-        new ResourceTypeSearchModel({
+        new JobSearchModel({
           pageSize: generalStore.dropdownItemsCount,
           orderKey: "id",
           desc: true,
@@ -363,7 +359,7 @@ watch(
           <div class="card info">
             <div class="grid">
               <div class="col">
-                {{ t("portal.name") }}:
+                {{ t("portal.title") }}:
                 <strong>{{ shiftTablet?.portalName }}</strong>
               </div>
               <div class="col">
@@ -524,7 +520,7 @@ watch(
                     class="p-button-rounded p-button-secondary"
                     icon="pi pi-cog"
                     @click.prevent="
-                      toggleGridOperationMenu($event, slotProps.data.id)
+                      toggleGridOperationMenu($event, slotProps.data)
                     "
                   />
                 </template>
