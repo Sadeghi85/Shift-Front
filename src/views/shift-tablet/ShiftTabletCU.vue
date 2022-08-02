@@ -23,15 +23,18 @@ const apiErrorStore = useApiErrorStore();
 const submitted = ref(false);
 
 const shiftDefinitions = ref<InstanceType<typeof ShiftDefinitionViewModel>[]>();
+const portalLocations = ref<InstanceType<typeof PortalLocationViewModel>[]>();
 
 const state = reactive({
   shiftDefinition: ref<InstanceType<typeof ShiftDefinitionViewModel>>(),
+  portalLocation: ref<InstanceType<typeof PortalLocationViewModel>>(),
   shiftDate: "",
   shiftWorthPercent: "",
 });
 
 const rules = {
   shiftDefinition: { required },
+  portalLocation: { required },
   shiftDate: { required },
   shiftWorthPercent: { required },
 };
@@ -42,6 +45,7 @@ const v$ = useVuelidate(rules, state);
 
 const shiftTabletService = ref(new ShiftTabletService());
 const shiftDefinitionService = ref(new ShiftDefinitionService());
+const portalLocationService = ref(new PortalLocationService());
 
 const toast = useToast();
 const showSuccess = (detail: string) => {
@@ -66,6 +70,7 @@ const handleSubmit = (isFormValid: boolean) => {
         .create(
           new ShiftTabletInputModel({
             shiftId: v$.value.shiftDefinition.$model?.id,
+            locationId: v$.value.portalLocation.$model?.locationId,
             shiftDate: v$.value.shiftDate.$model,
             shiftWorthPercent: v$.value.shiftWorthPercent.$model,
           })
@@ -91,6 +96,7 @@ const handleSubmit = (isFormValid: boolean) => {
           new ShiftTabletInputModel({
             id: props.shiftTabletId,
             shiftId: v$.value.shiftDefinition.$model?.id,
+            locationId: v$.value.portalLocation.$model?.locationId,
             shiftDate: v$.value.shiftDate.$model,
             shiftWorthPercent: v$.value.shiftWorthPercent.$model,
           })
@@ -118,6 +124,7 @@ const resetForm = () => {
   state.shiftDate = "";
   state.shiftWorthPercent = "";
   state.shiftDefinition = undefined;
+  state.portalLocation = undefined;
 
   submitted.value = false;
 };
@@ -128,6 +135,12 @@ const fillForm = async () => {
     shiftDefinitions.value = (
       await shiftDefinitionService.value.getAll(
         new ShiftDefinitionSearchModel({})
+      )
+    ).data;
+
+    portalLocations.value = (
+      await portalLocationService.value.getAll(
+        new PortalLocationSearchModel({})
       )
     ).data;
 
@@ -144,6 +157,10 @@ const fillForm = async () => {
 
       state.shiftDefinition = shiftDefinitions.value.find(
         (p) => p.id == shiftTablet.shiftId
+      );
+
+      state.portalLocation = portalLocations.value.find(
+        (p) => p.locationId == shiftTablet.locationId
       );
 
       state.shiftDate = shiftTablet.shiftDate;
@@ -197,7 +214,7 @@ watch(
             @submit.prevent="handleSubmit(!v$.$invalid)"
           >
             <div class="grid formgrid">
-              <div class="field col-12 mb-4 md:col-4">
+              <div class="field col-12 mb-4 md:col-3">
                 <div class="p-float-label">
                   <Dropdown
                     id="shiftDefinition"
@@ -224,7 +241,34 @@ watch(
                 </div>
               </div>
 
-              <div class="field col-12 mb-4 md:col-4">
+              <div class="field col-12 mb-4 md:col-3">
+                <div class="p-float-label">
+                  <Dropdown
+                    id="portalLocation"
+                    v-model="v$.portalLocation.$model"
+                    :options="portalLocations"
+                    option-label="locationTitle"
+                    :show-clear="true"
+                    :class="{
+                      'p-invalid': v$.portalLocation.$invalid && submitted,
+                    }"
+                    ><template #empty>
+                      {{ t("dropdown.slot.empty") }}
+                    </template></Dropdown
+                  >
+
+                  <label
+                    for="portalLocation"
+                    :class="{
+                      'p-error': v$.portalLocation.$invalid && submitted,
+                    }"
+                    >{{ t("location.title")
+                    }}<span :style="{ color: 'var(--red-500)' }">*</span></label
+                  >
+                </div>
+              </div>
+
+              <div class="field col-12 mb-4 md:col-3">
                 <div class="p-float-label">
                   <PersianDatePicker
                     v-model="v$.shiftDate.$model"
@@ -244,7 +288,7 @@ watch(
                 </div>
               </div>
 
-              <div class="field col-12 mb-4 md:col-4">
+              <div class="field col-12 mb-4 md:col-3">
                 <div class="p-float-label">
                   <InputText
                     id="shiftWorthPercent"

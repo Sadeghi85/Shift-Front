@@ -16,7 +16,7 @@ export class ShiftDefinitionTemplateService {
   public getAll(body: ShiftDefinitionTemplateSearchModel) {
     return this.api
       .post<IApiResponseModel<ShiftDefinitionTemplateViewModel>>(
-        "/Shift/ShiftJobTemplate/GetAll",
+        "/Shift/ShiftTemplate/GetAll",
         body
       )
       .then((response) => {
@@ -31,14 +31,14 @@ export class ShiftDefinitionTemplateService {
   }
 
   public create(body: ShiftDefinitionTemplateInputModel) {
-    return this.api.post("/Shift/ShiftJobTemplate/Register", body);
+    return this.api.post("/Shift/ShiftTemplate/Register", body);
   }
 
   public update(body: ShiftDefinitionTemplateInputModel) {
-    return this.api.post("/Shift/ShiftJobTemplate/Update", body);
+    return this.api.post("/Shift/ShiftTemplate/Update", body);
   }
 
   public delete(id: number) {
-    return this.api.post("/Shift/ShiftJobTemplate/Delete?id=" + id, null);
+    return this.api.post("/Shift/ShiftTemplate/Delete?id=" + id, null);
   }
 }

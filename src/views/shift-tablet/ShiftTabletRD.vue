@@ -481,7 +481,7 @@ onMounted(async () => {
               >
 
               <Column
-                field="portalName"
+                field="portalTitle"
                 :header="t('grid.header.portal')"
               ></Column>
               <Column
