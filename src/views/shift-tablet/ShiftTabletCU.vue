@@ -136,7 +136,9 @@ const fillForm = async () => {
       await shiftDefinitionService.value.getAll(
         new ShiftDefinitionSearchModel({})
       )
-    ).data;
+    ).data.map((shiftDefinition) => {
+      return new ShiftDefinitionViewModel(shiftDefinition);
+    });
 
     portalLocations.value = (
       await portalLocationService.value.getAll(
@@ -166,6 +168,24 @@ const fillForm = async () => {
       state.shiftDate = shiftTablet.shiftDate;
       state.shiftWorthPercent = shiftTablet.shiftWorthPercent;
     }
+  } catch (error: any) {
+    if (typeof error.message === "object") {
+      apiErrorStore.setApiErrorMessage(error.message.failureMessage);
+    } else {
+      console.log(error.message);
+    }
+  }
+};
+
+const onDropdownShiftDefinitionChange = async (event: any) => {
+  try {
+    portalLocations.value = (
+      await portalLocationService.value.getAll(
+        new PortalLocationSearchModel({
+          portalId: event.value.portalId,
+        })
+      )
+    ).data;
   } catch (error: any) {
     if (typeof error.message === "object") {
       apiErrorStore.setApiErrorMessage(error.message.failureMessage);
@@ -220,11 +240,12 @@ watch(
                     id="shiftDefinition"
                     v-model="v$.shiftDefinition.$model"
                     :options="shiftDefinitions"
-                    option-label="title"
+                    option-label="displayLabel"
                     :show-clear="true"
                     :class="{
                       'p-invalid': v$.shiftDefinition.$invalid && submitted,
                     }"
+                    @change="onDropdownShiftDefinitionChange"
                     ><template #empty>
                       {{ t("dropdown.slot.empty") }}
                     </template></Dropdown

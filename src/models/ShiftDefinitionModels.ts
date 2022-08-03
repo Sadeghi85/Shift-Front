@@ -74,6 +74,7 @@ interface IShiftDefinitionViewModel {
   endTime?: string;
   shiftTypeId?: number;
   shiftTypeTitle?: string;
+  displayLabel?: string;
 }
 export class ShiftDefinitionViewModel implements IShiftDefinitionViewModel {
   id: number;
@@ -84,6 +85,7 @@ export class ShiftDefinitionViewModel implements IShiftDefinitionViewModel {
   endTime: string;
   shiftTypeId: number;
   shiftTypeTitle: string;
+  displayLabel: string;
 
   constructor(params: IShiftDefinitionViewModel) {
     this.id = params.id || 0;
@@ -94,5 +96,6 @@ export class ShiftDefinitionViewModel implements IShiftDefinitionViewModel {
     this.endTime = params.endTime || "";
     this.shiftTypeId = params.shiftTypeId || 0;
     this.shiftTypeTitle = params.shiftTypeTitle || "";
+    this.displayLabel = `${this.title} (${this.portalTitle})`;
   }
 }

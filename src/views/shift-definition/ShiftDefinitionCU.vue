@@ -292,6 +292,7 @@ watch(
                     :clearable="true"
                     :auto-submit="true"
                     :popover="true"
+                    :editable="true"
                   />
                 </div>
               </div>
@@ -312,6 +313,7 @@ watch(
                     :clearable="true"
                     :auto-submit="true"
                     :popover="true"
+                    :editable="true"
                   />
                 </div>
               </div>
