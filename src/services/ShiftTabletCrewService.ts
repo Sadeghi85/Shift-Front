@@ -31,7 +31,7 @@ export class ShiftTabletCrewService {
   }
 
   public getExcel(body: ShiftTabletCrewSearchModel) {
-    return this.api.post("/ShiftTabletCrew/GetGeExcel", body, {
+    return this.api.post("/ShiftTabletCrew/GetExcel", body, {
       responseType: "blob",
     });
   }

@@ -226,7 +226,7 @@ watch(
                     :class="{
                       'p-error': v$.job.$invalid && submitted,
                     }"
-                    >{{ t("shiftTabletCrew.jobName")
+                    >{{ t("shiftTabletCrew.jobTitle")
                     }}<span :style="{ color: 'var(--red-500)' }">*</span></label
                   >
                 </div>
@@ -237,7 +237,7 @@ watch(
                     id="agent"
                     v-model="v$.agent.$model"
                     :options="agents"
-                    option-label="fullName"
+                    option-label="fullname"
                     :filter="true"
                     :show-clear="true"
                     :class="{

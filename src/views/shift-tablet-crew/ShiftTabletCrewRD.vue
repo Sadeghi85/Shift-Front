@@ -64,7 +64,7 @@ const gridOperationMenuItems = ref([
         command: () => {
           cuComponent.value = ShiftTabletCrewAgentReplacementView;
           closeSearchForm();
-          cuShiftTabletCrewId.value = gridOperationMenu.value.dataId;
+          cuShiftTabletCrewId.value = gridOperationMenu.value.data.id;
           openCreateUpdateForm();
         },
       },
@@ -360,14 +360,14 @@ watch(
             <div class="grid">
               <div class="col">
                 {{ t("portal.title") }}:
-                <strong>{{ shiftTablet?.portalName }}</strong>
+                <strong>{{ shiftTablet?.portalTitle }}</strong>
               </div>
               <div class="col">
                 {{ t("shift.title") }}:
                 <strong>{{ shiftTablet?.shiftTitle }}</strong>
               </div>
               <div class="col">
-                {{ t("shiftDate.title") }}:
+                {{ t("shift.shiftDate") }}:
                 <strong>{{ pdate(shiftTablet?.shiftDate ?? "") }}</strong>
               </div>
               <div class="col">
@@ -415,7 +415,7 @@ watch(
                         id="agent"
                         v-model="agent"
                         :options="agents"
-                        option-label="fullName"
+                        option-label="fullname"
                         :filter="true"
                         @filter="onDropdownAgentFilter"
                         ><template #empty>
@@ -443,7 +443,7 @@ watch(
                       >
 
                       <label for="job">{{
-                        t("shiftTabletCrew.jobName")
+                        t("shiftTabletCrew.jobTitle")
                       }}</label>
                     </div>
                   </div>
@@ -503,8 +503,8 @@ watch(
                 :header="t('grid.header.agentFullName')"
               ></Column>
               <Column
-                field="jobName"
-                :header="t('grid.header.jobName')"
+                field="jobTitle"
+                :header="t('grid.header.jobTitle')"
               ></Column>
               <Column
                 header-style="width: 8em;"

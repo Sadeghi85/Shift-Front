@@ -267,7 +267,7 @@ watch(
                     :class="{
                       'p-error': v$.job.$invalid && submitted,
                     }"
-                    >{{ t("shiftTabletCrew.jobName")
+                    >{{ t("shiftTabletCrew.jobTitle")
                     }}<span :style="{ color: 'var(--red-500)' }">*</span></label
                   >
                 </div>

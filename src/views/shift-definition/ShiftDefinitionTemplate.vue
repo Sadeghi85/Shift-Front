@@ -251,7 +251,7 @@ watch(
                       :class="{
                         'p-error': v$.job.$invalid && submitted,
                       }"
-                      >{{ t("shiftTabletCrew.jobName")
+                      >{{ t("shiftTabletCrew.jobTitle")
                       }}<span :style="{ color: 'var(--red-500)' }"
                         >*</span
                       ></label
@@ -300,7 +300,7 @@ watch(
 
               <Column
                 field="jobTitle"
-                :header="t('grid.header.jobName')"
+                :header="t('grid.header.jobTitle')"
               ></Column>
 
               <Column

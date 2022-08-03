@@ -293,7 +293,7 @@ watch(
                 <div class="p-float-label">
                   <PersianDatePicker
                     v-model="v$.shiftDate.$model"
-                    :placeholder="t('shiftDate.title') + '*'"
+                    :placeholder="t('shift.shiftDate') + '*'"
                     type="date"
                     format="YYYY-MM-DD"
                     display-format="jYYYY/jMM/jDD"

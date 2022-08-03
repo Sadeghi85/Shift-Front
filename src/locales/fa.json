@@ -22,11 +22,11 @@
   "shift.type.regie": "رژی",
   "shift.type.coordinator": "هماهنگی",
   "shiftDefinition.title": "شیفت",
-  "shiftDate.title": "تاریخ شیفت",
+  "shift.shiftDate": "تاریخ شیفت",
   "shiftWorthPercent.title": "درصد ارزش شیفت",
   "shiftTablet.title": "شیفت",
   "shiftTabletCrew.agentFullname": "نام کارمند",
-  "shiftTabletCrew.jobName": "سمت",
+  "shiftTabletCrew.jobTitle": "سمت",
   "entranceTime.title": "ساعت ورود",
   "exitTime.title": "ساعت خروج",
 
@@ -64,7 +64,7 @@
   "grid.header.shiftWorthPercent": "درصد ارزش شیفت",
   "grid.header.shiftTabletDate": "تاریخ لوح شیفت",
   "grid.header.agentFullName": "نام کارمند",
-  "grid.header.jobName": "سمت",
+  "grid.header.jobTitle": "سمت",
   "grid.header.entranceTime": "ساعت ورود",
   "grid.header.exitTime": "ساعت خروج",
 
