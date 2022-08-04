@@ -62,11 +62,6 @@ const rowClass = (rowData: any) => {
 const entranceTime = ref("");
 const exitTime = ref("");
 
-const onRowEditCancel = (event: any) => {
-  entranceTime.value = "";
-  exitTime.value = "";
-};
-
 const onRowEditInit = (event: any) => {
   const { data, newData, index } = event;
 
@@ -110,9 +105,6 @@ const onRowEditSave = (event: any) => {
     .catch((error) => {
       console.log(error.message);
     });
-
-  entranceTime.value = "";
-  exitTime.value = "";
 };
 
 async function loadShiftTabletCrews(
@@ -445,7 +437,6 @@ watch(
               responsive-layout="scroll"
               @row-edit-save="onRowEditSave"
               @row-edit-init="onRowEditInit"
-              @row-edit-cancel="onRowEditCancel"
             >
               <Column
                 :header="t('grid.header.index')"
