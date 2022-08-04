@@ -18,6 +18,8 @@ const pageNumber = ref(0);
 const loading = ref(true);
 const totalRecords = ref(0);
 
+const submitButtonIsLoading = ref(false);
+
 const cuShiftTabletCrewId = ref(0);
 
 const ShiftTabletCrewCreateView = defineAsyncComponent(
@@ -154,8 +156,11 @@ async function loadShiftTabletCrews(
 
     shiftTabletCrews.value = shiftTabletCrewsResponse.data;
     totalRecords.value = shiftTabletCrewsResponse.totalCount;
+
     loading.value = false;
   } catch (error: any) {
+    loading.value = false;
+
     if (typeof error.message === "object") {
       apiErrorStore.setApiErrorMessage(error.message.failureMessage);
     } else {
@@ -173,6 +178,8 @@ const onPage = async (event: any) => {
 };
 
 const handleSearch = async () => {
+  submitButtonIsLoading.value = true;
+
   await loadShiftTabletCrews(
     new ShiftTabletCrewSearchModel({
       shifTabletId: +route.params.shiftTabletId,
@@ -185,6 +192,8 @@ const handleSearch = async () => {
       jobId: job.value?.id ?? 0,
     })
   );
+
+  submitButtonIsLoading.value = false;
 };
 
 const shiftTabletService = ref(new ShiftTabletService());
@@ -304,8 +313,6 @@ watch(
   async (shiftTabletId, prevShiftTabletId) => {
     if (shiftTabletId) {
       await loadEssentials();
-    } else {
-      router.push({ name: "shift-tablet" });
     }
   },
   { immediate: true }
@@ -453,6 +460,7 @@ watch(
                   <div class="col-12 mb-2 md:col-1">
                     <Button
                       type="submit"
+                      :loading="submitButtonIsLoading"
                       :label="t('button.search')"
                       class="mt-4"
                     />
