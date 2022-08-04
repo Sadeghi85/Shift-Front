@@ -16,6 +16,8 @@ const pageNumber = ref(0);
 const loading = ref(true);
 const totalRecords = ref(0);
 
+const submitButtonIsLoading = ref(false);
+
 const cuLocationId = ref(0);
 
 const createUpdateFormIsVisible = ref(false);
@@ -148,8 +150,11 @@ async function loadLocations(
 
     locations.value = locationResponse.data;
     totalRecords.value = locationResponse.totalCount;
+
     loading.value = false;
   } catch (error: any) {
+    loading.value = false;
+
     if (typeof error.message === "object") {
       apiErrorStore.setApiErrorMessage(error.message.failureMessage);
     } else {
@@ -159,6 +164,8 @@ async function loadLocations(
 }
 
 const handleSearch = async () => {
+  submitButtonIsLoading.value = true;
+
   await loadLocations(
     new LocationSearchModel({
       pageSize: pageSize.value,
@@ -169,6 +176,8 @@ const handleSearch = async () => {
       isDeleted: false,
     })
   );
+
+  submitButtonIsLoading.value = false;
 };
 
 const resetSearchForm = async () => {
@@ -272,6 +281,7 @@ onMounted(async () => {
                   <div class="col-12 mb-2 md:col-1">
                     <Button
                       type="submit"
+                      :loading="submitButtonIsLoading"
                       :label="t('button.search')"
                       class="mt-4"
                     />
