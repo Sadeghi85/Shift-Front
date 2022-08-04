@@ -15,6 +15,7 @@ export class AgentViewModel implements IAgentViewModel {
 interface IAgentSearchModel {
   id?: number;
   name?: string;
+  jobId?: number;
   pageNo?: number;
   pageSize?: number;
   orderKey?: string;
@@ -23,6 +24,7 @@ interface IAgentSearchModel {
 export class AgentSearchModel implements IAgentSearchModel {
   id: number;
   name: string;
+  jobId: number;
   pageNo: number;
   pageSize: number;
   orderKey: string;
@@ -31,6 +33,7 @@ export class AgentSearchModel implements IAgentSearchModel {
   constructor(params: IAgentSearchModel) {
     this.id = params.id || 0;
     this.name = params.name || "";
+    this.jobId = params.jobId || 0;
     this.pageNo = params.pageNo || 0;
     this.pageSize = params.pageSize || 10;
     this.orderKey = params.orderKey || "id";

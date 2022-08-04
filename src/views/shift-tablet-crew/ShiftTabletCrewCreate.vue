@@ -68,6 +68,29 @@ const onDropdownAgentFilter = async (event: any) => {
           orderKey: "id",
           desc: true,
           name: event.value,
+          jobId: state.job?.jobId,
+        })
+      )
+    ).data;
+  } catch (error: any) {
+    if (typeof error.message === "object") {
+      apiErrorStore.setApiErrorMessage(error.message.failureMessage);
+    } else {
+      console.log(error.message);
+    }
+  }
+};
+
+const onDropdownJobChange = async (event: any) => {
+  try {
+    console.log(event.value);
+    agents.value = (
+      await agentService.value.getAll(
+        new AgentSearchModel({
+          jobId: event.value.jobId,
+          pageSize: generalStore.dropdownItemsCount,
+          orderKey: "id",
+          desc: true,
         })
       )
     ).data;
@@ -131,16 +154,6 @@ const resetForm = () => {
 
 const fillForm = async () => {
   try {
-    agents.value = (
-      await agentService.value.getAll(
-        new AgentSearchModel({
-          pageSize: generalStore.dropdownItemsCount,
-          orderKey: "id",
-          desc: true,
-        })
-      )
-    ).data;
-
     const shiftDefititionId = (
       await shiftTabletService.value.getAll(
         new ShiftTabletSearchModel({
@@ -153,6 +166,16 @@ const fillForm = async () => {
       await shiftDefinitionTemplateService.value.getAll(
         new ShiftDefinitionTemplateSearchModel({
           shiftId: shiftDefititionId,
+          orderKey: "id",
+          desc: true,
+        })
+      )
+    ).data;
+
+    agents.value = (
+      await agentService.value.getAll(
+        new AgentSearchModel({
+          pageSize: generalStore.dropdownItemsCount,
           orderKey: "id",
           desc: true,
         })
@@ -224,6 +247,7 @@ watch(
                     :class="{
                       'p-invalid': v$.job.$invalid && submitted,
                     }"
+                    @change="onDropdownJobChange"
                   >
                     <template #empty>
                       {{ t("dropdown.crew.slot.empty") }}
