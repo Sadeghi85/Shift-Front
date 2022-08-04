@@ -160,24 +160,6 @@ const resetTemplateForm = () => {
 
   submitted.value = false;
 };
-const onDropdownJobFilter = async (event: any) => {
-  try {
-    jobs.value = (
-      await jobService.value.getAll(
-        new JobSearchModel({
-          pageSize: generalStore.dropdownItemsCount,
-          title: event.value,
-        })
-      )
-    ).data;
-  } catch (error: any) {
-    if (typeof error.message === "object") {
-      apiErrorStore.setApiErrorMessage(error.message.failureMessage);
-    } else {
-      console.log(error.message);
-    }
-  }
-};
 
 const handleSearch = async () => {
   await loadShiftDefinitionTemplates();
@@ -189,7 +171,8 @@ const loadEssentials = async () => {
     jobs.value = (
       await jobService.value.getAll(
         new JobSearchModel({
-          pageSize: generalStore.dropdownItemsCount,
+          //pageSize: generalStore.dropdownItemsCount,
+          pageSize: 2147483647, // Int32.MaxValue
         })
       )
     ).data;
@@ -240,7 +223,6 @@ watch(
                       :filter="true"
                       :show-clear="true"
                       :class="{ 'p-invalid': v$.job.$invalid && submitted }"
-                      @filter="onDropdownJobFilter"
                       ><template #empty>
                         {{ t("dropdown.slot.empty") }}
                       </template></Dropdown
