@@ -49,7 +49,7 @@ const agent = ref<InstanceType<typeof AgentViewModel>>();
 const job = ref<InstanceType<typeof JobViewModel>>();
 const shiftTablet = ref<InstanceType<typeof ShiftTabletViewModel>>();
 
-const editingRows = ref<[]>();
+const editingRows = ref<any[]>([]);
 
 const rowClass = (rowData: any) => {
   if (!(rowData.entranceTime && rowData.exitTime)) {
@@ -59,20 +59,45 @@ const rowClass = (rowData: any) => {
   }
 };
 
+const entranceTime = ref("");
+const exitTime = ref("");
+
+const onRowEditCancel = (event: any) => {
+  entranceTime.value = "";
+  exitTime.value = "";
+};
+
+const onRowEditInit = (event: any) => {
+  const { data, newData, index } = event;
+
+  entranceTime.value = data["entranceTime"]
+    ? data["entranceTime"]
+    : data["defaultEntranceTime"];
+
+  exitTime.value = data["exitTime"]
+    ? data["exitTime"]
+    : data["defaultExitTime"];
+};
+
 const onRowEditSave = (event: any) => {
-  const { newData, index } = event;
+  const { data, newData, index } = event;
 
   console.log(newData);
+
+  if (!(entranceTime.value && exitTime.value)) {
+    editingRows.value = [...editingRows.value, event.data];
+    return;
+  }
 
   shiftTabletCrewService.value
     .update(
       new ShiftTabletCrewInputModel({
-        id: newData.id,
-        entranceTime: newData.defaultEntranceTime,
-        exitTime: newData.defaultExitTime,
-        agentId: newData.agentId,
-        shiftTabletId: newData.shiftTabletId,
-        jobId: newData.jobId,
+        id: data.id,
+        entranceTime: entranceTime.value,
+        exitTime: exitTime.value,
+        agentId: data.agentId,
+        shiftTabletId: data.shiftTabletId,
+        jobId: data.jobId,
       })
     )
     .then((response) => {
@@ -85,6 +110,9 @@ const onRowEditSave = (event: any) => {
     .catch((error) => {
       console.log(error.message);
     });
+
+  entranceTime.value = "";
+  exitTime.value = "";
 };
 
 async function loadShiftTabletCrews(
@@ -306,7 +334,9 @@ watch(
               </div>
               <div class="col">
                 {{ t("shift.shiftDate") }}:
-                <strong>{{ pdate(shiftTablet?.shiftDate ?? "") }}</strong>
+                <strong>{{
+                  pdate(shiftTablet?.shiftDate ?? "", "dddd، jYYYY/jMM/jDD")
+                }}</strong>
               </div>
               <div class="col">
                 {{ t("shift.startTime") }}:
@@ -414,6 +444,8 @@ watch(
               :row-class="rowClass"
               responsive-layout="scroll"
               @row-edit-save="onRowEditSave"
+              @row-edit-init="onRowEditInit"
+              @row-edit-cancel="onRowEditCancel"
             >
               <Column
                 :header="t('grid.header.index')"
@@ -438,19 +470,38 @@ watch(
               ></Column>
 
               <Column
-                field="defaultEntranceTime"
+                field="entranceTime"
                 :header="t('grid.header.entranceTime')"
               >
-                <template #editor="{ data, field }">
-                  <InputText v-model="data[field]" autofocus />
+                <template #editor>
+                  <PersianDatePicker
+                    v-model="entranceTime"
+                    type="time"
+                    format="HH:mm:00"
+                    display-format="HH:mm"
+                    input-class="p-inputtext p-component"
+                    :compact-time="true"
+                    :clearable="true"
+                    :auto-submit="true"
+                    :popover="false"
+                    :editable="true"
+                  />
                 </template>
               </Column>
-              <Column
-                field="defaultExitTime"
-                :header="t('grid.header.exitTime')"
-              >
-                <template #editor="{ data, field }">
-                  <InputText v-model="data[field]" />
+              <Column field="exitTime" :header="t('grid.header.exitTime')">
+                <template #editor>
+                  <PersianDatePicker
+                    v-model="exitTime"
+                    type="time"
+                    format="HH:mm:00"
+                    display-format="HH:mm"
+                    input-class="p-inputtext p-component"
+                    :compact-time="true"
+                    :clearable="true"
+                    :auto-submit="true"
+                    :popover="false"
+                    :editable="true"
+                  />
                 </template>
               </Column>
 
