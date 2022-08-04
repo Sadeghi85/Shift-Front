@@ -23,6 +23,10 @@ const pageNumber = ref(0);
 const loading = ref(true);
 const totalRecords = ref(0);
 
+const submitButtonIsLoading = ref(false);
+
+const blockedDocument = ref(false);
+
 const cuShiftTabletId = ref(0);
 
 const createUpdateFormIsVisible = ref(false);
@@ -50,6 +54,8 @@ const toggleSearchForm = () => {
 };
 
 const getShiftTabletReportPdf = () => {
+  blockedDocument.value = true;
+
   shiftTabletCrewService.value
     .getPdf(
       new ShiftTabletCrewSearchModel({
@@ -64,6 +70,7 @@ const getShiftTabletReportPdf = () => {
       })
     )
     .then((response) => {
+      blockedDocument.value = false;
       //console.log(response);
 
       const blob = new Blob([response.data], {
@@ -76,11 +83,15 @@ const getShiftTabletReportPdf = () => {
       URL.revokeObjectURL(link.href);
     })
     .catch((error) => {
+      blockedDocument.value = false;
+
       console.log(error);
     });
 };
 
 const getShiftTabletReportExcel = () => {
+  blockedDocument.value = true;
+
   shiftTabletCrewService.value
     .getExcel(
       new ShiftTabletCrewSearchModel({
@@ -95,6 +106,7 @@ const getShiftTabletReportExcel = () => {
       })
     )
     .then((response) => {
+      blockedDocument.value = false;
       //console.log(response);
 
       const blob = new Blob([response.data], {
@@ -107,6 +119,8 @@ const getShiftTabletReportExcel = () => {
       URL.revokeObjectURL(link.href);
     })
     .catch((error) => {
+      blockedDocument.value = false;
+
       console.log(error);
     });
 };
@@ -239,8 +253,11 @@ async function loadShiftTablets(
 
     shiftTablets.value = shiftTabletResponse.data;
     totalRecords.value = shiftTabletResponse.totalCount;
+
     loading.value = false;
   } catch (error: any) {
+    loading.value = false;
+
     if (typeof error.message === "object") {
       apiErrorStore.setApiErrorMessage(error.message.failureMessage);
     } else {
@@ -258,6 +275,8 @@ const onPage = async (event: any) => {
 };
 
 const handleSearch = async () => {
+  submitButtonIsLoading.value = true;
+
   await loadShiftTablets(
     new ShiftTabletSearchModel({
       pageSize: pageSize.value,
@@ -272,6 +291,8 @@ const handleSearch = async () => {
       isDeleted: false,
     })
   );
+
+  submitButtonIsLoading.value = false;
 };
 
 const resetSearchForm = async () => {
@@ -426,6 +447,7 @@ onMounted(async () => {
                   <div class="col-12 mb-2 md:col-1">
                     <Button
                       type="submit"
+                      :loading="submitButtonIsLoading"
                       :label="t('button.search')"
                       class="mt-4"
                     />
@@ -598,6 +620,8 @@ onMounted(async () => {
 
   <Toast position="top-center" group="br" />
   <ConfirmDialog position="top-center"></ConfirmDialog>
+
+  <BlockUI :blocked="blockedDocument" :fullScreen="true"></BlockUI>
 </template>
 
 <style lang="scss" scoped>
