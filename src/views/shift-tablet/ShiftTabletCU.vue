@@ -152,6 +152,13 @@ const fillForm = async () => {
 
     if (props.shiftTabletId == 0) {
       resetForm();
+
+      if (shiftDefinitions.value.length == 1) {
+        state.shiftDefinition = shiftDefinitions.value[0];
+      }
+      if (portalLocations.value.length == 1) {
+        state.portalLocation = portalLocations.value[0];
+      }
     } else {
       const shiftTablet = (
         await shiftTabletService.value.getAll(
@@ -189,6 +196,10 @@ const onDropdownShiftDefinitionChange = async (event: any) => {
         })
       )
     ).data;
+
+    if (portalLocations.value.length == 1) {
+      state.portalLocation = portalLocations.value[0];
+    }
   } catch (error: any) {
     if (typeof error.message === "object") {
       apiErrorStore.setApiErrorMessage(error.message.failureMessage);

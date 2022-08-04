@@ -148,6 +148,10 @@ const fillForm = async () => {
 
     if (props.shiftDefinitionId == 0) {
       resetForm();
+
+      if (portals.value.length == 1) {
+        state.portal = portals.value[0];
+      }
     } else {
       const shiftDefinition = (
         await shiftDefinitionService.value.getAll(
