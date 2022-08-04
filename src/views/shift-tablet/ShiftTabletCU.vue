@@ -29,14 +29,12 @@ const state = reactive({
   shiftDefinition: ref<InstanceType<typeof ShiftDefinitionViewModel>>(),
   portalLocation: ref<InstanceType<typeof PortalLocationViewModel>>(),
   shiftDate: "",
-  shiftWorthPercent: "",
 });
 
 const rules = {
   shiftDefinition: { required },
   portalLocation: { required },
   shiftDate: { required },
-  shiftWorthPercent: { required },
 };
 
 ////////
@@ -72,7 +70,6 @@ const handleSubmit = (isFormValid: boolean) => {
             shiftId: v$.value.shiftDefinition.$model?.id,
             locationId: v$.value.portalLocation.$model?.locationId,
             shiftDate: v$.value.shiftDate.$model,
-            shiftWorthPercent: v$.value.shiftWorthPercent.$model,
           })
         )
         .then((response) => {
@@ -98,7 +95,6 @@ const handleSubmit = (isFormValid: boolean) => {
             shiftId: v$.value.shiftDefinition.$model?.id,
             locationId: v$.value.portalLocation.$model?.locationId,
             shiftDate: v$.value.shiftDate.$model,
-            shiftWorthPercent: v$.value.shiftWorthPercent.$model,
           })
         )
         .then((response) => {
@@ -122,7 +118,6 @@ const handleSubmit = (isFormValid: boolean) => {
 
 const resetForm = () => {
   state.shiftDate = "";
-  state.shiftWorthPercent = "";
   state.shiftDefinition = undefined;
   state.portalLocation = undefined;
 
@@ -166,7 +161,6 @@ const fillForm = async () => {
       );
 
       state.shiftDate = shiftTablet.shiftDate;
-      state.shiftWorthPercent = shiftTablet.shiftWorthPercent;
     }
   } catch (error: any) {
     if (typeof error.message === "object") {
@@ -306,26 +300,6 @@ watch(
                     :auto-submit="true"
                     :popover="true"
                   />
-                </div>
-              </div>
-
-              <div class="field col-12 mb-4 md:col-3">
-                <div class="p-float-label">
-                  <InputText
-                    id="shiftWorthPercent"
-                    v-model="v$.shiftWorthPercent.$model"
-                    :class="{
-                      'p-invalid': v$.shiftWorthPercent.$invalid && submitted,
-                    }"
-                  />
-                  <label
-                    for="shiftWorthPercent"
-                    :class="{
-                      'p-error': v$.shiftWorthPercent.$invalid && submitted,
-                    }"
-                    >{{ t("shiftWorthPercent.title")
-                    }}<span :style="{ color: 'var(--red-500)' }">*</span></label
-                  >
                 </div>
               </div>
             </div>

@@ -494,10 +494,6 @@ onMounted(async () => {
                 </template>
               </Column>
               <Column
-                field="shiftWorthPercent"
-                :header="t('grid.header.shiftWorthPercent')"
-              ></Column>
-              <Column
                 header-style="width: 12em;"
                 header-class="align-center"
                 body-style="text-align: center;"
