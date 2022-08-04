@@ -131,9 +131,7 @@ const fillForm = async () => {
       await shiftDefinitionService.value.getAll(
         new ShiftDefinitionSearchModel({})
       )
-    ).data.map((shiftDefinition) => {
-      return new ShiftDefinitionViewModel(shiftDefinition);
-    });
+    ).data;
 
     portalLocations.value = (
       await portalLocationService.value.getAll(

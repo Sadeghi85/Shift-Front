@@ -96,6 +96,6 @@ export class ShiftDefinitionViewModel implements IShiftDefinitionViewModel {
     this.endTime = params.endTime || "";
     this.shiftTypeId = params.shiftTypeId || 0;
     this.shiftTypeTitle = params.shiftTypeTitle || "";
-    this.displayLabel = `${this.title} (${this.portalTitle})`;
+    this.displayLabel = params.displayLabel || "";
   }
 }

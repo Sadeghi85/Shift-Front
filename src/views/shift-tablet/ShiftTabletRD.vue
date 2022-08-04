@@ -376,7 +376,7 @@ onMounted(async () => {
                         id="shiftDefinition"
                         v-model="shiftDefinition"
                         :options="shiftDefinitions"
-                        option-label="title"
+                        option-label="displayLabel"
                         :show-clear="true"
                         ><template #empty>
                           {{ t("dropdown.slot.empty") }}
