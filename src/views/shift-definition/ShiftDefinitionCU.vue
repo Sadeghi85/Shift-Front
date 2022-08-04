@@ -13,6 +13,7 @@ const emit = defineEmits(["updateIsDone", "insertIsDone", "cuIsCanceled"]);
 // reactive state
 const { t } = useI18n();
 const submitted = ref(false);
+const submitButtonIsLoading = ref(false);
 
 const apiErrorStore = useApiErrorStore();
 
@@ -61,6 +62,8 @@ const handleSubmit = (isFormValid: boolean) => {
   if (!isFormValid) {
     return;
   } else {
+    submitButtonIsLoading.value = true;
+
     if (props.shiftDefinitionId == 0) {
       shiftDefinitionService.value
         .create(
@@ -73,6 +76,8 @@ const handleSubmit = (isFormValid: boolean) => {
           })
         )
         .then((response) => {
+          submitButtonIsLoading.value = false;
+
           //console.log(response);
           if (!response.data.success) {
             apiErrorStore.setApiErrorMessage(response.data.failureMessage);
@@ -85,6 +90,8 @@ const handleSubmit = (isFormValid: boolean) => {
           resetForm();
         })
         .catch((error) => {
+          submitButtonIsLoading.value = false;
+
           console.log(error);
         });
     } else {
@@ -100,6 +107,8 @@ const handleSubmit = (isFormValid: boolean) => {
           })
         )
         .then((response) => {
+          submitButtonIsLoading.value = false;
+
           //console.log(response);
           if (!response.data.success) {
             apiErrorStore.setApiErrorMessage(response.data.failureMessage);
@@ -112,6 +121,8 @@ const handleSubmit = (isFormValid: boolean) => {
           resetForm();
         })
         .catch((error) => {
+          submitButtonIsLoading.value = false;
+
           console.log(error);
         });
     }
@@ -323,6 +334,7 @@ watch(
               <div class="col-12 mb-4 md:col-1">
                 <Button
                   type="submit"
+                  :loading="submitButtonIsLoading"
                   :label="btnSubmitLabel"
                   class="mt-4"
                   :class="btnSubmitClass"

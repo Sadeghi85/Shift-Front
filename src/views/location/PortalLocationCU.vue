@@ -20,6 +20,7 @@ const apiErrorStore = useApiErrorStore();
 
 // reactive state
 const submitted = ref(false);
+const submitButtonIsLoading = ref(false);
 
 const locations = ref<InstanceType<typeof LocationViewModel>[]>();
 const portals = ref<InstanceType<typeof PortalViewModel>[]>();
@@ -59,6 +60,8 @@ const handleSubmit = (isFormValid: boolean) => {
   if (!isFormValid) {
     return;
   } else {
+    submitButtonIsLoading.value = true;
+
     if (props.portalLocationId == 0) {
       portalLocationService.value
         .create(
@@ -68,6 +71,8 @@ const handleSubmit = (isFormValid: boolean) => {
           })
         )
         .then((response) => {
+          submitButtonIsLoading.value = false;
+
           //console.log(response);
           if (!response.data.success) {
             apiErrorStore.setApiErrorMessage(response.data.failureMessage);
@@ -80,6 +85,8 @@ const handleSubmit = (isFormValid: boolean) => {
           resetForm();
         })
         .catch((error) => {
+          submitButtonIsLoading.value = false;
+
           console.log(error);
         });
     } else {
@@ -92,6 +99,8 @@ const handleSubmit = (isFormValid: boolean) => {
           })
         )
         .then((response) => {
+          submitButtonIsLoading.value = false;
+
           //console.log(response);
           if (!response.data.success) {
             apiErrorStore.setApiErrorMessage(response.data.failureMessage);
@@ -104,6 +113,8 @@ const handleSubmit = (isFormValid: boolean) => {
           resetForm();
         })
         .catch((error) => {
+          submitButtonIsLoading.value = false;
+
           console.log(error);
         });
     }
@@ -257,6 +268,7 @@ watch(
               <div class="col-12 mb-2 md:col-1">
                 <Button
                   type="submit"
+                  :loading="submitButtonIsLoading"
                   :label="btnSubmitLabel"
                   class="mt-4"
                   :class="btnSubmitClass"

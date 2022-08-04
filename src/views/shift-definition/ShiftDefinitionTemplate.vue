@@ -21,7 +21,8 @@ const apiErrorStore = useApiErrorStore();
 const pageSize = ref(generalStore.rowPerPage);
 const pageNumber = ref(0);
 const loading = ref(true);
-const totalRecords = ref(0);
+
+const submitButtonIsLoading = ref(false);
 
 const showSuccess = (detail: string) => {
   toast.add({
@@ -132,6 +133,8 @@ const handleTemplateSubmit = (isFormValid: boolean) => {
   if (!isFormValid) {
     return;
   } else {
+    submitButtonIsLoading.value = true;
+
     shiftDefinitionTemplateService.value
       .create(
         new ShiftDefinitionTemplateInputModel({
@@ -140,6 +143,8 @@ const handleTemplateSubmit = (isFormValid: boolean) => {
         })
       )
       .then(async (response) => {
+        submitButtonIsLoading.value = false;
+
         //console.log(response);
         if (!response.data.success) {
           apiErrorStore.setApiErrorMessage(response.data.failureMessage);
@@ -151,6 +156,8 @@ const handleTemplateSubmit = (isFormValid: boolean) => {
         resetTemplateForm();
       })
       .catch((error) => {
+        submitButtonIsLoading.value = false;
+
         console.log(error);
       });
   }
@@ -244,6 +251,7 @@ watch(
                 <div class="field col-12 mb-4 md:col-2">
                   <Button
                     type="submit"
+                    :loading="submitButtonIsLoading"
                     :label="t('button.create')"
                     class="p-button-primary"
                   />

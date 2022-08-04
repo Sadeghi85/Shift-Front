@@ -21,6 +21,7 @@ const apiErrorStore = useApiErrorStore();
 
 // reactive state
 const submitted = ref(false);
+const submitButtonIsLoading = ref(false);
 
 const agents = ref<InstanceType<typeof AgentViewModel>[]>();
 const jobs = ref<InstanceType<typeof ShiftDefinitionTemplateViewModel>[]>();
@@ -85,6 +86,8 @@ const handleSubmit = (isFormValid: boolean) => {
   if (!isFormValid) {
     return;
   } else {
+    submitButtonIsLoading.value = true;
+
     if (props.shiftTabletCrewId == 0) {
       shiftTabletCrewService.value
         .create(
@@ -95,6 +98,8 @@ const handleSubmit = (isFormValid: boolean) => {
           })
         )
         .then((response) => {
+          submitButtonIsLoading.value = false;
+
           //console.log(response);
           if (!response.data.success) {
             apiErrorStore.setApiErrorMessage(response.data.failureMessage);
@@ -107,6 +112,8 @@ const handleSubmit = (isFormValid: boolean) => {
           resetForm();
         })
         .catch((error) => {
+          submitButtonIsLoading.value = false;
+
           console.log(error);
         });
     } else {
@@ -263,6 +270,7 @@ watch(
                 <Button
                   class="mt-4"
                   type="submit"
+                  :loading="submitButtonIsLoading"
                   :label="btnSubmitLabel"
                   :class="btnSubmitClass"
                 ></Button>
