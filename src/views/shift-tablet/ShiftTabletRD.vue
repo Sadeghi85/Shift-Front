@@ -512,7 +512,7 @@ onMounted(async () => {
               ></Column>
               <Column field="shiftDate" :header="t('grid.header.shiftDate')">
                 <template #body="slotProps">
-                  {{ pdate(slotProps.data.shiftDate) }}
+                  {{ pdate(slotProps.data.shiftDate, "dddd، jYYYY/jMM/jDD") }}
                 </template>
               </Column>
               <Column

@@ -375,7 +375,9 @@ watch(
               </div>
               <div class="col">
                 {{ t("shift.shiftDate") }}:
-                <strong>{{ pdate(shiftTablet?.shiftDate ?? "") }}</strong>
+                <strong>{{
+                  pdate(shiftTablet?.shiftDate ?? "", "dddd، jYYYY/jMM/jDD")
+                }}</strong>
               </div>
               <div class="col">
                 {{ t("shift.startTime") }}:
