@@ -54,7 +54,6 @@ const routes: Array<RouteRecordRaw> = [
   },
   {
     path: "/shift-tablet-secretary-report/:shiftTabletId",
-    name: "shift-tablet-secretary-report",
     component: () =>
       import(
         /* webpackChunkName: "shift-tablet-secretary-report" */ "../views/shift-tablet-crew/secretary-report/SecretarySteps.vue"
@@ -62,6 +61,7 @@ const routes: Array<RouteRecordRaw> = [
     children: [
       {
         path: "",
+        name: "shift-tablet-secretary-report",
         component: () =>
           import(
             /* webpackChunkName: "shift-tablet-secretary-report-crew" */ "../views/shift-tablet-crew/secretary-report/ShiftTabletCrewSecretary.vue"

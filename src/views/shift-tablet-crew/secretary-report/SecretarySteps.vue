@@ -6,7 +6,7 @@ const stepItems = ref([
   {
     label: "حضور و غیاب",
     to: {
-      name: "shift-tablet-secretary-report-crew",
+      name: "shift-tablet-secretary-report",
     },
   },
   {

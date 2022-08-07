@@ -531,7 +531,7 @@ onMounted(async () => {
                     class="p-button-rounded p-button-secondary"
                     @click.prevent="
                       router.push({
-                        name: 'shift-tablet-secretary-report-crew',
+                        name: 'shift-tablet-secretary-report',
                         params: { shiftTabletId: slotProps.data.id },
                       })
                     "
