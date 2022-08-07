@@ -98,6 +98,9 @@ const loadAndConfigApp = async (loading: any) => {
   });
   //app.component("PersianDatePicker", Vue3PersianDatetimePicker);
 
+  const portalService = ref(new PortalService());
+  await portalService.value.getAll(new PortalSearchModel({}));
+
   app.mount("#app");
 };
 
