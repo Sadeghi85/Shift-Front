@@ -7,8 +7,7 @@ const generalStore = useGeneralStore();
 const props = defineProps({
   shiftTabletCrewId: {
     type: Number,
-    required: false,
-    default: 0,
+    required: true,
   },
   shiftTabletId: {
     type: Number,
@@ -81,28 +80,6 @@ const onDropdownAgentFilter = async (event: any) => {
   }
 };
 
-const onDropdownJobChange = async (event: any) => {
-  try {
-    console.log(event.value);
-    agents.value = (
-      await agentService.value.getAll(
-        new AgentSearchModel({
-          jobId: event.value.jobId,
-          pageSize: generalStore.dropdownItemsCount,
-          orderKey: "id",
-          desc: true,
-        })
-      )
-    ).data;
-  } catch (error: any) {
-    if (typeof error.message === "object") {
-      apiErrorStore.setApiErrorMessage(error.message.failureMessage);
-    } else {
-      console.log(error.message);
-    }
-  }
-};
-
 const handleSubmit = (isFormValid: boolean) => {
   submitted.value = true;
 
@@ -112,9 +89,12 @@ const handleSubmit = (isFormValid: boolean) => {
     submitButtonIsLoading.value = true;
 
     if (props.shiftTabletCrewId == 0) {
+      //
+    } else {
       shiftTabletCrewService.value
-        .create(
+        .hamahangiUpdate(
           new ShiftTabletCrewInputModel({
+            id: props.shiftTabletCrewId,
             agentId: v$.value.agent.$model?.id,
             shiftTabletId: props.shiftTabletId,
             jobId: v$.value.job.$model?.jobId,
@@ -129,9 +109,9 @@ const handleSubmit = (isFormValid: boolean) => {
             return;
           }
 
-          emit("insertIsDone");
+          emit("updateIsDone");
 
-          showSuccess(t("toast.success.create"));
+          showSuccess(t("toast.success.update"));
           resetForm();
         })
         .catch((error) => {
@@ -139,8 +119,6 @@ const handleSubmit = (isFormValid: boolean) => {
 
           console.log(error);
         });
-    } else {
-      //
     }
   }
 };
@@ -154,6 +132,14 @@ const resetForm = () => {
 
 const fillForm = async () => {
   try {
+    const shiftTabletCrew = (
+      await shiftTabletCrewService.value.getAll(
+        new ShiftTabletCrewSearchModel({
+          id: props.shiftTabletCrewId,
+        })
+      )
+    ).data[0];
+
     const shiftDefititionId = (
       await shiftTabletService.value.getAll(
         new ShiftTabletSearchModel({
@@ -165,6 +151,7 @@ const fillForm = async () => {
     jobs.value = (
       await shiftDefinitionTemplateService.value.getAll(
         new ShiftDefinitionTemplateSearchModel({
+          pageSize: 2147483647, // Int32.MaxValue
           shiftId: shiftDefititionId,
           orderKey: "id",
           desc: true,
@@ -176,6 +163,7 @@ const fillForm = async () => {
       await agentService.value.getAll(
         new AgentSearchModel({
           pageSize: generalStore.dropdownItemsCount,
+          id: shiftTabletCrew.agentId,
           orderKey: "id",
           desc: true,
         })
@@ -185,7 +173,8 @@ const fillForm = async () => {
     if (props.shiftTabletCrewId == 0) {
       resetForm();
     } else {
-      //
+      state.agent = agents.value.find((x) => x.id == shiftTabletCrew.agentId);
+      state.job = jobs.value.find((x) => x.jobId == shiftTabletCrew.jobId);
     }
   } catch (error: any) {
     if (typeof error.message === "object") {
@@ -242,16 +231,13 @@ watch(
                     v-model="v$.job.$model"
                     :options="jobs"
                     option-label="jobTitle"
-                    :filter="true"
-                    :show-clear="true"
+                    :disabled="true"
                     :class="{
                       'p-invalid': v$.job.$invalid && submitted,
                     }"
-                    @change="onDropdownJobChange"
-                  >
-                    <template #empty>
-                      {{ t("dropdown.crew.slot.empty") }}
-                    </template> </Dropdown
+                    ><template #empty>
+                      {{ t("dropdown.slot.empty") }}
+                    </template></Dropdown
                   ><label
                     for="job"
                     :class="{
@@ -262,6 +248,7 @@ watch(
                   >
                 </div>
               </div>
+
               <div class="col-12 mb-2 md:col-4">
                 <div class="p-float-label">
                   <Dropdown

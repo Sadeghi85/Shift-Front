@@ -7,7 +7,8 @@ const generalStore = useGeneralStore();
 const props = defineProps({
   shiftTabletCrewId: {
     type: Number,
-    required: true,
+    required: false,
+    default: 0,
   },
   shiftTabletId: {
     type: Number,
@@ -20,13 +21,14 @@ const apiErrorStore = useApiErrorStore();
 
 // reactive state
 const submitted = ref(false);
+const submitButtonIsLoading = ref(false);
 
 const agents = ref<InstanceType<typeof AgentViewModel>[]>();
-const jobs = ref<InstanceType<typeof JobViewModel>[]>();
+const jobs = ref<InstanceType<typeof ShiftDefinitionTemplateViewModel>[]>();
 
 const state = reactive({
   agent: ref<InstanceType<typeof AgentViewModel>>(),
-  job: ref<InstanceType<typeof JobViewModel>>(),
+  job: ref<InstanceType<typeof ShiftDefinitionTemplateViewModel>>(),
 });
 
 const rules = {
@@ -40,6 +42,10 @@ const v$ = useVuelidate(rules, state);
 const agentService = ref(new AgentService());
 const jobService = ref(new JobService());
 const shiftTabletCrewService = ref(new ShiftTabletCrewService());
+const shiftTabletService = ref(new ShiftTabletService());
+const shiftDefinitionTemplateService = ref(
+  new ShiftDefinitionTemplateService()
+);
 
 const toast = useToast();
 const showSuccess = (detail: string) => {
@@ -58,11 +64,11 @@ const onDropdownAgentFilter = async (event: any) => {
     agents.value = (
       await agentService.value.getAll(
         new AgentSearchModel({
-          pageNo: 0,
           pageSize: generalStore.dropdownItemsCount,
           orderKey: "id",
           desc: true,
           name: event.value,
+          jobId: state.job?.jobId,
         })
       )
     ).data;
@@ -75,16 +81,16 @@ const onDropdownAgentFilter = async (event: any) => {
   }
 };
 
-const onDropdownJobFilter = async (event: any) => {
+const onDropdownJobChange = async (event: any) => {
   try {
-    jobs.value = (
-      await jobService.value.getAll(
-        new JobSearchModel({
-          pageNo: 0,
+    console.log(event.value);
+    agents.value = (
+      await agentService.value.getAll(
+        new AgentSearchModel({
+          jobId: event.value.jobId,
           pageSize: generalStore.dropdownItemsCount,
           orderKey: "id",
           desc: true,
-          resourceName: event.value,
         })
       )
     ).data;
@@ -103,33 +109,38 @@ const handleSubmit = (isFormValid: boolean) => {
   if (!isFormValid) {
     return;
   } else {
+    submitButtonIsLoading.value = true;
+
     if (props.shiftTabletCrewId == 0) {
-      //
-    } else {
       shiftTabletCrewService.value
-        .update(
+        .create(
           new ShiftTabletCrewInputModel({
-            id: props.shiftTabletCrewId,
             agentId: v$.value.agent.$model?.id,
             shiftTabletId: props.shiftTabletId,
-            jobId: v$.value.job.$model?.id,
+            jobId: v$.value.job.$model?.jobId,
           })
         )
         .then((response) => {
+          submitButtonIsLoading.value = false;
+
           //console.log(response);
           if (!response.data.success) {
             apiErrorStore.setApiErrorMessage(response.data.failureMessage);
             return;
           }
 
-          emit("updateIsDone");
+          emit("insertIsDone");
 
-          showSuccess(t("toast.success.update"));
+          showSuccess(t("toast.success.create"));
           resetForm();
         })
         .catch((error) => {
+          submitButtonIsLoading.value = false;
+
           console.log(error);
         });
+    } else {
+      //
     }
   }
 };
@@ -143,18 +154,31 @@ const resetForm = () => {
 
 const fillForm = async () => {
   try {
-    agents.value = (
-      await agentService.value.getAll(
-        new AgentSearchModel({
-          pageSize: generalStore.dropdownItemsCount,
+    const shiftDefititionId = (
+      await shiftTabletService.value.getAll(
+        new ShiftTabletSearchModel({
+          id: props.shiftTabletId,
+        })
+      )
+    ).data[0].shiftId;
+
+    jobs.value = (
+      await shiftDefinitionTemplateService.value.getAll(
+        new ShiftDefinitionTemplateSearchModel({
+          pageSize: 2147483647, // Int32.MaxValue
+          shiftId: shiftDefititionId,
+          orderKey: "id",
+          desc: true,
         })
       )
     ).data;
 
-    jobs.value = (
-      await jobService.value.getAll(
-        new JobSearchModel({
+    agents.value = (
+      await agentService.value.getAll(
+        new AgentSearchModel({
           pageSize: generalStore.dropdownItemsCount,
+          orderKey: "id",
+          desc: true,
         })
       )
     ).data;
@@ -162,16 +186,7 @@ const fillForm = async () => {
     if (props.shiftTabletCrewId == 0) {
       resetForm();
     } else {
-      const shiftTabletCrew = (
-        await shiftTabletCrewService.value.getAll(
-          new ShiftTabletCrewSearchModel({
-            id: props.shiftTabletCrewId,
-          })
-        )
-      ).data[0];
-
-      state.agent = agents.value.find((x) => x.id == shiftTabletCrew.agentId);
-      state.job = jobs.value.find((x) => x.id == shiftTabletCrew.jobId);
+      //
     }
   } catch (error: any) {
     if (typeof error.message === "object") {
@@ -221,13 +236,40 @@ watch(
             @submit.prevent="handleSubmit(!v$.$invalid)"
           >
             <div class="grid formgrid">
+              <div class="field col-12 mb-2 md:col-4">
+                <div class="p-float-label">
+                  <Dropdown
+                    id="job"
+                    v-model="v$.job.$model"
+                    :options="jobs"
+                    option-label="jobTitle"
+                    :filter="true"
+                    :show-clear="true"
+                    :class="{
+                      'p-invalid': v$.job.$invalid && submitted,
+                    }"
+                    @change="onDropdownJobChange"
+                  >
+                    <template #empty>
+                      {{ t("dropdown.crew.slot.empty") }}
+                    </template> </Dropdown
+                  ><label
+                    for="job"
+                    :class="{
+                      'p-error': v$.job.$invalid && submitted,
+                    }"
+                    >{{ t("shiftTabletCrew.jobTitle")
+                    }}<span :style="{ color: 'var(--red-500)' }">*</span></label
+                  >
+                </div>
+              </div>
               <div class="col-12 mb-2 md:col-4">
                 <div class="p-float-label">
                   <Dropdown
                     id="agent"
                     v-model="v$.agent.$model"
                     :options="agents"
-                    option-label="fullName"
+                    option-label="fullname"
                     :filter="true"
                     :show-clear="true"
                     :class="{
@@ -247,37 +289,13 @@ watch(
                   >
                 </div>
               </div>
-              <div class="field col-12 mb-2 md:col-4">
-                <div class="p-float-label">
-                  <Dropdown
-                    id="job"
-                    v-model="v$.job.$model"
-                    :options="jobs"
-                    option-label="title"
-                    :disabled="true"
-                    :class="{
-                      'p-invalid': v$.job.$invalid && submitted,
-                    }"
-                    @filter="onDropdownJobFilter"
-                    ><template #empty>
-                      {{ t("dropdown.slot.empty") }}
-                    </template></Dropdown
-                  ><label
-                    for="job"
-                    :class="{
-                      'p-error': v$.job.$invalid && submitted,
-                    }"
-                    >{{ t("shiftTabletCrew.jobTitle")
-                    }}<span :style="{ color: 'var(--red-500)' }">*</span></label
-                  >
-                </div>
-              </div>
             </div>
             <div class="grid align-center">
               <div class="col-12 mb-2 md:col-1">
                 <Button
                   class="mt-4"
                   type="submit"
+                  :loading="submitButtonIsLoading"
                   :label="btnSubmitLabel"
                   :class="btnSubmitClass"
                 ></Button>

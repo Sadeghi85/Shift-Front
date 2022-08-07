@@ -5,7 +5,6 @@ interface IShiftTabletCrewInputModel {
   shiftTabletId?: number;
   entranceTime?: string | null;
   exitTime?: string | null;
-  isReplaced?: boolean | null;
 }
 export class ShiftTabletCrewInputModel implements IShiftTabletCrewInputModel {
   id: number;
@@ -14,7 +13,6 @@ export class ShiftTabletCrewInputModel implements IShiftTabletCrewInputModel {
   shiftTabletId: number;
   entranceTime: string | null;
   exitTime: string | null;
-  isReplaced: boolean | null;
 
   constructor(params: IShiftTabletCrewInputModel) {
     this.id = params.id || 0;
@@ -23,7 +21,6 @@ export class ShiftTabletCrewInputModel implements IShiftTabletCrewInputModel {
     this.shiftTabletId = params.shiftTabletId || 0;
     this.entranceTime = params.entranceTime || null;
     this.exitTime = params.exitTime || null;
-    this.isReplaced = params.isReplaced || null;
   }
 }
 

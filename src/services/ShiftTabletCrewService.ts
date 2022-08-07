@@ -50,6 +50,10 @@ export class ShiftTabletCrewService {
     return this.api.post("/ShiftTabletCrew/Update", body);
   }
 
+  public hamahangiUpdate(body: ShiftTabletCrewInputModel) {
+    return this.api.post("/ShiftTabletCrew/HamahangiUpdate", body);
+  }
+
   public delete(id: number) {
     return this.api.post("/ShiftTabletCrew/Delete?id=" + id, null);
   }

@@ -23,10 +23,14 @@ const submitButtonIsLoading = ref(false);
 const cuShiftTabletCrewId = ref(0);
 
 const ShiftTabletCrewCreateView = defineAsyncComponent(
-  () => import("@/views/shift-tablet-crew/ShiftTabletCrewCreate.vue")
+  () =>
+    import("@/views/shift-tablet-crew/coordinator/ShiftTabletCrewCreate.vue")
 );
 const ShiftTabletCrewAgentReplacementView = defineAsyncComponent(
-  () => import("@/views/shift-tablet-crew/ShiftTabletCrewAgentReplacement.vue")
+  () =>
+    import(
+      "@/views/shift-tablet-crew/coordinator/ShiftTabletCrewAgentReplacement.vue"
+    )
 );
 
 const cuComponent = shallowRef();
