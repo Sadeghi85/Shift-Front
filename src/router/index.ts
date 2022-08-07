@@ -53,12 +53,29 @@ const routes: Array<RouteRecordRaw> = [
       ),
   },
   {
-    path: "/shift-tablet-crew-secretary/:shiftTabletId",
-    name: "shift-tablet-crew-secretary",
+    path: "/shift-tablet-secretary-report/:shiftTabletId",
+    name: "shift-tablet-secretary-report",
     component: () =>
       import(
-        /* webpackChunkName: "shift-tablet-crew-secretary" */ "../views/shift-tablet-crew/ShiftTabletCrewSecretary.vue"
+        /* webpackChunkName: "shift-tablet-secretary-report" */ "../views/shift-tablet-crew/secretary-report/SecretarySteps.vue"
       ),
+    children: [
+      {
+        path: "",
+        component: () =>
+          import(
+            /* webpackChunkName: "shift-tablet-secretary-report-crew" */ "../views/shift-tablet-crew/secretary-report/ShiftTabletCrewSecretary.vue"
+          ),
+      },
+      {
+        path: "/shift-tablet-secretary-report-crew/:shiftTabletId",
+        name: "shift-tablet-secretary-report-crew",
+        component: () =>
+          import(
+            /* webpackChunkName: "shift-tablet-secretary-report-crew" */ "../views/shift-tablet-crew/secretary-report/ShiftTabletCrewSecretary.vue"
+          ),
+      },
+    ],
   },
 ];
 
