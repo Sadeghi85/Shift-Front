@@ -185,9 +185,7 @@ const gridOperationMenuItems = ref([
                 .then((response) => {
                   //console.log(response);
                   if (!response.data.success) {
-                    apiErrorStore.setApiErrorMessage(
-                      response.data.failureMessage
-                    );
+                    apiErrorStore.setApiErrorMessage(response.data.message);
                     return;
                   }
 
@@ -259,7 +257,7 @@ async function loadShiftTablets(
     loading.value = false;
 
     if (typeof error.message === "object") {
-      apiErrorStore.setApiErrorMessage(error.message.failureMessage);
+      apiErrorStore.setApiErrorMessage(error.message.message);
     } else {
       console.log(error.message);
     }
@@ -328,7 +326,7 @@ const loadEssentials = async () => {
     await handleSearch();
   } catch (error: any) {
     if (typeof error.message === "object") {
-      apiErrorStore.setApiErrorMessage(error.message.failureMessage);
+      apiErrorStore.setApiErrorMessage(error.message.message);
     } else {
       console.log(error.message);
     }

@@ -75,7 +75,7 @@ const handleSubmit = (isFormValid: boolean) => {
 
           //console.log(response);
           if (!response.data.success) {
-            apiErrorStore.setApiErrorMessage(response.data.failureMessage);
+            apiErrorStore.setApiErrorMessage(response.data.message);
             return;
           }
 
@@ -103,7 +103,7 @@ const handleSubmit = (isFormValid: boolean) => {
 
           //console.log(response);
           if (!response.data.success) {
-            apiErrorStore.setApiErrorMessage(response.data.failureMessage);
+            apiErrorStore.setApiErrorMessage(response.data.message);
             return;
           }
 
@@ -162,7 +162,7 @@ const fillForm = async () => {
     }
   } catch (error: any) {
     if (typeof error.message === "object") {
-      apiErrorStore.setApiErrorMessage(error.message.failureMessage);
+      apiErrorStore.setApiErrorMessage(error.message.message);
     } else {
       console.log(error.message);
     }
