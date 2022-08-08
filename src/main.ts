@@ -10,6 +10,8 @@ import { createPinia } from "pinia";
 import useTokenStore from "./stores/token";
 import { AppSettings } from "./config";
 
+import Vue3PersianDatetimePicker from "vue3-persian-datetime-picker";
+
 import PrimeVue from "primevue/config";
 
 import ToastService from "primevue/toastservice";
@@ -26,8 +28,6 @@ import "primeicons/primeicons.css";
 import "primeflex/primeflex.min.css";
 
 import "@/assets/css/app.css";
-
-//import Vue3PersianDatetimePicker from "vue3-persian-datetime-picker";
 
 const pinia = createPinia();
 
@@ -49,14 +49,6 @@ loading.use(PrimeVue, {
 loading.mount("#app");
 
 const loadAndConfigApp = async (loading: any) => {
-  let Vue3PersianDatetimePicker: any = null;
-  try {
-    Vue3PersianDatetimePicker = await (async () =>
-      import("vue3-persian-datetime-picker"))();
-  } catch (e) {
-    throw new Error("Couldn't download vue3-persian-datetime-picker");
-  }
-
   if (loading) {
     loading.unmount();
   }
@@ -96,7 +88,6 @@ const loadAndConfigApp = async (loading: any) => {
       popover: true,
     },
   });
-  //app.component("PersianDatePicker", Vue3PersianDatetimePicker);
 
   const portalService = ref(new PortalService());
   await portalService.value.getAll(new PortalSearchModel({}));
