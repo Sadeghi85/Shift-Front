@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import DOMPurify from "dompurify";
 import { storeToRefs } from "pinia";
 import useApiErrorStore from "@/stores/api-error";
 
@@ -18,7 +19,7 @@ const showError = (detail: string) => {
   toast.add({
     severity: "error",
     summary: t("toast.header.general"),
-    detail: detail.replace(/[<>]/g, "").replace(/\n/g, "<br><br>"),
+    detail: DOMPurify.sanitize(detail.replace(/\n/g, "<br><br>")),
     life: 3000,
     group: "apiError",
   });
