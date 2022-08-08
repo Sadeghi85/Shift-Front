@@ -59,22 +59,45 @@ const rowClass = (rowData: any) => {
   }
 };
 
+const edittedRow = ref<InstanceType<typeof ShiftTabletCrewViewModel>>();
+const crewReplacement = ref<InstanceType<typeof AgentViewModel>>();
+const crewReplacements = ref<InstanceType<typeof AgentViewModel>[]>();
 const entranceTime = ref("");
 const exitTime = ref("");
 
-const onRowEditInit = (event: any) => {
+const onRowEditInit = async (event: any) => {
   const { data, newData, index } = event;
 
-  entranceTime.value = data["entranceTime"]
-    ? data["entranceTime"]
-    : data["defaultEntranceTime"];
+  edittedRow.value = data;
 
-  exitTime.value = data["exitTime"]
-    ? data["exitTime"]
-    : data["defaultExitTime"];
+  entranceTime.value = data.entranceTime
+    ? data.entranceTime
+    : data.defaultEntranceTime;
+
+  exitTime.value = data.exitTime ? data.exitTime : data.defaultExitTime;
+
+  crewReplacement.value = undefined;
+  try {
+    crewReplacements.value = (
+      await agentService.value.getAll(
+        new AgentSearchModel({
+          pageSize: generalStore.dropdownItemsCount,
+          orderKey: "id",
+          desc: true,
+          jobId: edittedRow.value?.jobId,
+        })
+      )
+    ).data;
+  } catch (error: any) {
+    if (typeof error.message === "object") {
+      apiErrorStore.setApiErrorMessage(error.message.message);
+    } else {
+      console.log(error.message);
+    }
+  }
 };
 
-const onRowEditSave = (event: any) => {
+const onRowEditSave = async (event: any) => {
   const { data, newData, index } = event;
 
   console.log(newData);
@@ -84,27 +107,53 @@ const onRowEditSave = (event: any) => {
     return;
   }
 
-  shiftTabletCrewService.value
+  await shiftTabletCrewService.value
     .update(
       new ShiftTabletCrewInputModel({
         id: data.id,
         entranceTime: entranceTime.value,
         exitTime: exitTime.value,
-        agentId: data.agentId,
+        agentId: crewReplacement.value
+          ? crewReplacement.value.id
+          : data.agentId,
         shiftTabletId: data.shiftTabletId,
         jobId: data.jobId,
       })
     )
     .then((response) => {
       if (response.data.success == false) {
-        apiErrorStore.setApiErrorMessage(response.data.failureMessage);
+        apiErrorStore.setApiErrorMessage(response.data.message);
       } else {
+        showSuccess(t("toast.success.update"));
+
         handleSearch();
       }
     })
     .catch((error) => {
       console.log(error.message);
     });
+};
+
+const onDropdownCrewReplacementFilter = async (event: any) => {
+  try {
+    crewReplacements.value = (
+      await agentService.value.getAll(
+        new AgentSearchModel({
+          pageSize: generalStore.dropdownItemsCount,
+          orderKey: "id",
+          desc: true,
+          name: event.value,
+          jobId: edittedRow.value?.jobId,
+        })
+      )
+    ).data;
+  } catch (error: any) {
+    if (typeof error.message === "object") {
+      apiErrorStore.setApiErrorMessage(error.message.message);
+    } else {
+      console.log(error.message);
+    }
+  }
 };
 
 async function loadShiftTabletCrews(
@@ -134,7 +183,7 @@ async function loadShiftTabletCrews(
     loading.value = false;
 
     if (typeof error.message === "object") {
-      apiErrorStore.setApiErrorMessage(error.message.failureMessage);
+      apiErrorStore.setApiErrorMessage(error.message.message);
     } else {
       console.log(error.message);
     }
@@ -196,7 +245,7 @@ const onDropdownAgentFilter = async (event: any) => {
     ).data;
   } catch (error: any) {
     if (typeof error.message === "object") {
-      apiErrorStore.setApiErrorMessage(error.message.failureMessage);
+      apiErrorStore.setApiErrorMessage(error.message.message);
     } else {
       console.log(error.message);
     }
@@ -217,7 +266,7 @@ const onDropdownJobFilter = async (event: any) => {
     ).data;
   } catch (error: any) {
     if (typeof error.message === "object") {
-      apiErrorStore.setApiErrorMessage(error.message.failureMessage);
+      apiErrorStore.setApiErrorMessage(error.message.message);
     } else {
       console.log(error.message);
     }
@@ -263,7 +312,7 @@ const loadEssentials = async () => {
     await handleSearch();
   } catch (error: any) {
     if (typeof error.message === "object") {
-      apiErrorStore.setApiErrorMessage(error.message.failureMessage);
+      apiErrorStore.setApiErrorMessage(error.message.message);
     } else {
       console.log(error.message);
     }
@@ -460,6 +509,21 @@ watch(
                 :header="t('grid.header.jobTitle')"
               ></Column>
 
+              <Column field="" :header="t('grid.header.crewReplacement')">
+                <template #editor>
+                  <Dropdown
+                    v-model="crewReplacement"
+                    :options="crewReplacements"
+                    option-label="fullname"
+                    :filter="true"
+                    :show-clear="true"
+                    @filter="onDropdownCrewReplacementFilter"
+                    ><template #empty>
+                      {{ t("dropdown.slot.empty") }}
+                    </template></Dropdown
+                  >
+                </template>
+              </Column>
               <Column
                 field="entranceTime"
                 :header="t('grid.header.entranceTime')"

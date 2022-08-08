@@ -7,6 +7,7 @@
   "button.excel": "اکسل",
   "button.create": "ثبت",
   "button.update": "ویرایش",
+  "button.replace": "جابجایی",
   "button.search": "جستجو",
   "button.cancel": "لغو",
   "button.shiftTablet.report": "گزارشات لوح شیفت",
@@ -31,7 +32,7 @@
   "exitTime.title": "ساعت خروج",
 
   "_": "menu",
-  "menu.item.agentReplacement": "جابجایی",
+  "menu.item.replacement": "جابجایی",
   "menu.item.update": "ویرایش",
   "menu.item.delete": "حذف",
   "menu.item.shift-tablet-crew-assignment": "تعریف کارکنان شیفت",
@@ -67,6 +68,7 @@
   "grid.header.jobTitle": "سمت",
   "grid.header.entranceTime": "ساعت ورود",
   "grid.header.exitTime": "ساعت خروج",
+  "grid.header.crewReplacement": "جابجایی",
 
   "_": "routes",
   "route.locations": "تعریف لوکیشن",
@@ -79,6 +81,7 @@
   "_": "toast",
   "toast.success.create": "ثبت با موفقیت انجام شد",
   "toast.success.update": "ویرایش با موفقیت انجام شد",
+  "toast.success.replacement": "جابجایی با موفقیت انجام شد",
   "toast.success.delete": "حذف با موفقیت انجام شد",
   "toast.message.confirm.delete": "حذف را تایید می‌کنید؟",
   "toast.general.error": "خطایی رخ داده است",

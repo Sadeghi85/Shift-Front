@@ -13,6 +13,10 @@ const props = defineProps({
     type: Number,
     required: true,
   },
+  shiftTabletCrewIsReplacement: {
+    type: Boolean,
+    required: true,
+  },
 });
 const emit = defineEmits(["updateIsDone", "insertIsDone", "cuIsCanceled"]);
 
@@ -73,7 +77,7 @@ const onDropdownAgentFilter = async (event: any) => {
     ).data;
   } catch (error: any) {
     if (typeof error.message === "object") {
-      apiErrorStore.setApiErrorMessage(error.message.failureMessage);
+      apiErrorStore.setApiErrorMessage(error.message.message);
     } else {
       console.log(error.message);
     }
@@ -91,34 +95,65 @@ const handleSubmit = (isFormValid: boolean) => {
     if (props.shiftTabletCrewId == 0) {
       //
     } else {
-      shiftTabletCrewService.value
-        .hamahangiUpdate(
-          new ShiftTabletCrewInputModel({
-            id: props.shiftTabletCrewId,
-            agentId: v$.value.agent.$model?.id,
-            shiftTabletId: props.shiftTabletId,
-            jobId: v$.value.job.$model?.jobId,
+      if (props.shiftTabletCrewIsReplacement) {
+        shiftTabletCrewService.value
+          .update(
+            new ShiftTabletCrewInputModel({
+              id: props.shiftTabletCrewId,
+              agentId: v$.value.agent.$model?.id,
+              shiftTabletId: props.shiftTabletId,
+              jobId: v$.value.job.$model?.jobId,
+            })
+          )
+          .then((response) => {
+            submitButtonIsLoading.value = false;
+
+            //console.log(response);
+            if (!response.data.success) {
+              apiErrorStore.setApiErrorMessage(response.data.message);
+              return;
+            }
+
+            emit("updateIsDone");
+
+            showSuccess(t("toast.success.replacement"));
+            resetForm();
           })
-        )
-        .then((response) => {
-          submitButtonIsLoading.value = false;
+          .catch((error) => {
+            submitButtonIsLoading.value = false;
 
-          //console.log(response);
-          if (!response.data.success) {
-            apiErrorStore.setApiErrorMessage(response.data.failureMessage);
-            return;
-          }
+            console.log(error);
+          });
+      } else {
+        shiftTabletCrewService.value
+          .hamahangiUpdate(
+            new ShiftTabletCrewInputModel({
+              id: props.shiftTabletCrewId,
+              agentId: v$.value.agent.$model?.id,
+              //shiftTabletId: props.shiftTabletId,
+              //jobId: v$.value.job.$model?.jobId,
+            })
+          )
+          .then((response) => {
+            submitButtonIsLoading.value = false;
 
-          emit("updateIsDone");
+            //console.log(response);
+            if (!response.data.success) {
+              apiErrorStore.setApiErrorMessage(response.data.message);
+              return;
+            }
 
-          showSuccess(t("toast.success.update"));
-          resetForm();
-        })
-        .catch((error) => {
-          submitButtonIsLoading.value = false;
+            emit("updateIsDone");
 
-          console.log(error);
-        });
+            showSuccess(t("toast.success.update"));
+            resetForm();
+          })
+          .catch((error) => {
+            submitButtonIsLoading.value = false;
+
+            console.log(error);
+          });
+      }
     }
   }
 };
@@ -178,7 +213,7 @@ const fillForm = async () => {
     }
   } catch (error: any) {
     if (typeof error.message === "object") {
-      apiErrorStore.setApiErrorMessage(error.message.failureMessage);
+      apiErrorStore.setApiErrorMessage(error.message.message);
     } else {
       console.log(error.message);
     }
@@ -189,14 +224,22 @@ const btnSubmitLabel = computed(() => {
   if (props.shiftTabletCrewId == 0) {
     return t("button.create");
   } else {
-    return t("button.update");
+    if (props.shiftTabletCrewIsReplacement) {
+      return t("button.replace");
+    } else {
+      return t("button.update");
+    }
   }
 });
 const btnSubmitClass = computed(() => {
   if (props.shiftTabletCrewId == 0) {
     return "p-button-primary";
   } else {
-    return "p-button-warning";
+    if (props.shiftTabletCrewIsReplacement) {
+      return "p-button-danger";
+    } else {
+      return "p-button-warning";
+    }
   }
 });
 

@@ -21,6 +21,7 @@ const totalRecords = ref(0);
 const submitButtonIsLoading = ref(false);
 
 const cuShiftTabletCrewId = ref(0);
+const shiftTabletCrewIsReplacement = ref(false);
 
 const ShiftTabletCrewCreateView = defineAsyncComponent(
   () =>
@@ -65,12 +66,24 @@ const gridOperationMenuItems = ref([
     label: t("grid.button.operation"),
     items: [
       {
-        label: t("menu.item.agentReplacement"),
+        label: t("menu.item.update"),
         icon: "pi pi-user-edit",
         command: () => {
           cuComponent.value = ShiftTabletCrewAgentReplacementView;
           closeSearchForm();
           cuShiftTabletCrewId.value = gridOperationMenu.value.data.id;
+          shiftTabletCrewIsReplacement.value = false;
+          openCreateUpdateForm();
+        },
+      },
+      {
+        label: t("menu.item.replacement"),
+        icon: "pi pi-user-edit",
+        command: () => {
+          cuComponent.value = ShiftTabletCrewAgentReplacementView;
+          closeSearchForm();
+          cuShiftTabletCrewId.value = gridOperationMenu.value.data.id;
+          shiftTabletCrewIsReplacement.value = true;
           openCreateUpdateForm();
         },
       },
@@ -93,9 +106,7 @@ const gridOperationMenuItems = ref([
                 .then((response) => {
                   //console.log(response);
                   if (!response.data.success) {
-                    apiErrorStore.setApiErrorMessage(
-                      response.data.failureMessage
-                    );
+                    apiErrorStore.setApiErrorMessage(response.data.message);
                     return;
                   }
 
@@ -166,7 +177,7 @@ async function loadShiftTabletCrews(
     loading.value = false;
 
     if (typeof error.message === "object") {
-      apiErrorStore.setApiErrorMessage(error.message.failureMessage);
+      apiErrorStore.setApiErrorMessage(error.message.message);
     } else {
       console.log(error.message);
     }
@@ -238,7 +249,7 @@ const onDropdownAgentFilter = async (event: any) => {
     ).data;
   } catch (error: any) {
     if (typeof error.message === "object") {
-      apiErrorStore.setApiErrorMessage(error.message.failureMessage);
+      apiErrorStore.setApiErrorMessage(error.message.message);
     } else {
       console.log(error.message);
     }
@@ -259,7 +270,7 @@ const onDropdownJobFilter = async (event: any) => {
     ).data;
   } catch (error: any) {
     if (typeof error.message === "object") {
-      apiErrorStore.setApiErrorMessage(error.message.failureMessage);
+      apiErrorStore.setApiErrorMessage(error.message.message);
     } else {
       console.log(error.message);
     }
@@ -305,7 +316,7 @@ const loadEssentials = async () => {
     await handleSearch();
   } catch (error: any) {
     if (typeof error.message === "object") {
-      apiErrorStore.setApiErrorMessage(error.message.failureMessage);
+      apiErrorStore.setApiErrorMessage(error.message.message);
     } else {
       console.log(error.message);
     }
@@ -401,6 +412,7 @@ watch(
       <div v-if="createUpdateFormIsVisible">
         <Component
           :is="cuComponent"
+          :shift-tablet-crew-is-replacement="shiftTabletCrewIsReplacement"
           :shift-tablet-crew-id="cuShiftTabletCrewId"
           :shift-tablet-id="+$route.params.shiftTabletId"
           @insert-is-done="insertIsDone"
