@@ -336,63 +336,6 @@ watch(
 
 <template>
   <div class="layout-content">
-    <div class="grid">
-      <div class="col-12 md:col-12">
-        <Toolbar>
-          <template #end>
-            <Button
-              icon="pi pi-search"
-              class="p-button-rounded ml-2"
-              @click.prevent="toggleSearchForm()"
-            />
-
-            <Button
-              icon="pi pi-arrow-left"
-              class="p-button-rounded p-button-warning"
-              @click.prevent="
-                router.options.history.state.back
-                  ? router.back()
-                  : router.push({ name: 'shift-tablet' })
-              "
-            />
-          </template>
-        </Toolbar>
-      </div>
-    </div>
-
-    <div class="content-section">
-      <div class="grid">
-        <div class="col-12 md:col-12 p-fluid">
-          <div class="card info">
-            <div class="grid">
-              <div class="col">
-                {{ t("portal.title") }}:
-                <strong>{{ shiftTablet?.portalTitle }}</strong>
-              </div>
-              <div class="col">
-                {{ t("shift.title") }}:
-                <strong>{{ shiftTablet?.shiftTitle }}</strong>
-              </div>
-              <div class="col">
-                {{ t("shift.shiftDate") }}:
-                <strong>{{
-                  pdate(shiftTablet?.shiftDate ?? "", "dddd، jYYYY/jMM/jDD")
-                }}</strong>
-              </div>
-              <div class="col">
-                {{ t("shift.startTime") }}:
-                <strong>{{ shiftTablet?.shiftStartTime }}</strong>
-              </div>
-              <div class="col">
-                {{ t("shift.endTime") }}:
-                <strong>{{ shiftTablet?.shiftEndTime }}</strong>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
     <Transition>
       <div v-if="searchFormIsVisible" class="content-section">
         <div class="grid">
@@ -588,10 +531,10 @@ watch(
         </div>
       </div>
     </div>
-  </div>
 
-  <Toast position="top-center" group="br" />
-  <ConfirmDialog position="top-center"></ConfirmDialog>
+    <Toast position="top-center" group="br" />
+    <ConfirmDialog position="top-center"></ConfirmDialog>
+  </div>
 </template>
 
 <style lang="scss" scoped>
