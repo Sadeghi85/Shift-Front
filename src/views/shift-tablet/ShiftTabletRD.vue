@@ -7,6 +7,8 @@ const generalStore = useGeneralStore();
 
 const router = useRouter();
 
+const { can, cannot } = useAbility();
+
 const { t } = useI18n();
 const toast = useToast();
 const confirm = useConfirm();
@@ -335,6 +337,11 @@ const loadEssentials = async () => {
 
 // lifecycle hooks
 onMounted(async () => {
+  if (cannot("shift-tablet.full", "all")) {
+    router.push({ name: "home" });
+    return;
+  }
+
   await loadEssentials();
 });
 </script>

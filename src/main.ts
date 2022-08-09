@@ -1,4 +1,8 @@
 import { createApp } from "vue";
+
+import { abilitiesPlugin } from "@casl/vue";
+import ability from "./casl/ability";
+
 import App from "./App.vue";
 import Loading from "./Loading.vue";
 import router from "./router";
@@ -54,6 +58,8 @@ const loadAndConfigApp = async (loading: any) => {
   }
 
   const app = createApp(App);
+
+  app.use(abilitiesPlugin, ability);
 
   app.use(router);
   app.use(i18n);

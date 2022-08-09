@@ -5,7 +5,11 @@ import { PortalSearchModel, PortalViewModel } from "@/models/PortalModels";
 
 const generalStore = useGeneralStore();
 
+const router = useRouter();
+
 // reactive state
+const { can, cannot } = useAbility();
+
 const { t } = useI18n();
 const toast = useToast();
 const confirm = useConfirm();
@@ -235,6 +239,11 @@ const loadEssentials = async () => {
 
 // lifecycle hooks
 onMounted(async () => {
+  if (cannot("portal-locations.full", "all")) {
+    router.push({ name: "home" });
+    return;
+  }
+
   await loadEssentials();
 });
 </script>

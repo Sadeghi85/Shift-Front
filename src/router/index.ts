@@ -5,13 +5,14 @@ import {
   RouteRecordRaw,
 } from "vue-router";
 //import HomeView from "../views/HomeView.vue";
+import ability from "@/casl/ability";
 
 const routes: Array<RouteRecordRaw> = [
-  /* {
+  {
     path: "/",
     name: "home",
-    component: HomeView,
-  }, */
+    component: () => import(/* webpackChunkName: "home" */ "../views/Home.vue"),
+  },
   {
     path: "/locations",
     name: "locations",
@@ -19,6 +20,11 @@ const routes: Array<RouteRecordRaw> = [
       import(
         /* webpackChunkName: "locations" */ "../views/location/LocationRD.vue"
       ),
+    beforeEnter: (to, from) => {
+      if (ability.cannot("locations.full", "all")) {
+        return false;
+      }
+    },
   },
   {
     path: "/portal-locations",
@@ -68,11 +74,11 @@ const routes: Array<RouteRecordRaw> = [
           ),
       },
       {
-        path: "/shift-tablet-secretary-report-crew/:shiftTabletId",
-        name: "shift-tablet-secretary-report-crew",
+        path: "/shift-tablet-secretary-report-description/:shiftTabletId",
+        name: "shift-tablet-secretary-report-description",
         component: () =>
           import(
-            /* webpackChunkName: "shift-tablet-secretary-report-crew" */ "../views/shift-tablet-crew/secretary-report/ShiftTabletCrewSecretary.vue"
+            /* webpackChunkName: "shift-tablet-secretary-report-description" */ "../views/shift-tablet-crew/secretary-report/SecretaryReportDescription.vue"
           ),
       },
     ],
