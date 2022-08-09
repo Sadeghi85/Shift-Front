@@ -37,7 +37,7 @@ interface IShiftTabletCrewSearchModel {
   toDate?: string | null;
   agentId?: number;
   jobId?: number;
-  shifTabletId?: number;
+  shiftTabletId?: number;
   entranceTime?: string | null;
   exitTime?: string | null;
   isReplaced?: boolean | null;
@@ -56,7 +56,7 @@ export class ShiftTabletCrewSearchModel implements IShiftTabletCrewSearchModel {
   toDate: string | null;
   agentId: number;
   jobId: number;
-  shifTabletId: number;
+  shiftTabletId: number;
   entranceTime: string | null;
   exitTime: string | null;
   isReplaced: boolean | null;
@@ -75,7 +75,7 @@ export class ShiftTabletCrewSearchModel implements IShiftTabletCrewSearchModel {
     this.toDate = params.toDate || null;
     this.agentId = params.agentId || 0;
     this.jobId = params.jobId || 0;
-    this.shifTabletId = params.shifTabletId || 0;
+    this.shiftTabletId = params.shiftTabletId || 0;
     this.entranceTime = params.entranceTime || null;
     this.exitTime = params.exitTime || null;
     this.isReplaced = params.isReplaced || null;
