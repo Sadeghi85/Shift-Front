@@ -20,11 +20,11 @@ const routes: Array<RouteRecordRaw> = [
       import(
         /* webpackChunkName: "locations" */ "../views/location/LocationRD.vue"
       ),
-    beforeEnter: (to, from) => {
-      if (ability.cannot("locations.full", "all")) {
-        return false;
-      }
-    },
+    // beforeEnter: (to, from) => {
+    //   if (ability.cannot("locations.full", "all")) {
+    //     return false;
+    //   }
+    // },
   },
   {
     path: "/portal-locations",

@@ -2,7 +2,7 @@ import { AxiosRequestConfig } from "axios";
 import { HttpClient } from "./http-client";
 import { AppSettings } from "@/config";
 import { ITokenViewModel, ITokenInputModel } from "@/models/TokenModels";
-import useTokenStore from "@/stores/token";
+import useUserStore from "@/stores/user";
 /* import { PortalModel } from "@/models/PortalModel";
 import { ApiResponseModel } from "@/models/ApiResponseModel";
 import { ShiftLocationModel } from "@/models/ShifLocationModel"; */
@@ -10,12 +10,12 @@ import { ShiftLocationModel } from "@/models/ShifLocationModel"; */
 export class Api extends HttpClient {
   private static classInstance?: Api;
 
-  private tokenStore;
+  private userStore;
 
   private constructor() {
     super(AppSettings.API_URL);
 
-    this.tokenStore = useTokenStore();
+    this.userStore = useUserStore();
 
     this._initializeRequestInterceptor();
   }
@@ -32,7 +32,7 @@ export class Api extends HttpClient {
   private _initializeRequestInterceptor = () => {
     this.instance.interceptors.request.use(
       async (config) => {
-        const token = this.tokenStore.token;
+        const token = this.userStore.token;
 
         config.headers = {
           Authorization: `Bearer ${token?.access_token}`,
@@ -69,14 +69,13 @@ export class Api extends HttpClient {
                 "Content-Type": "application/json; charset=utf-8",
               }),
               body: JSON.stringify({
-                refresh_token:
-                  Api.classInstance.tokenStore.token?.refresh_token,
+                refresh_token: Api.classInstance.userStore.token?.refresh_token,
               } as ITokenInputModel),
             });
 
             token = await tokenResponse.json();
 
-            Api.classInstance.tokenStore.setToken(token);
+            Api.classInstance.userStore.setToken(token);
           } catch (error) {
             console.log(error);
           }

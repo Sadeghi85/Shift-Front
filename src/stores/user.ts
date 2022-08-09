@@ -1,10 +1,12 @@
 import { defineStore } from "pinia";
 import { ITokenViewModel } from "@/models/TokenModels";
+import { IUserViewModel } from "@/models/UserModels";
 
-const useTokenStore = defineStore({
-  id: "token",
+const useUserStore = defineStore({
+  id: "user",
   state: () => ({
     token: ref<ITokenViewModel | null>(),
+    user: ref<IUserViewModel | null>(),
   }),
   getters: {},
   actions: {
@@ -14,7 +16,14 @@ const useTokenStore = defineStore({
     removeToken() {
       this.token = null;
     },
+
+    setUser(user: IUserViewModel | null) {
+      this.user = user;
+    },
+    removeUser() {
+      this.user = null;
+    },
   },
 });
 
-export default useTokenStore;
+export default useUserStore;

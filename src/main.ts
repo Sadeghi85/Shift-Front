@@ -1,6 +1,7 @@
 import { createApp } from "vue";
 
 import { abilitiesPlugin } from "@casl/vue";
+import { AbilityBuilder, Ability } from "@casl/ability";
 import ability from "./casl/ability";
 
 import App from "./App.vue";
@@ -11,7 +12,7 @@ import i18n from "./i18n";
 
 import { createPinia } from "pinia";
 
-import useTokenStore from "./stores/token";
+import useUserStore from "./stores/user";
 import { AppSettings } from "./config";
 
 import Vue3PersianDatetimePicker from "vue3-persian-datetime-picker";
@@ -22,6 +23,8 @@ import ToastService from "primevue/toastservice";
 import ConfirmationService from "primevue/confirmationservice";
 
 import { ITokenViewModel } from "./models/TokenModels";
+import { IUserViewModel } from "./models/UserModels";
+import { UserService } from "./services/UserService";
 
 //import "primevue/resources/themes/bootstrap4-light-blue/theme.css";
 //import "primevue/resources/themes/lara-light-blue/theme.css";
@@ -35,8 +38,8 @@ import "@/assets/css/app.css";
 
 const pinia = createPinia();
 
-const tokenStore = useTokenStore(pinia);
-tokenStore.removeToken();
+const userStore = useUserStore(pinia);
+userStore.removeToken();
 
 const loading = createApp(Loading);
 loading.use(PrimeVue, {
@@ -95,9 +98,6 @@ const loadAndConfigApp = async (loading: any) => {
     },
   });
 
-  const portalService = ref(new PortalService());
-  await portalService.value.getAll(new PortalSearchModel({}));
-
   app.mount("#app");
 };
 
@@ -114,7 +114,24 @@ fetch(AppSettings.SSO_URL, {
       throw new Error("Token is null");
     }
 
-    tokenStore.setToken(data);
+    userStore.setToken(data);
+
+    try {
+      const userService = ref(new UserService());
+      const userInfo = await userService.value.getUserInfo();
+
+      userStore.setUser(userInfo);
+
+      const { can, rules } = new AbilityBuilder(Ability);
+
+      userInfo.permissions?.forEach((permission) => {
+        can(permission, "all");
+      });
+
+      ability.update(rules);
+    } catch (error) {
+      console.log(error);
+    }
 
     await loadAndConfigApp(loading);
   })
