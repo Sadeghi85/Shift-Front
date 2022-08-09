@@ -1,7 +1,6 @@
 <script lang="ts" setup>
 import useApiErrorStore from "@/stores/api-error";
 import { useGeneralStore } from "@/stores/general";
-import { pdate } from "@/helpers/utilities";
 
 const generalStore = useGeneralStore();
 
@@ -20,18 +19,6 @@ const totalRecords = ref(0);
 
 const submitButtonIsLoading = ref(false);
 
-const searchFormIsVisible = ref(false);
-
-const openSearchForm = () => {
-  searchFormIsVisible.value = true;
-};
-const closeSearchForm = () => {
-  searchFormIsVisible.value = false;
-};
-const toggleSearchForm = () => {
-  searchFormIsVisible.value = !searchFormIsVisible.value;
-};
-
 const showSuccess = (detail: string) => {
   toast.add({
     severity: "success",
@@ -43,11 +30,8 @@ const showSuccess = (detail: string) => {
 };
 
 const shiftTabletCrews = ref<InstanceType<typeof ShiftTabletCrewViewModel>[]>();
-const jobs = ref<InstanceType<typeof JobViewModel>[]>();
-const agents = ref<InstanceType<typeof AgentViewModel>[]>();
 const agent = ref<InstanceType<typeof AgentViewModel>>();
 const job = ref<InstanceType<typeof JobViewModel>>();
-const shiftTablet = ref<InstanceType<typeof ShiftTabletViewModel>>();
 
 const editingRows = ref<any[]>([]);
 
@@ -203,7 +187,7 @@ const handleSearch = async () => {
 
   await loadShiftTabletCrews(
     new ShiftTabletCrewSearchModel({
-      shifTabletId: +route.params.shiftTabletId,
+      shiftTabletId: +route.params.shiftTabletId,
       pageSize: pageSize.value,
       pageNo: pageNumber.value,
       orderKey: "id",
@@ -217,97 +201,11 @@ const handleSearch = async () => {
   submitButtonIsLoading.value = false;
 };
 
-const shiftTabletService = ref(new ShiftTabletService());
 const shiftTabletCrewService = ref(new ShiftTabletCrewService());
 const agentService = ref(new AgentService());
-const jobService = ref(new JobService());
-
-const resetSearchForm = async () => {
-  agent.value = undefined;
-  job.value = undefined;
-
-  searchFormIsVisible.value = false;
-
-  await handleSearch();
-};
-
-const onDropdownAgentFilter = async (event: any) => {
-  try {
-    agents.value = (
-      await agentService.value.getAll(
-        new AgentSearchModel({
-          pageSize: generalStore.dropdownItemsCount,
-          orderKey: "id",
-          desc: true,
-          name: event.value,
-        })
-      )
-    ).data;
-  } catch (error: any) {
-    if (typeof error.message === "object") {
-      apiErrorStore.setApiErrorMessage(error.message.message);
-    } else {
-      console.log(error.message);
-    }
-  }
-};
-
-const onDropdownJobFilter = async (event: any) => {
-  try {
-    jobs.value = (
-      await jobService.value.getAll(
-        new JobSearchModel({
-          pageSize: generalStore.dropdownItemsCount,
-          orderKey: "id",
-          desc: true,
-          title: event.value,
-        })
-      )
-    ).data;
-  } catch (error: any) {
-    if (typeof error.message === "object") {
-      apiErrorStore.setApiErrorMessage(error.message.message);
-    } else {
-      console.log(error.message);
-    }
-  }
-};
 
 const loadEssentials = async () => {
   try {
-    // shiftTablet
-    shiftTablet.value = (
-      await shiftTabletService.value.getAll(
-        new ShiftTabletSearchModel({
-          id: +route.params.shiftTabletId,
-          orderKey: "id",
-          desc: true,
-        })
-      )
-    ).data[0];
-
-    // agents
-    agents.value = (
-      await agentService.value.getAll(
-        new AgentSearchModel({
-          pageSize: generalStore.dropdownItemsCount,
-          orderKey: "id",
-          desc: true,
-        })
-      )
-    ).data;
-
-    // jobs
-    jobs.value = (
-      await jobService.value.getAll(
-        new JobSearchModel({
-          pageSize: generalStore.dropdownItemsCount,
-          orderKey: "id",
-          desc: true,
-        })
-      )
-    ).data;
-
     // shiftTabletCrews
     await handleSearch();
   } catch (error: any) {
@@ -335,199 +233,121 @@ watch(
 </script>
 
 <template>
-  <div class="layout-content">
-    <Transition>
-      <div v-if="searchFormIsVisible" class="content-section">
-        <div class="grid">
-          <div class="col-12 md:col-12 p-fluid">
-            <div class="card">
-              <form
-                class="p-fluid"
-                autocomplete="off"
-                @submit.prevent="handleSearch()"
-              >
-                <div class="grid formgrid">
-                  <div class="field col-12 mb-2 md:col-4">
-                    <div class="p-float-label">
-                      <Dropdown
-                        id="agent"
-                        v-model="agent"
-                        :options="agents"
-                        option-label="fullname"
-                        :filter="true"
-                        @filter="onDropdownAgentFilter"
-                        ><template #empty>
-                          {{ t("dropdown.slot.empty") }}
-                        </template></Dropdown
-                      >
-
-                      <label for="agent">{{
-                        t("shiftTabletCrew.agentFullname")
-                      }}</label>
-                    </div>
-                  </div>
-                  <div class="field col-12 mb-2 md:col-4">
-                    <div class="p-float-label">
-                      <Dropdown
-                        id="job"
-                        v-model="job"
-                        :options="jobs"
-                        option-label="title"
-                        :filter="true"
-                        @filter="onDropdownJobFilter"
-                        ><template #empty>
-                          {{ t("dropdown.slot.empty") }}
-                        </template></Dropdown
-                      >
-
-                      <label for="job">{{
-                        t("shiftTabletCrew.jobTitle")
-                      }}</label>
-                    </div>
-                  </div>
-                </div>
-
-                <div class="grid align-center">
-                  <div class="col-12 mb-2 md:col-1">
-                    <Button
-                      type="submit"
-                      :loading="submitButtonIsLoading"
-                      :label="t('button.search')"
-                      class="mt-4"
-                    />
-                  </div>
-                  <div class="col-12 mb-2 md:col-1">
-                    <Button
-                      type="button"
-                      :label="t('button.cancel')"
-                      class="mt-4 p-button-secondary"
-                      @click.prevent="resetSearchForm"
-                    />
-                  </div>
-                </div>
-              </form>
-            </div>
-          </div>
-        </div>
-      </div>
-    </Transition>
-
-    <div class="content-section">
-      <div class="grid">
-        <div class="col-12 md:col-12">
-          <div class="card">
-            <DataTable
-              v-model:editing-rows="editingRows"
-              :value="shiftTabletCrews"
-              data-key="id"
-              edit-mode="row"
-              :loading="loading"
-              show-gridlines
-              striped-rows
-              :row-hover="true"
-              :row-class="rowClass"
-              responsive-layout="scroll"
-              @row-edit-save="onRowEditSave"
-              @row-edit-init="onRowEditInit"
+  <div class="content-section">
+    <div class="grid">
+      <div class="col-12 md:col-12">
+        <div class="card">
+          <DataTable
+            v-model:editing-rows="editingRows"
+            :value="shiftTabletCrews"
+            data-key="id"
+            edit-mode="row"
+            :loading="loading"
+            show-gridlines
+            striped-rows
+            :row-hover="true"
+            :row-class="rowClass"
+            responsive-layout="scroll"
+            @row-edit-save="onRowEditSave"
+            @row-edit-init="onRowEditInit"
+          >
+            <Column
+              :header="t('grid.header.index')"
+              header-style="width: 8em;"
+              header-class="align-center"
+              body-style="text-align: center;"
             >
-              <Column
-                :header="t('grid.header.index')"
-                header-style="width: 8em;"
-                header-class="align-center"
-                body-style="text-align: center;"
-              >
-                <template #body="slotProps">
-                  <div>
-                    {{ pageNumber * pageSize + slotProps.index + 1 }}
-                  </div>
-                </template></Column
-              >
+              <template #body="slotProps">
+                <div>
+                  {{ pageNumber * pageSize + slotProps.index + 1 }}
+                </div>
+              </template></Column
+            >
 
-              <Column
-                field="agentFullName"
-                :header="t('grid.header.agentFullName')"
-              ></Column>
-              <Column
-                field="jobTitle"
-                :header="t('grid.header.jobTitle')"
-              ></Column>
+            <Column
+              field="agentFullName"
+              :header="t('grid.header.agentFullName')"
+            ></Column>
+            <Column
+              field="jobTitle"
+              :header="t('grid.header.jobTitle')"
+            ></Column>
 
-              <Column field="" :header="t('grid.header.crewReplacement')">
-                <template #editor>
-                  <Dropdown
-                    v-model="crewReplacement"
-                    :options="crewReplacements"
-                    option-label="fullname"
-                    :filter="true"
-                    :show-clear="true"
-                    @filter="onDropdownCrewReplacementFilter"
-                    ><template #empty>
-                      {{ t("dropdown.slot.empty") }}
-                    </template></Dropdown
-                  >
-                </template>
-              </Column>
-              <Column
-                field="entranceTime"
-                :header="t('grid.header.entranceTime')"
-              >
-                <template #editor>
-                  <PersianDatePicker
-                    v-model="entranceTime"
-                    type="time"
-                    format="HH:mm:00"
-                    display-format="HH:mm"
-                    input-class="p-inputtext p-component"
-                    :compact-time="true"
-                    :clearable="true"
-                    :auto-submit="true"
-                    :popover="false"
-                    :editable="true"
-                  />
-                </template>
-              </Column>
-              <Column field="exitTime" :header="t('grid.header.exitTime')">
-                <template #editor>
-                  <PersianDatePicker
-                    v-model="exitTime"
-                    type="time"
-                    format="HH:mm:00"
-                    display-format="HH:mm"
-                    input-class="p-inputtext p-component"
-                    :compact-time="true"
-                    :clearable="true"
-                    :auto-submit="true"
-                    :popover="false"
-                    :editable="true"
-                  />
-                </template>
-              </Column>
-
-              <Column
-                :row-editor="true"
-                style="width: 10%; min-width: 8rem"
-                body-style="text-align:center"
-              ></Column>
-              <template #empty>
-                {{ t("grid.slot.empty") }}
+            <Column field="" :header="t('grid.header.crewReplacement')">
+              <template #editor>
+                <Dropdown
+                  v-model="crewReplacement"
+                  :options="crewReplacements"
+                  option-label="fullname"
+                  :filter="true"
+                  :show-clear="true"
+                  @filter="onDropdownCrewReplacementFilter"
+                  ><template #empty>
+                    {{ t("dropdown.slot.empty") }}
+                  </template></Dropdown
+                >
               </template>
-            </DataTable>
-
-            <Paginator
-              v-model:rows="pageSize"
-              :total-records="totalRecords"
-              :rows-per-page-options="[10, 25, 50, 100]"
-              template="CurrentPageReport FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink RowsPerPageDropdown"
-              :current-page-report-template="
-                t('grid.currentPageReportTemplate', [
-                  '{currentPage}',
-                  '{totalPages}',
-                ])
-              "
-              @page="onPage($event)"
+            </Column>
+            <Column
+              field="entranceTime"
+              :header="t('grid.header.entranceTime')"
             >
-            </Paginator>
-          </div>
+              <template #editor>
+                <PersianDatePicker
+                  v-model="entranceTime"
+                  type="time"
+                  format="HH:mm:00"
+                  display-format="HH:mm"
+                  input-class="p-inputtext p-component"
+                  :compact-time="true"
+                  :clearable="true"
+                  :auto-submit="true"
+                  :popover="false"
+                  :editable="true"
+                />
+              </template>
+            </Column>
+            <Column field="exitTime" :header="t('grid.header.exitTime')">
+              <template #editor>
+                <PersianDatePicker
+                  v-model="exitTime"
+                  type="time"
+                  format="HH:mm:00"
+                  display-format="HH:mm"
+                  input-class="p-inputtext p-component"
+                  :compact-time="true"
+                  :clearable="true"
+                  :auto-submit="true"
+                  :popover="false"
+                  :editable="true"
+                />
+              </template>
+            </Column>
+
+            <Column
+              :row-editor="true"
+              style="width: 10%; min-width: 8rem"
+              body-style="text-align:center"
+            ></Column>
+            <template #empty>
+              {{ t("grid.slot.empty") }}
+            </template>
+          </DataTable>
+
+          <Paginator
+            v-model:rows="pageSize"
+            :total-records="totalRecords"
+            :rows-per-page-options="[10, 25, 50, 100]"
+            template="CurrentPageReport FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink RowsPerPageDropdown"
+            :current-page-report-template="
+              t('grid.currentPageReportTemplate', [
+                '{currentPage}',
+                '{totalPages}',
+              ])
+            "
+            @page="onPage($event)"
+          >
+          </Paginator>
         </div>
       </div>
     </div>

@@ -10,6 +10,7 @@
   "button.replace": "جابجایی",
   "button.search": "جستجو",
   "button.cancel": "لغو",
+  "button.save": "ذخیره",
   "button.shiftTablet.report": "گزارشات لوح شیفت",
 
   "_": "entities",
@@ -30,6 +31,7 @@
   "shiftTabletCrew.jobTitle": "سمت",
   "entranceTime.title": "ساعت ورود",
   "exitTime.title": "ساعت خروج",
+  "secretary.report": "گزارش منشی صحنه",
 
   "_": "menu",
   "menu.item.replacement": "جابجایی",
@@ -83,6 +85,7 @@
   "toast.success.update": "ویرایش با موفقیت انجام شد",
   "toast.success.replacement": "جابجایی با موفقیت انجام شد",
   "toast.success.delete": "حذف با موفقیت انجام شد",
+  "toast.success.save": "ذخیره با موفقیت انجام شد",
   "toast.message.confirm.delete": "حذف را تایید می‌کنید؟",
   "toast.general.error": "خطایی رخ داده است",
   "toast.header.general": "پیغام",

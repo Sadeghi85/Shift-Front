@@ -14,6 +14,7 @@ declare module '@vue/runtime-core' {
     DataTable: typeof import('primevue/datatable')['default']
     Dialog: typeof import('primevue/dialog')['default']
     Dropdown: typeof import('primevue/dropdown')['default']
+    Home: typeof import('./src/views/Home.vue')['default']
     InputText: typeof import('primevue/inputtext')['default']
     LocationCU: typeof import('./src/views/location/LocationCU.vue')['default']
     LocationRD: typeof import('./src/views/location/LocationRD.vue')['default']
@@ -23,6 +24,7 @@ declare module '@vue/runtime-core' {
     PortalLocationRD: typeof import('./src/views/location/PortalLocationRD.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
+    SecretaryReportDescription: typeof import('./src/views/shift-tablet-crew/secretary-report/SecretaryReportDescription.vue')['default']
     SecretarySteps: typeof import('./src/views/shift-tablet-crew/secretary-report/SecretarySteps.vue')['default']
     ShiftDefinitionCU: typeof import('./src/views/shift-definition/ShiftDefinitionCU.vue')['default']
     ShiftDefinitionRD: typeof import('./src/views/shift-definition/ShiftDefinitionRD.vue')['default']
@@ -34,6 +36,7 @@ declare module '@vue/runtime-core' {
     ShiftTabletCU: typeof import('./src/views/shift-tablet/ShiftTabletCU.vue')['default']
     ShiftTabletRD: typeof import('./src/views/shift-tablet/ShiftTabletRD.vue')['default']
     Steps: typeof import('primevue/steps')['default']
+    Textarea: typeof import('primevue/textarea')['default']
     Toast: typeof import('primevue/toast')['default']
     Toolbar: typeof import('primevue/toolbar')['default']
   }

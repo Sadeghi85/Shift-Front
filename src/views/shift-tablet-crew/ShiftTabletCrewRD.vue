@@ -197,7 +197,7 @@ const handleSearch = async () => {
 
   await loadShiftTabletCrews(
     new ShiftTabletCrewSearchModel({
-      shifTabletId: +route.params.shiftTabletId,
+      shiftTabletId: +route.params.shiftTabletId,
       pageSize: pageSize.value,
       pageNo: pageNumber.value,
       orderKey: "id",

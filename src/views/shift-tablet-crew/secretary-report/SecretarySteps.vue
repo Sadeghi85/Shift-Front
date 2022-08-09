@@ -25,21 +25,9 @@ const stepItems = ref([
     },
   },
   {
-    label: "Seat",
+    label: "گزارش",
     to: {
-      name: "shift-tablet-secretary-report-crew",
-    },
-  },
-  {
-    label: "Payment",
-    to: {
-      name: "shift-tablet-secretary-report-crew",
-    },
-  },
-  {
-    label: "Confirmation",
-    to: {
-      name: "shift-tablet-secretary-report-crew",
+      name: "shift-tablet-secretary-report-description",
     },
   },
 ]);
@@ -109,11 +97,7 @@ watch(
             <Button
               icon="pi pi-arrow-left"
               class="p-button-rounded p-button-warning"
-              @click.prevent="
-                router.options.history.state.back
-                  ? router.back()
-                  : router.push({ name: 'shift-tablet' })
-              "
+              @click.prevent="router.push({ name: 'shift-tablet' })"
             />
           </template>
         </Toolbar>
@@ -155,34 +139,22 @@ watch(
 
     <div class="grid">
       <div class="col-12 md:col-12">
-        <div class="content-section">
-          <div class="grid">
-            <div class="col-12 md:col-12">
-              <div class="card">
-                <Steps :model="stepItems" :readonly="false"> </Steps>
-              </div>
-            </div>
-          </div>
+        <div class="card">
+          <Steps :model="stepItems" :readonly="false"> </Steps>
         </div>
 
-        <div class="content-section">
-          <div class="grid">
-            <div class="col-12 md:col-12">
-              <div class="card">
-                <router-view
-                  v-slot="{ Component }"
-                  :form-data="formObject"
-                  @prev-page="prevPage($event)"
-                  @next-page="nextPage($event)"
-                  @complete="complete"
-                >
-                  <keep-alive>
-                    <component :is="Component" />
-                  </keep-alive>
-                </router-view>
-              </div>
-            </div>
-          </div>
+        <div class="card">
+          <router-view
+            v-slot="{ Component }"
+            :form-data="formObject"
+            @prev-page="prevPage($event)"
+            @next-page="nextPage($event)"
+            @complete="complete"
+          >
+            <keep-alive>
+              <component :is="Component" />
+            </keep-alive>
+          </router-view>
         </div>
       </div>
     </div>
