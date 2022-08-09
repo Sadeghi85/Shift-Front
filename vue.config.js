@@ -229,6 +229,7 @@ module.exports = defineConfig({
             "@vuelidate/validators": ["required"],
             "primevue/usetoast": ["useToast"],
             "primevue/useconfirm": ["useConfirm"],
+            "@casl/vue": ["useAbility"],
             axios: ["AxiosResponse"],
 
             "@/services/PortalService": ["PortalService"],
@@ -242,6 +243,7 @@ module.exports = defineConfig({
             "@/services/ShiftTabletService": ["ShiftTabletService"],
             "@/services/ShiftTabletCrewService": ["ShiftTabletCrewService"],
             "@/services/AgentService": ["AgentService"],
+            "@/services/ShiftTabletReportService": ["ShiftTabletReportService"],
 
             "@/models/ApiResponseModel": ["IApiResponseModel"],
             "@/models/PortalModels": ["PortalViewModel", "PortalSearchModel"],
@@ -277,6 +279,11 @@ module.exports = defineConfig({
               "ShiftTabletCrewViewModel",
               "ShiftTabletCrewInputModel",
               "ShiftTabletCrewSearchModel",
+            ],
+            "@/models/ShiftTabletReportModels": [
+              "ShiftTabletReportViewModel",
+              "ShiftTabletReportInputModel",
+              "ShiftTabletReportSearchModel",
             ],
           },
         ],
@@ -326,7 +333,7 @@ module.exports = defineConfig({
         onProxyReq: function (proxyReq) {
           proxyReq.setHeader(
             "Cookie",
-            "rtcookie=rui=1krFREj/0UVuMnfxv3FLR5+EuKVYbVwWTWo1TPx4PZixdlaVvdSC4cceLfenXeieq6nGa1F09US7QMgXIbgEJm/cVY8GdscZbKw4lr7dzzdr2RBgnq1iC1sehsggZ+4V"
+            "rtcookie=rui=1krFREj/0UVuMnfxv3FLR5+EuKVYbVwWTWo1TPx4PZixdlaVvdSC4cceLfenXeieq6nGa1F09US7QMgXIbgEJm3io2NgM4QDmU0toJzrIPDnVT2758oCmwUjXn+y8M0T"
           );
         },
       },
