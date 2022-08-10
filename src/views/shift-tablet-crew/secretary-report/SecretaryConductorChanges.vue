@@ -18,8 +18,6 @@ const pageNumber = ref(0);
 const loading = ref(true);
 const totalRecords = ref(0);
 
-const submitButtonIsLoading = ref(false);
-
 const showSuccess = (detail: string) => {
   toast.add({
     severity: "success",
@@ -36,9 +34,20 @@ const shiftTabletConductorChangeService = ref(
 
 const shiftTabletConductorChanges =
   ref<InstanceType<typeof ShiftTabletConductorChangeViewModel>[]>();
-const oldProgramTitle = ref("");
-const newProgramTitle = ref("");
-const description = ref("");
+
+const state = reactive({
+  oldProgramTitle: "",
+  newProgramTitle: "",
+  description: "",
+});
+
+const rules = {
+  oldProgramTitle: { required },
+  newProgramTitle: { required },
+  description: {},
+};
+
+const v$ = useVuelidate(rules, state);
 
 const editingRows = ref<any[]>([]);
 const selectedRows = ref<any[]>([]);
@@ -50,6 +59,14 @@ const onRowEditInit = async (event: any) => {
   const { data, newData, index } = event;
 
   edittedRow.value = data;
+
+  v$.value.oldProgramTitle.$model = data.oldProgramTitle
+    ? data.oldProgramTitle
+    : "";
+  v$.value.newProgramTitle.$model = data.newProgramTitle
+    ? data.newProgramTitle
+    : "";
+  v$.value.description.$model = data.description ? data.description : "";
 };
 
 const onRowEditSave = async (event: any) => {
@@ -57,7 +74,7 @@ const onRowEditSave = async (event: any) => {
 
   console.log(newData);
 
-  if (!(oldProgramTitle.value && newProgramTitle.value)) {
+  if (v$.value.$invalid) {
     editingRows.value = [...editingRows.value, event.data];
     return;
   }
@@ -71,9 +88,9 @@ const onRowEditSave = async (event: any) => {
           shiftTabletId: +route.params.shiftTabletId,
           roleTypeId: RoleTypes.Secretary,
 
-          oldProgramTitle: oldProgramTitle.value,
-          newProgramTitle: newProgramTitle.value,
-          description: description.value,
+          oldProgramTitle: v$.value.oldProgramTitle.$model,
+          newProgramTitle: v$.value.newProgramTitle.$model,
+          description: v$.value.description.$model,
         })
       )
       .then((response) => {
@@ -97,9 +114,9 @@ const onRowEditSave = async (event: any) => {
           shiftTabletId: data.shiftTabletId,
           roleTypeId: data.roleTypeId,
 
-          oldProgramTitle: oldProgramTitle.value,
-          newProgramTitle: newProgramTitle.value,
-          description: description.value,
+          oldProgramTitle: v$.value.oldProgramTitle.$model,
+          newProgramTitle: v$.value.newProgramTitle.$model,
+          description: v$.value.description.$model,
         })
       )
       .then((response) => {
@@ -124,6 +141,10 @@ function openNew() {
     return;
   }
 
+  v$.value.oldProgramTitle.$model = "";
+  v$.value.newProgramTitle.$model = "";
+  v$.value.description.$model = "";
+
   shiftTabletConductorChanges.value?.unshift(
     new ShiftTabletConductorChangeViewModel({
       id: 0,
@@ -132,9 +153,14 @@ function openNew() {
       description: "",
     })
   );
+
+  editingRows.value = [
+    ...editingRows.value,
+    shiftTabletConductorChanges.value![0],
+  ];
 }
 
-async function confirmDeleteSelected() {
+function confirmDeleteSelected() {
   confirm.require({
     message: t("confirm.message.delete"),
     header: t("confirm.header.confirmation"),
@@ -151,6 +177,7 @@ async function confirmDeleteSelected() {
 
       if (selectedIds.length == 0) {
         handleSearch();
+        selectedRows.value = [];
         return;
       } else {
         await shiftTabletConductorChangeService.value
@@ -160,10 +187,12 @@ async function confirmDeleteSelected() {
             if (!response.data.success) {
               apiErrorStore.setApiErrorMessage(response.data.message);
               handleSearch();
+              selectedRows.value = [];
               return;
             }
 
             handleSearch();
+            selectedRows.value = [];
             showSuccess(t("toast.success.delete"));
           })
           .catch((error) => {
@@ -316,7 +345,12 @@ watch(
               :header="t('grid.header.oldProgramTitle')"
             >
               <template #editor>
-                <InputText v-model="oldProgramTitle" />
+                <InputText
+                  v-model="v$.oldProgramTitle.$model"
+                  :class="{
+                    'p-invalid': v$.oldProgramTitle.$invalid,
+                  }"
+                />
               </template>
             </Column>
             <Column
@@ -324,13 +358,23 @@ watch(
               :header="t('grid.header.newProgramTitle')"
             >
               <template #editor>
-                <InputText v-model="newProgramTitle" />
+                <InputText
+                  v-model="v$.newProgramTitle.$model"
+                  :class="{
+                    'p-invalid': v$.newProgramTitle.$invalid,
+                  }"
+                />
               </template>
             </Column>
 
             <Column field="description" :header="t('grid.header.description')">
               <template #editor>
-                <InputText v-model="description" />
+                <InputText
+                  v-model="v$.description.$model"
+                  :class="{
+                    'p-invalid': v$.description.$invalid,
+                  }"
+                />
               </template>
             </Column>
 
