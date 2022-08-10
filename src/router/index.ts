@@ -59,7 +59,7 @@ const routes: Array<RouteRecordRaw> = [
       ),
   },
   {
-    path: "/shift-tablet-secretary-report/:shiftTabletId",
+    path: "/secretary-report/:shiftTabletId",
     component: () =>
       import(
         /* webpackChunkName: "shift-tablet-secretary-report" */ "../views/shift-tablet-crew/secretary-report/SecretarySteps.vue"
@@ -70,15 +70,23 @@ const routes: Array<RouteRecordRaw> = [
         name: "shift-tablet-secretary-report",
         component: () =>
           import(
-            /* webpackChunkName: "shift-tablet-secretary-report-crew" */ "../views/shift-tablet-crew/secretary-report/ShiftTabletCrewSecretary.vue"
+            /* webpackChunkName: "secretary-crew" */ "../views/shift-tablet-crew/secretary-report/SecretaryCrew.vue"
           ),
       },
       {
-        path: "/shift-tablet-secretary-report-description/:shiftTabletId",
+        path: "/secretary-report-description/:shiftTabletId",
         name: "shift-tablet-secretary-report-description",
         component: () =>
           import(
-            /* webpackChunkName: "shift-tablet-secretary-report-description" */ "../views/shift-tablet-crew/secretary-report/SecretaryReportDescription.vue"
+            /* webpackChunkName: "secretary-report-description" */ "../views/shift-tablet-crew/secretary-report/SecretaryReportDescription.vue"
+          ),
+      },
+      {
+        path: "/secretary-conductor-changes/:shiftTabletId",
+        name: "shift-tablet-secretary-conductor-changes",
+        component: () =>
+          import(
+            /* webpackChunkName: "secretary-conductor-changes" */ "../views/shift-tablet-crew/secretary-report/SecretaryConductorChanges.vue"
           ),
       },
     ],

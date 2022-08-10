@@ -244,6 +244,9 @@ module.exports = defineConfig({
             "@/services/ShiftTabletCrewService": ["ShiftTabletCrewService"],
             "@/services/AgentService": ["AgentService"],
             "@/services/ShiftTabletReportService": ["ShiftTabletReportService"],
+            "@/services/ShiftTabletConductorChangeService": [
+              "ShiftTabletConductorChangeService",
+            ],
 
             "@/models/ApiResponseModel": ["IApiResponseModel"],
             "@/models/PortalModels": ["PortalViewModel", "PortalSearchModel"],
@@ -284,6 +287,11 @@ module.exports = defineConfig({
               "ShiftTabletReportViewModel",
               "ShiftTabletReportInputModel",
               "ShiftTabletReportSearchModel",
+            ],
+            "@/models/ShiftTabletConductorChangeModels": [
+              "ShiftTabletConductorChangeViewModel",
+              "ShiftTabletConductorChangeInputModel",
+              "ShiftTabletConductorChangeSearchModel",
             ],
           },
         ],
@@ -333,7 +341,7 @@ module.exports = defineConfig({
         onProxyReq: function (proxyReq) {
           proxyReq.setHeader(
             "Cookie",
-            "rtcookie=rui=1krFREj/0UVuMnfxv3FLR5+EuKVYbVwWTWo1TPx4PZixdlaVvdSC4cceLfenXeieq6nGa1F09US7QMgXIbgEJm3io2NgM4QDmU0toJzrIPDnVT2758oCmwUjXn+y8M0T"
+            "rtcookie=rui=1krFREj/0UVuMnfxv3FLR5+EuKVYbVwWTWo1TPx4PZixdlaVvdSC4cceLfenXeieq6nGa1F09US7QMgXIbgEJoPv1UlvJH1gRuniLrNouOPJ+ItqZGrTT1bxP0hFu0tQ"
           );
         },
       },

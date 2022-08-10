@@ -29,7 +29,6 @@ interface IShiftTabletReportSearchModel {
 
   shiftTabletId?: number;
   roleTypeId?: number;
-  reportDescription?: string;
   isDeleted?: boolean | null;
 }
 export class ShiftTabletReportSearchModel

@@ -11,6 +11,8 @@
   "button.search": "جستجو",
   "button.cancel": "لغو",
   "button.save": "ذخیره",
+  "button.new": "جدید",
+  "button.delete": "حذف",
   "button.shiftTablet.report": "گزارشات لوح شیفت",
 
   "_": "entities",
@@ -71,6 +73,9 @@
   "grid.header.entranceTime": "ساعت ورود",
   "grid.header.exitTime": "ساعت خروج",
   "grid.header.crewReplacement": "جابجایی",
+  "grid.header.description": "توضیحات",
+  "grid.header.oldProgramTitle": "برنامه قبلی",
+  "grid.header.newProgramTitle": "برنامه جایگزین",
 
   "_": "routes",
   "route.locations": "تعریف لوکیشن",

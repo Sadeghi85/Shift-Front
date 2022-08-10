@@ -30,6 +30,12 @@ const stepItems = ref([
       name: "shift-tablet-secretary-report-description",
     },
   },
+  {
+    label: "تغییرات کنداکتور",
+    to: {
+      name: "shift-tablet-secretary-conductor-changes",
+    },
+  },
 ]);
 
 const formObject = ref<{ [key: string]: any }>({});
