@@ -43,7 +43,6 @@ const rowClass = (rowData: any) => {
   }
 };
 
-const edittedRow = ref<InstanceType<typeof ShiftTabletCrewViewModel>>();
 const crewReplacement = ref<InstanceType<typeof AgentViewModel>>();
 const crewReplacements = ref<InstanceType<typeof AgentViewModel>[]>();
 const entranceTime = ref("");
@@ -52,7 +51,7 @@ const exitTime = ref("");
 const onRowEditInit = async (event: any) => {
   const { data, newData, index } = event;
 
-  edittedRow.value = data;
+  editingRows.value = [data];
 
   entranceTime.value = data.entranceTime
     ? data.entranceTime
@@ -68,7 +67,7 @@ const onRowEditInit = async (event: any) => {
           pageSize: generalStore.dropdownItemsCount,
           orderKey: "id",
           desc: true,
-          jobId: edittedRow.value?.jobId,
+          jobId: editingRows.value[0]?.jobId,
         })
       )
     ).data;
@@ -87,7 +86,7 @@ const onRowEditSave = async (event: any) => {
   console.log(newData);
 
   if (!(entranceTime.value && exitTime.value)) {
-    editingRows.value = [...editingRows.value, event.data];
+    editingRows.value = [event.data];
     return;
   }
 
@@ -127,7 +126,7 @@ const onDropdownCrewReplacementFilter = async (event: any) => {
           orderKey: "id",
           desc: true,
           name: event.value,
-          jobId: edittedRow.value?.jobId,
+          jobId: editingRows.value[0]?.jobId,
         })
       )
     ).data;

@@ -89,6 +89,14 @@ const routes: Array<RouteRecordRaw> = [
             /* webpackChunkName: "secretary-conductor-changes" */ "../views/shift-tablet-crew/secretary-report/SecretaryConductorChanges.vue"
           ),
       },
+      {
+        path: "/secretary-review-problems/:shiftTabletId",
+        name: "shift-tablet-secretary-review-problems",
+        component: () =>
+          import(
+            /* webpackChunkName: "secretary-review-problems" */ "../views/shift-tablet-crew/secretary-report/SecretaryReviewProblems.vue"
+          ),
+      },
     ],
   },
 ];

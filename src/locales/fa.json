@@ -76,6 +76,11 @@
   "grid.header.description": "توضیحات",
   "grid.header.oldProgramTitle": "برنامه قبلی",
   "grid.header.newProgramTitle": "برنامه جایگزین",
+  "grid.header.programTitle": "عنوان برنامه",
+  "grid.header.clacketNo": "کلاکت",
+  "grid.header.reviewerCode": "کد بازبین",
+  "grid.header.problemDescription": "مورد اشکال",
+  "grid.header.fileNumber": "شماره فایل",
 
   "_": "routes",
   "route.locations": "تعریف لوکیشن",

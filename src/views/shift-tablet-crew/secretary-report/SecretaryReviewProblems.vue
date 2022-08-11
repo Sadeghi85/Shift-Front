@@ -28,22 +28,28 @@ const showSuccess = (detail: string) => {
   });
 };
 
-const shiftTabletConductorChangeService = ref(
-  new ShiftTabletConductorChangeService()
+const shiftTabletReviewProblemService = ref(
+  new ShiftTabletReviewProblemService()
 );
 
-const shiftTabletConductorChanges =
-  ref<InstanceType<typeof ShiftTabletConductorChangeViewModel>[]>();
+const shiftTabletReviewProblems =
+  ref<InstanceType<typeof ShiftTabletReviewProblemViewModel>[]>();
 
 const state = reactive({
-  oldProgramTitle: "",
-  newProgramTitle: "",
+  fileNumber: "",
+  programTitle: "",
+  clacketNo: 0,
+  problemDescription: "",
+  reviewerCode: "",
   description: "",
 });
 
 const rules = {
-  oldProgramTitle: { required },
-  newProgramTitle: { required },
+  fileNumber: { required },
+  programTitle: { required },
+  clacketNo: { required, numeric },
+  problemDescription: { required },
+  reviewerCode: { required },
   description: {},
 };
 
@@ -57,8 +63,11 @@ const onRowEditInit = async (event: any) => {
 
   editingRows.value = [data];
 
-  v$.value.oldProgramTitle.$model = data.oldProgramTitle ?? "";
-  v$.value.newProgramTitle.$model = data.newProgramTitle ?? "";
+  v$.value.fileNumber.$model = data.fileNumber ?? "";
+  v$.value.programTitle.$model = data.programTitle ?? "";
+  v$.value.problemDescription.$model = data.problemDescription ?? "";
+  v$.value.clacketNo.$model = data.clacketNo ?? 0;
+  v$.value.reviewerCode.$model = data.reviewerCode ?? "";
   v$.value.description.$model = data.description ?? "";
 };
 
@@ -72,20 +81,23 @@ const onRowEditSave = async (event: any) => {
     return;
   }
 
-  const shiftTabletConductorChange = new ShiftTabletConductorChangeInputModel({
+  const shiftTabletReviewProblem = new ShiftTabletReviewProblemInputModel({
     id: data.id,
 
     shiftTabletId: +route.params.shiftTabletId,
     roleTypeId: RoleTypes.Secretary,
 
-    oldProgramTitle: v$.value.oldProgramTitle.$model,
-    newProgramTitle: v$.value.newProgramTitle.$model,
+    fileNumber: v$.value.fileNumber.$model,
+    clacketNo: v$.value.clacketNo.$model,
+    programTitle: v$.value.programTitle.$model,
+    problemDescription: v$.value.problemDescription.$model,
+    reviewerCode: v$.value.reviewerCode.$model,
     description: v$.value.description.$model,
   });
 
   if (data.id == 0) {
-    await shiftTabletConductorChangeService.value
-      .create(shiftTabletConductorChange)
+    await shiftTabletReviewProblemService.value
+      .create(shiftTabletReviewProblem)
       .then((response) => {
         if (response.data.success == false) {
           apiErrorStore.setApiErrorMessage(response.data.message);
@@ -99,8 +111,8 @@ const onRowEditSave = async (event: any) => {
         console.log(error.message);
       });
   } else {
-    await shiftTabletConductorChangeService.value
-      .update(shiftTabletConductorChange)
+    await shiftTabletReviewProblemService.value
+      .update(shiftTabletReviewProblem)
       .then((response) => {
         if (response.data.success == false) {
           apiErrorStore.setApiErrorMessage(response.data.message);
@@ -118,14 +130,10 @@ const onRowEditSave = async (event: any) => {
 
 function openNew() {
   if (
-    shiftTabletConductorChanges.value!.filter((item) => item.id == 0).length > 0
+    shiftTabletReviewProblems.value!.filter((item) => item.id == 0).length > 0
   ) {
     return;
   }
-
-  // v$.value.oldProgramTitle.$model = "";
-  // v$.value.newProgramTitle.$model = "";
-  // v$.value.description.$model = "";
 
   // reseting the state
   Object.entries(state).forEach(([key, value]) => {
@@ -135,13 +143,13 @@ function openNew() {
     fieldValue.$model = "";
   });
 
-  shiftTabletConductorChanges.value?.unshift(
-    new ShiftTabletConductorChangeViewModel({
+  shiftTabletReviewProblems.value?.unshift(
+    new ShiftTabletReviewProblemViewModel({
       id: 0,
     })
   );
 
-  editingRows.value = [shiftTabletConductorChanges.value![0]];
+  editingRows.value = [shiftTabletReviewProblems.value![0]];
 }
 
 function confirmDeleteSelected() {
@@ -164,7 +172,7 @@ function confirmDeleteSelected() {
         selectedRows.value = [];
         return;
       } else {
-        shiftTabletConductorChangeService.value
+        shiftTabletReviewProblemService.value
           .deleteMultiple(selectedIds)
           .then((response) => {
             //console.log(response);
@@ -190,14 +198,14 @@ function confirmDeleteSelected() {
   });
 }
 
-async function loadShiftTabletConductorChanges(
-  searchParams?: InstanceType<typeof ShiftTabletConductorChangeSearchModel>
+async function loadShiftTabletReviewProblems(
+  searchParams?: InstanceType<typeof ShiftTabletReviewProblemSearchModel>
 ) {
   try {
     loading.value = true;
 
     if (!searchParams) {
-      searchParams = new ShiftTabletConductorChangeSearchModel({
+      searchParams = new ShiftTabletReviewProblemSearchModel({
         pageSize: 2147483647, // Int32.MaxValue
         pageNo: 0,
         orderKey: "id",
@@ -208,11 +216,11 @@ async function loadShiftTabletConductorChanges(
       });
     }
 
-    const shiftTabletConductorChangeResponse =
-      await shiftTabletConductorChangeService.value.getAll(searchParams);
+    const shiftTabletReviewProblemResponse =
+      await shiftTabletReviewProblemService.value.getAll(searchParams);
 
-    shiftTabletConductorChanges.value = shiftTabletConductorChangeResponse.data;
-    totalRecords.value = shiftTabletConductorChangeResponse.totalCount;
+    shiftTabletReviewProblems.value = shiftTabletReviewProblemResponse.data;
+    totalRecords.value = shiftTabletReviewProblemResponse.totalCount;
 
     loading.value = false;
   } catch (error: any) {
@@ -227,8 +235,8 @@ async function loadShiftTabletConductorChanges(
 }
 
 const handleSearch = async () => {
-  await loadShiftTabletConductorChanges(
-    new ShiftTabletConductorChangeSearchModel({
+  await loadShiftTabletReviewProblems(
+    new ShiftTabletReviewProblemSearchModel({
       shiftTabletId: +route.params.shiftTabletId,
       pageSize: 2147483647, // Int32.MaxValue
       pageNo: 0,
@@ -242,7 +250,7 @@ const handleSearch = async () => {
 
 const loadEssentials = async () => {
   try {
-    // shiftTabletConductorChanges
+    // shiftTabletReviewProblems
     await handleSearch();
   } catch (error: any) {
     if (typeof error.message === "object") {
@@ -294,7 +302,7 @@ watch(
           <DataTable
             v-model:editing-rows="editingRows"
             v-model:selection="selectedRows"
-            :value="shiftTabletConductorChanges"
+            :value="shiftTabletReviewProblems"
             data-key="id"
             edit-mode="row"
             :loading="loading"
@@ -324,28 +332,66 @@ watch(
               </template></Column
             >
 
-            <Column
-              field="oldProgramTitle"
-              :header="t('grid.header.oldProgramTitle')"
-            >
+            <Column field="fileNumber" :header="t('grid.header.fileNumber')">
               <template #editor>
                 <InputText
-                  v-model="v$.oldProgramTitle.$model"
+                  v-model="v$.fileNumber.$model"
                   :class="{
-                    'p-invalid': v$.oldProgramTitle.$invalid,
+                    'p-invalid': v$.fileNumber.$invalid,
                   }"
                 />
               </template>
             </Column>
             <Column
-              field="newProgramTitle"
-              :header="t('grid.header.newProgramTitle')"
+              field="programTitle"
+              :header="t('grid.header.programTitle')"
             >
               <template #editor>
                 <InputText
-                  v-model="v$.newProgramTitle.$model"
+                  v-model="v$.programTitle.$model"
                   :class="{
-                    'p-invalid': v$.newProgramTitle.$invalid,
+                    'p-invalid': v$.programTitle.$invalid,
+                  }"
+                />
+              </template>
+            </Column>
+
+            <Column field="clacketNo" :header="t('grid.header.clacketNo')">
+              <template #editor>
+                <InputNumber
+                  v-model="v$.clacketNo.$model"
+                  :class="{
+                    'p-invalid': v$.clacketNo.$invalid,
+                  }"
+                />
+              </template>
+            </Column>
+            <Column
+              field="problemDescription"
+              :header="t('grid.header.problemDescription')"
+            >
+              <template #body="slotProps">
+                <pre>{{ slotProps.data.problemDescription }}</pre>
+              </template>
+              <template #editor>
+                <Textarea
+                  v-model="v$.problemDescription.$model"
+                  :class="{
+                    'p-invalid': v$.problemDescription.$invalid,
+                  }"
+                  :auto-resize="true"
+                />
+              </template>
+            </Column>
+            <Column
+              field="reviewerCode"
+              :header="t('grid.header.reviewerCode')"
+            >
+              <template #editor>
+                <InputText
+                  v-model="v$.reviewerCode.$model"
+                  :class="{
+                    'p-invalid': v$.reviewerCode.$invalid,
                   }"
                 />
               </template>
