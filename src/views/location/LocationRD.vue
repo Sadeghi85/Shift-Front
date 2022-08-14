@@ -215,11 +215,6 @@ const loadEssentials = async () => {
 
 // lifecycle hooks
 onMounted(async () => {
-  if (cannot("locations.full", "all")) {
-    router.push({ name: "home" });
-    return;
-  }
-
   await loadEssentials();
 });
 </script>

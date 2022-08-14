@@ -24,14 +24,10 @@ const cuShiftTabletCrewId = ref(0);
 const shiftTabletCrewIsReplacement = ref(false);
 
 const ShiftTabletCrewCreateView = defineAsyncComponent(
-  () =>
-    import("@/views/shift-tablet-crew/coordinator/ShiftTabletCrewCreate.vue")
+  () => import("./ShiftTabletCrewCreate.vue")
 );
 const ShiftTabletCrewAgentReplacementView = defineAsyncComponent(
-  () =>
-    import(
-      "@/views/shift-tablet-crew/coordinator/ShiftTabletCrewAgentReplacement.vue"
-    )
+  () => import("./ShiftTabletCrewAgentReplacement.vue")
 );
 
 const cuComponent = shallowRef();

@@ -237,11 +237,6 @@ const loadEssentials = async () => {
 
 // lifecycle hooks
 onMounted(async () => {
-  if (cannot("shift-definition.full", "all")) {
-    router.push({ name: "home" });
-    return;
-  }
-
   await loadEssentials();
 });
 </script>

@@ -337,11 +337,6 @@ const loadEssentials = async () => {
 
 // lifecycle hooks
 onMounted(async () => {
-  if (cannot("shift-tablet.full", "all")) {
-    router.push({ name: "home" });
-    return;
-  }
-
   await loadEssentials();
 });
 </script>
@@ -524,10 +519,35 @@ onMounted(async () => {
                 header-style="width: 12em;"
                 header-class="align-center"
                 body-style="text-align: center;"
+                :hidden="cannot('shift-tablet-pakhsh-overseer-report', 'all')"
               >
                 <template #header>
                   <span>{{
-                    t("grid.button.shift-tablet-crew-secretary")
+                    t("grid.button.shift-tablet-pakhsh-overseer-report")
+                  }}</span>
+                </template>
+                <template #body="slotProps">
+                  <Button
+                    icon="pi pi-list"
+                    class="p-button-rounded p-button-secondary"
+                    @click.prevent="
+                      router.push({
+                        name: 'shift-tablet-pakhsh-overseer-report',
+                        params: { shiftTabletId: slotProps.data.id },
+                      })
+                    "
+                  ></Button>
+                </template>
+              </Column>
+              <Column
+                header-style="width: 12em;"
+                header-class="align-center"
+                body-style="text-align: center;"
+                :hidden="cannot('shift-tablet-secretary-report', 'all')"
+              >
+                <template #header>
+                  <span>{{
+                    t("grid.button.shift-tablet-secretary-report")
                   }}</span>
                 </template>
                 <template #body="slotProps">
@@ -547,6 +567,7 @@ onMounted(async () => {
                 header-style="width: 12em;"
                 header-class="align-center"
                 body-style="text-align: center;"
+                :hidden="cannot('shift-tablet-crew', 'all')"
               >
                 <template #header>
                   <span>{{
