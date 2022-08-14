@@ -130,8 +130,8 @@ const handleSubmit = (isFormValid: boolean) => {
             new ShiftTabletCrewInputModel({
               id: props.shiftTabletCrewId,
               agentId: v$.value.agent.$model?.id,
-              //shiftTabletId: props.shiftTabletId,
-              //jobId: v$.value.job.$model?.jobId,
+              shiftTabletId: props.shiftTabletId,
+              jobId: v$.value.job.$model?.jobId,
             })
           )
           .then((response) => {
