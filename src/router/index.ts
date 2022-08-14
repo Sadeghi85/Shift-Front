@@ -126,6 +126,59 @@ const routes: Array<RouteRecordRaw> = [
       },
     ],
   },
+  {
+    path: "/pakhsh-overseer-report/:shiftTabletId",
+    component: () =>
+      import(
+        /* webpackChunkName: "shift-tablet-pakhsh-overseer-report" */ "../views/shift-tablet-pakhsh-overseer-report/PakhshOverseerSteps.vue"
+      ),
+    children: [
+      {
+        path: "",
+        name: "shift-tablet-pakhsh-overseer-report",
+        component: () =>
+          import(
+            /* webpackChunkName: "pakhsh-overseer-crew" */ "../views/shift-tablet-pakhsh-overseer-report/PakhshOverseerCrew.vue"
+          ),
+        meta: {
+          requiresAuth: true,
+        },
+      },
+      {
+        path: "/pakhsh-overseer-report-description/:shiftTabletId",
+        name: "shift-tablet-pakhsh-overseer-report-description",
+        component: () =>
+          import(
+            /* webpackChunkName: "pakhsh-overseer-report-description" */ "../views/shift-tablet-pakhsh-overseer-report/PakhshOverseerReportDescription.vue"
+          ),
+        meta: {
+          requiresAuth: true,
+        },
+      },
+      {
+        path: "/pakhsh-overseer-conductor-changes/:shiftTabletId",
+        name: "shift-tablet-pakhsh-overseer-conductor-changes",
+        component: () =>
+          import(
+            /* webpackChunkName: "pakhsh-overseer-conductor-changes" */ "../views/shift-tablet-pakhsh-overseer-report/PakhshOverseerConductorChanges.vue"
+          ),
+        meta: {
+          requiresAuth: true,
+        },
+      },
+      {
+        path: "/pakhsh-overseer-review-problems/:shiftTabletId",
+        name: "shift-tablet-pakhsh-overseer-review-problems",
+        component: () =>
+          import(
+            /* webpackChunkName: "pakhsh-overseer-review-problems" */ "../views/shift-tablet-pakhsh-overseer-report/PakhshOverseerReviewProblems.vue"
+          ),
+        meta: {
+          requiresAuth: true,
+        },
+      },
+    ],
+  },
 ];
 
 const router = createRouter({

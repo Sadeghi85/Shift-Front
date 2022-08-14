@@ -102,7 +102,7 @@ const onRowEditSave = async (event: any) => {
           : data.agentId,
         shiftTabletId: data.shiftTabletId,
         jobId: data.jobId,
-        roleTypeId: RoleTypes.Secretary,
+        roleTypeId: RoleTypes.PakhshOverseer,
       })
     )
     .then((response) => {
@@ -196,7 +196,7 @@ const handleSearch = async () => {
 
       agentId: agent.value?.id ?? 0,
       jobId: job.value?.id ?? 0,
-      roleTypeId: RoleTypes.Secretary,
+      roleTypeId: RoleTypes.PakhshOverseer,
     })
   );
 

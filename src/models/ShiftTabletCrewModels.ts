@@ -2,6 +2,7 @@ interface IShiftTabletCrewInputModel {
   id?: number;
   agentId?: number;
   jobId?: number;
+  roleTypeId?: number;
   shiftTabletId?: number;
   entranceTime?: string | null;
   exitTime?: string | null;
@@ -10,6 +11,7 @@ export class ShiftTabletCrewInputModel implements IShiftTabletCrewInputModel {
   id: number;
   agentId: number;
   jobId: number;
+  roleTypeId: number;
   shiftTabletId: number;
   entranceTime: string | null;
   exitTime: string | null;
@@ -18,6 +20,7 @@ export class ShiftTabletCrewInputModel implements IShiftTabletCrewInputModel {
     this.id = params.id || 0;
     this.agentId = params.agentId || 0;
     this.jobId = params.jobId || 0;
+    this.roleTypeId = params.roleTypeId || 0;
     this.shiftTabletId = params.shiftTabletId || 0;
     this.entranceTime = params.entranceTime || null;
     this.exitTime = params.exitTime || null;
@@ -37,9 +40,8 @@ interface IShiftTabletCrewSearchModel {
   toDate?: string | null;
   agentId?: number;
   jobId?: number;
+  roleTypeId?: number;
   shiftTabletId?: number;
-  entranceTime?: string | null;
-  exitTime?: string | null;
   isReplaced?: boolean | null;
   isDeleted?: boolean | null;
 }
@@ -56,9 +58,8 @@ export class ShiftTabletCrewSearchModel implements IShiftTabletCrewSearchModel {
   toDate: string | null;
   agentId: number;
   jobId: number;
+  roleTypeId: number;
   shiftTabletId: number;
-  entranceTime: string | null;
-  exitTime: string | null;
   isReplaced: boolean | null;
   isDeleted: boolean | null;
 
@@ -75,9 +76,8 @@ export class ShiftTabletCrewSearchModel implements IShiftTabletCrewSearchModel {
     this.toDate = params.toDate || null;
     this.agentId = params.agentId || 0;
     this.jobId = params.jobId || 0;
+    this.roleTypeId = params.roleTypeId || 0;
     this.shiftTabletId = params.shiftTabletId || 0;
-    this.entranceTime = params.entranceTime || null;
-    this.exitTime = params.exitTime || null;
     this.isReplaced = params.isReplaced || null;
     this.isDeleted = params.isDeleted || false;
   }

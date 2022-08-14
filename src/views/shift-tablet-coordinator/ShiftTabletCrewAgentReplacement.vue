@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import RoleTypes from "@/enums/RoleType";
 import useApiErrorStore from "@/stores/api-error";
 import { useGeneralStore } from "@/stores/general";
 
@@ -103,6 +104,7 @@ const handleSubmit = (isFormValid: boolean) => {
               agentId: v$.value.agent.$model?.id,
               shiftTabletId: props.shiftTabletId,
               jobId: v$.value.job.$model?.jobId,
+              roleTypeId: RoleTypes.Coordinator,
             })
           )
           .then((response) => {
@@ -126,12 +128,13 @@ const handleSubmit = (isFormValid: boolean) => {
           });
       } else {
         shiftTabletCrewService.value
-          .hamahangiUpdate(
+          .coordinatorUpdate(
             new ShiftTabletCrewInputModel({
               id: props.shiftTabletCrewId,
               agentId: v$.value.agent.$model?.id,
               shiftTabletId: props.shiftTabletId,
               jobId: v$.value.job.$model?.jobId,
+              roleTypeId: RoleTypes.Coordinator,
             })
           )
           .then((response) => {
