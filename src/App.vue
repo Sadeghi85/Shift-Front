@@ -8,6 +8,10 @@ const toast = useToast();
 const apiErrorStore = useApiErrorStore();
 const { apiErrorMessage } = storeToRefs(apiErrorStore);
 
+const topHeight = computed(() => {
+  return process.env.NODE_ENV === "development" ? "70px" : "0px";
+});
+
 watch(apiErrorMessage, (newValue) => {
   if (newValue) {
     showError(newValue);
@@ -27,6 +31,8 @@ const showError = (detail: string) => {
 </script>
 
 <template>
+  <div id="top"></div>
+
   <nav>
     <router-link
       :to="{
@@ -71,4 +77,8 @@ const showError = (detail: string) => {
   </Toast>
 </template>
 
-<style></style>
+<style lang="scss">
+#top {
+  height: v-bind("topHeight");
+}
+</style>

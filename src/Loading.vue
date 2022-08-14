@@ -21,5 +21,6 @@ onUnmounted(() => {
   height: 100%;
   background-color: rgba(0, 0, 0, 0.5);
   z-index: 9999;
+  min-height: 600px;
 }
 </style>

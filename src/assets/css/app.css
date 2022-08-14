@@ -75,8 +75,9 @@ body {
   direction: rtl;
 }
 
-/* #app {
-} */
+#app {
+  margin-top: -70px;
+}
 
 nav {
   padding: 1rem;
@@ -144,6 +145,10 @@ nav a.router-link-exact-active {
 /*
 Persian Datepicker
 */
+.vpd-container {
+  z-index: 1000005;
+}
+
 .vpd-main {
   width: 100%;
 }
@@ -174,3 +179,8 @@ Persian Datepicker
   font-weight: bold;
 }
 /* paginator */
+
+pre {
+  white-space: pre-wrap;
+  word-wrap: break-word;
+}
