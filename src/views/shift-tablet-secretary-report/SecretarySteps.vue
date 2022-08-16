@@ -13,9 +13,12 @@ const confirm = useConfirm();
 const router = useRouter();
 const route = useRoute();
 
+const blockedDocument = ref(false);
+
 const shiftTablet = ref<InstanceType<typeof ShiftTabletViewModel>>();
 
 const shiftTabletService = ref(new ShiftTabletService());
+const reportService = ref(new ReportService());
 
 const stepItems = ref([
   {
@@ -68,6 +71,31 @@ const complete = () => {
   //   });
 };
 
+const getSecretaryReport = async () => {
+  blockedDocument.value = true;
+
+  reportService.value
+    .getSecretaryReport(route.params.shiftTabletId)
+    .then((response) => {
+      blockedDocument.value = false;
+      //console.log(response);
+
+      const blob = new Blob([response.data], {
+        type: "application/pdf",
+      });
+      const link = document.createElement("a");
+      link.href = URL.createObjectURL(blob);
+      link.setAttribute("download", "SecretaryReport.pdf");
+      link.click();
+      URL.revokeObjectURL(link.href);
+    })
+    .catch((error) => {
+      blockedDocument.value = false;
+
+      console.log(error);
+    });
+};
+
 const loadEssentials = async () => {
   try {
     // shiftTablet
@@ -106,6 +134,12 @@ watch(
       <div class="col-12 md:col-12">
         <Toolbar>
           <template #end>
+            <Button
+              icon="pi pi-file-pdf"
+              class="p-button-rounded p-button-success ml-2"
+              @click.prevent="getSecretaryReport"
+            />
+
             <Button
               icon="pi pi-arrow-left"
               class="p-button-rounded p-button-warning"
@@ -170,6 +204,8 @@ watch(
         </div>
       </div>
     </div>
+
+    <BlockUI :blocked="blockedDocument" :fullScreen="true"></BlockUI>
   </div>
 </template>
 

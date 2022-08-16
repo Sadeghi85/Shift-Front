@@ -21,6 +21,7 @@ declare global {
   const PortalSearchModel: typeof import('@/models/PortalModels')['PortalSearchModel']
   const PortalService: typeof import('@/services/PortalService')['PortalService']
   const PortalViewModel: typeof import('@/models/PortalModels')['PortalViewModel']
+  const ReportService: typeof import('@/services/ReportService')['ReportService']
   const ShiftDefinitionInputModel: typeof import('@/models/ShiftDefinitionModels')['ShiftDefinitionInputModel']
   const ShiftDefinitionSearchModel: typeof import('@/models/ShiftDefinitionModels')['ShiftDefinitionSearchModel']
   const ShiftDefinitionService: typeof import('@/services/ShiftDefinitionService')['ShiftDefinitionService']

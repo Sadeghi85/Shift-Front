@@ -250,6 +250,7 @@ module.exports = defineConfig({
             "@/services/ShiftTabletReviewProblemService": [
               "ShiftTabletReviewProblemService",
             ],
+            "@/services/ReportService": ["ReportService"],
 
             "@/models/ApiResponseModel": ["IApiResponseModel"],
             "@/models/PortalModels": ["PortalViewModel", "PortalSearchModel"],
@@ -349,7 +350,7 @@ module.exports = defineConfig({
         onProxyReq: function (proxyReq) {
           proxyReq.setHeader(
             "Cookie",
-            "rtcookie=rui=1krFREj/0UVuMnfxv3FLR5+EuKVYbVwWTWo1TPx4PZixdlaVvdSC4cceLfenXeieq6nGa1F09US7QMgXIbgEJvzTJEZyAWxnINm0S2fB1cYYwm1nj1vyHcxIMScKV6BS"
+            "rtcookie=rui=1krFREj/0UVuMnfxv3FLR5+EuKVYbVwWTWo1TPx4PZixdlaVvdSC4cceLfenXeieq6nGa1F09US7QMgXIbgEJqFXb1a2YyHeFWuJAAdrgy2LlGqMmO6lnuqsc2F7ywKC"
           );
         },
       },

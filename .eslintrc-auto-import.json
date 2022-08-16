@@ -20,6 +20,7 @@
     "PortalSearchModel": true,
     "PortalService": true,
     "PortalViewModel": true,
+    "ReportService": true,
     "ShiftDefinitionInputModel": true,
     "ShiftDefinitionSearchModel": true,
     "ShiftDefinitionService": true,
