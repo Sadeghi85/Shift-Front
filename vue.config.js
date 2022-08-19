@@ -251,6 +251,8 @@ module.exports = defineConfig({
               "ShiftTabletReviewProblemService",
             ],
             "@/services/ReportService": ["ReportService"],
+            "@/services/MonetarySettingService": ["MonetarySettingService"],
+            "@/services/CooperationTypeService": ["CooperationTypeService"],
 
             "@/models/ApiResponseModel": ["IApiResponseModel"],
             "@/models/PortalModels": ["PortalViewModel", "PortalSearchModel"],
@@ -302,6 +304,16 @@ module.exports = defineConfig({
               "ShiftTabletReviewProblemInputModel",
               "ShiftTabletReviewProblemSearchModel",
             ],
+            "@/models/MonetarySettingModels": [
+              "MonetarySettingViewModel",
+              "MonetarySettingInputModel",
+              "MonetarySettingSearchModel",
+            ],
+            "@/models/CooperationTypeModels": [
+              "CooperationTypeViewModel",
+              "CooperationTypeInputModel",
+              "CooperationTypeSearchModel",
+            ],
           },
         ],
 
@@ -350,7 +362,7 @@ module.exports = defineConfig({
         onProxyReq: function (proxyReq) {
           proxyReq.setHeader(
             "Cookie",
-            "rtcookie=rui=1krFREj/0UVuMnfxv3FLR5+EuKVYbVwWTWo1TPx4PZixdlaVvdSC4cceLfenXeieq6nGa1F09US7QMgXIbgEJqFXb1a2YyHeFWuJAAdrgy2LlGqMmO6lnuqsc2F7ywKC"
+            "rtcookie=rui=1krFREj/0UVuMnfxv3FLR5+EuKVYbVwWTWo1TPx4PZixdlaVvdSC4cceLfenXeieq6nGa1F09US7QMgXIbgEJkyRVt3xoXJoLPszBLSCjqLxgPb2hjLPBdhUq4QYI2yL"
           );
         },
       },

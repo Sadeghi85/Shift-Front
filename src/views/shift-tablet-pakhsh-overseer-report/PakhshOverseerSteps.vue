@@ -19,25 +19,25 @@ const shiftTabletService = ref(new ShiftTabletService());
 
 const stepItems = ref([
   {
-    label: "حضور و غیاب",
+    label: t("steps.attendance"),
     to: {
       name: "shift-tablet-pakhsh-overseer-report",
     },
   },
   {
-    label: "گزارش",
+    label: t("steps.report"),
     to: {
       name: "shift-tablet-pakhsh-overseer-report-description",
     },
   },
   {
-    label: "تغییرات کنداکتور",
+    label: t("steps.conductorChanges"),
     to: {
       name: "shift-tablet-pakhsh-overseer-conductor-changes",
     },
   },
   {
-    label: "اشکالات بازبینی",
+    label: t("steps.reviewProblems"),
     to: {
       name: "shift-tablet-pakhsh-overseer-review-problems",
     },

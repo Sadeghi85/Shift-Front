@@ -12,7 +12,7 @@ import i18n from "./i18n";
 
 import { createPinia } from "pinia";
 
-import useUserStore from "./stores/user";
+import { useUserStore } from "./stores/user";
 import { AppSettings } from "./config";
 
 import Vue3PersianDatetimePicker from "vue3-persian-datetime-picker";
@@ -23,7 +23,6 @@ import ToastService from "primevue/toastservice";
 import ConfirmationService from "primevue/confirmationservice";
 
 import { ITokenViewModel } from "./models/TokenModels";
-import { IUserViewModel } from "./models/UserModels";
 import { UserService } from "./services/UserService";
 
 //import "primevue/resources/themes/bootstrap4-light-blue/theme.css";

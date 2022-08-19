@@ -22,25 +22,25 @@ const reportService = ref(new ReportService());
 
 const stepItems = ref([
   {
-    label: "حضور و غیاب",
+    label: t("steps.attendance"),
     to: {
       name: "shift-tablet-secretary-report",
     },
   },
   {
-    label: "گزارش",
+    label: t("steps.report"),
     to: {
       name: "shift-tablet-secretary-report-description",
     },
   },
   {
-    label: "تغییرات کنداکتور",
+    label: t("steps.conductorChanges"),
     to: {
       name: "shift-tablet-secretary-conductor-changes",
     },
   },
   {
-    label: "اشکالات بازبینی",
+    label: t("steps.reviewProblems"),
     to: {
       name: "shift-tablet-secretary-review-problems",
     },
@@ -75,7 +75,7 @@ const getSecretaryReport = async () => {
   blockedDocument.value = true;
 
   reportService.value
-    .getSecretaryReport(route.params.shiftTabletId)
+    .getSecretaryReport(+route.params.shiftTabletId)
     .then((response) => {
       blockedDocument.value = false;
       //console.log(response);

@@ -2,7 +2,7 @@ import { AxiosRequestConfig } from "axios";
 import { HttpClient } from "./http-client";
 import { AppSettings } from "@/config";
 import { ITokenViewModel, ITokenInputModel } from "@/models/TokenModels";
-import useUserStore from "@/stores/user";
+import { useUserStore } from "@/stores/user";
 /* import { PortalModel } from "@/models/PortalModel";
 import { ApiResponseModel } from "@/models/ApiResponseModel";
 import { ShiftLocationModel } from "@/models/ShifLocationModel"; */

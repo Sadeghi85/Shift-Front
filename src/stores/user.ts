@@ -2,7 +2,7 @@ import { defineStore } from "pinia";
 import { ITokenViewModel } from "@/models/TokenModels";
 import { IUserViewModel } from "@/models/UserModels";
 
-const useUserStore = defineStore({
+export const useUserStore = defineStore({
   id: "user",
   state: () => ({
     token: ref<ITokenViewModel | null>(),
@@ -25,5 +25,3 @@ const useUserStore = defineStore({
     },
   },
 });
-
-export default useUserStore;

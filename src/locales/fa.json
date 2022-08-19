@@ -83,10 +83,13 @@
   "grid.header.reviewerCode": "کد بازبین",
   "grid.header.problemDescription": "مورد اشکال",
   "grid.header.fileNumber": "شماره فایل",
+  "grid.header.cooperationType": "نحوه همکاری",
+  "grid.header.mandatoryShiftCount": "تعداد شیفت موظفی",
 
   "_": "routes",
-  "route.locations": "تعریف لوکیشن",
-  "route.portal-locations": "انتصاب لوکیشن به شبکه",
+  "route.locations": "تعریف محل‌های پخش",
+  "route.portal-settings": "تنظیمات شبکه",
+  "route.portal-locations": "انتصاب محل پخش به شبکه",
   "route.shift-production-type": "تعریف نوع تولید شیفت",
   "route.shift-definition": "تعریف شیفت",
   "route.shift-tablet": "لوح شیفت",
@@ -108,5 +111,15 @@
   "confirm.header.confirmation": "تایید",
   "confirm.message.delete": "حذف را تایید می‌کنید؟",
   "confirm.button.reject": "خیر",
-  "confirm.button.accept": "بله"
+  "confirm.button.accept": "بله",
+
+  "_": "steps",
+  "steps.attendance": "حضور و غیاب",
+  "steps.report": "گزارش",
+  "steps.conductorChanges": "تغییرات کنداکتور",
+  "steps.reviewProblems": "اشکالات بازبینی",
+
+  "_": "tabMenu",
+  "tabMenu.locations": "محل پخش",
+  "tabMenu.mandatoryShiftCount": "تعداد شیفت موظفی"
 }

@@ -179,6 +179,37 @@ const routes: Array<RouteRecordRaw> = [
       },
     ],
   },
+  {
+    path: "/portal-settings",
+    component: () =>
+      import(
+        /* webpackChunkName: "portal-settings" */ "../views/portal-settings/SettingTabMenu.vue"
+      ),
+    children: [
+      {
+        path: "",
+        name: "portal-settings",
+        component: () =>
+          import(
+            /* webpackChunkName: "portal-settings-locations" */ "../views/location/PortalLocationRD.vue"
+          ),
+        meta: {
+          requiresAuth: true,
+        },
+      },
+      {
+        path: "/portal-settings-mandatory-shift-count",
+        name: "portal-settings-mandatory-shift-count",
+        component: () =>
+          import(
+            /* webpackChunkName: "portal-settings-mandatory-shift-count" */ "../views/portal-settings/MandatoryShiftCount.vue"
+          ),
+        meta: {
+          requiresAuth: true,
+        },
+      },
+    ],
+  },
 ];
 
 const router = createRouter({

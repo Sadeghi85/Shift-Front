@@ -43,6 +43,13 @@ const showError = (detail: string) => {
     |
     <router-link
       :to="{
+        name: 'portal-settings',
+      }"
+      >{{ t("route.portal-settings") }}</router-link
+    >
+    |
+    <router-link
+      :to="{
         name: 'portal-locations',
       }"
       >{{ t("route.portal-locations") }}</router-link
