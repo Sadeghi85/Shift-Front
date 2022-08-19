@@ -226,7 +226,7 @@ module.exports = defineConfig({
             //   ["[from]", "[alias]"],
             // ],
             "@vuelidate/core": ["useVuelidate"],
-            "@vuelidate/validators": ["required", "numeric"],
+            "@vuelidate/validators": ["required", "numeric", "requiredUnless"],
             "primevue/usetoast": ["useToast"],
             "primevue/useconfirm": ["useConfirm"],
             "@casl/vue": ["useAbility"],

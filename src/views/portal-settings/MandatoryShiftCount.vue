@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-import RoleTypes from "@/enums/RoleType";
 import useApiErrorStore from "@/stores/api-error";
 import { useGeneralStore } from "@/stores/general";
 import { useUserStore } from "@/stores/user";
@@ -41,19 +40,29 @@ const jobs = ref<InstanceType<typeof JobViewModel>[]>();
 const cooperationTypes = ref<InstanceType<typeof CooperationTypeViewModel>[]>();
 
 const state = reactive({
-  portalId: ref<number | undefined>(undefined),
-  cooperationTypeId: ref<number | null>(null),
-  jobId: ref<number | null>(null),
+  portal: ref<InstanceType<typeof PortalViewModel>>(),
+  cooperationType: ref<InstanceType<typeof CooperationTypeViewModel>>(),
+  job: ref<InstanceType<typeof JobViewModel>>(),
   mandatoryShiftCount: ref<number | null>(null),
   nonMandatoryShiftWage: ref<number | null>(null),
 });
 
 const rules = {
-  portalId: { required, numeric },
-  cooperationTypeId: { numeric },
-  jobId: { numeric },
+  portal: { required },
+  cooperationType: {
+    required: requiredUnless(function () {
+      return state.job !== undefined && state.job !== null;
+    }),
+  },
+  job: {
+    required: requiredUnless(function () {
+      return (
+        state.cooperationType !== undefined && state.cooperationType !== null
+      );
+    }),
+  },
   mandatoryShiftCount: { required, numeric },
-  nonMandatoryShiftWage: { numeric },
+  nonMandatoryShiftWage: {},
 };
 
 const v$ = useVuelidate(rules, state);
@@ -66,9 +75,13 @@ const onRowEditInit = async (event: any) => {
 
   editingRows.value = [data];
 
-  v$.value.portalId.$model = data.portalId ?? userStore.user?.portalId;
-  v$.value.cooperationTypeId.$model = data.cooperationTypeId ?? null;
-  v$.value.jobId.$model = data.jobId ?? null;
+  v$.value.portal.$model =
+    portals.value?.find((x) => x.id === data.portalId) ?? undefined;
+  v$.value.cooperationType.$model =
+    cooperationTypes.value?.find((x) => x.id === data.cooperationTypeId) ??
+    undefined;
+  v$.value.job.$model =
+    jobs.value?.find((x) => x.id === data.jobId) ?? undefined;
   v$.value.mandatoryShiftCount.$model = data.mandatoryShiftCount ?? null;
   v$.value.nonMandatoryShiftWage.$model = data.nonMandatoryShiftWage ?? null;
 };
@@ -86,11 +99,11 @@ const onRowEditSave = async (event: any) => {
   const monetarySetting = new MonetarySettingInputModel({
     id: data.id,
 
-    portalId: v$.value.portalId.$model,
-    cooperationTypeId: v$.value.cooperationTypeId.$model,
-    jobId: v$.value.jobId.$model,
+    portalId: v$.value.portal.$model?.id,
+    cooperationTypeId: v$.value.cooperationType.$model?.id,
+    jobId: v$.value.job.$model?.id,
     mandatoryShiftCount: v$.value.mandatoryShiftCount.$model,
-    nonMandatoryShiftWage: v$.value.nonMandatoryShiftWage.$model,
+    //nonMandatoryShiftWage: v$.value.nonMandatoryShiftWage.$model,
   });
 
   await monetarySettingService.value
@@ -110,26 +123,24 @@ const onRowEditSave = async (event: any) => {
 };
 
 function openNew() {
-  if (monetarySettings.value!.filter((item) => item.id == 0).length > 0) {
-    return;
-  }
-
-  v$.value.portalId.$model = undefined;
-  v$.value.cooperationTypeId.$model = null;
-  v$.value.jobId.$model = null;
+  v$.value.portal.$model = undefined;
+  v$.value.cooperationType.$model = undefined;
+  v$.value.job.$model = undefined;
   v$.value.mandatoryShiftCount.$model = null;
   v$.value.nonMandatoryShiftWage.$model = null;
 
-  monetarySettings.value?.unshift(
-    new MonetarySettingViewModel({
-      id: 0,
-    })
-  );
+  if (monetarySettings.value!.filter((item) => item.id == 0).length == 0) {
+    monetarySettings.value?.unshift(
+      new MonetarySettingViewModel({
+        id: 0,
+      })
+    );
+  }
 
   editingRows.value = [monetarySettings.value![0]];
 }
 
-function confirmDeleteSelected() {
+const confirmDeleteSelected = () => {
   confirm.require({
     message: t("confirm.message.delete"),
     header: t("confirm.header.confirmation"),
@@ -173,7 +184,7 @@ function confirmDeleteSelected() {
       //console.log("reject");
     },
   });
-}
+};
 
 async function loadMonetarySettings(
   searchParams?: InstanceType<typeof MonetarySettingSearchModel>
@@ -262,6 +273,11 @@ const loadEssentials = async () => {
 onMounted(async () => {
   await loadEssentials();
 });
+
+onActivated(async () => {
+  // called on initial mount
+  // and every time it is re-inserted from the cache
+});
 </script>
 
 <template>
@@ -275,14 +291,14 @@ onMounted(async () => {
                 :label="t('button.new')"
                 icon="pi pi-plus"
                 class="p-button-success ml-2"
-                @click="openNew"
+                @click.prevent="openNew"
               />
               <Button
                 :label="t('button.delete')"
                 icon="pi pi-trash"
                 class="p-button-danger"
                 :disabled="!selectedRows || !selectedRows.length"
-                @click="confirmDeleteSelected"
+                @click.prevent="confirmDeleteSelected"
               />
             </template>
           </Toolbar>
@@ -323,11 +339,14 @@ onMounted(async () => {
             <Column field="portalTitle" :header="t('grid.header.portal')">
               <template #editor>
                 <Dropdown
-                  v-model="v$.portalId.$model"
+                  v-model="v$.portal.$model"
                   :options="portals"
                   option-label="title"
                   :filter="true"
                   :show-clear="true"
+                  :class="{
+                    'p-invalid': v$.portal.$invalid,
+                  }"
                   ><template #empty>
                     {{ t("dropdown.slot.empty") }}
                   </template></Dropdown
@@ -340,11 +359,14 @@ onMounted(async () => {
             >
               <template #editor>
                 <Dropdown
-                  v-model="v$.cooperationTypeId.$model"
+                  v-model="v$.cooperationType.$model"
                   :options="cooperationTypes"
                   option-label="title"
                   :filter="true"
                   :show-clear="true"
+                  :class="{
+                    'p-invalid': v$.cooperationType.$invalid,
+                  }"
                   ><template #empty>
                     {{ t("dropdown.slot.empty") }}
                   </template></Dropdown
@@ -355,11 +377,14 @@ onMounted(async () => {
             <Column field="jobTitle" :header="t('grid.header.jobTitle')">
               <template #editor>
                 <Dropdown
-                  v-model="v$.jobId.$model"
+                  v-model="v$.job.$model"
                   :options="jobs"
                   option-label="title"
                   :filter="true"
                   :show-clear="true"
+                  :class="{
+                    'p-invalid': v$.job.$invalid,
+                  }"
                   ><template #empty>
                     {{ t("dropdown.slot.empty") }}
                   </template></Dropdown
@@ -368,7 +393,7 @@ onMounted(async () => {
             </Column>
 
             <Column
-              field="jobTitle"
+              field="mandatoryShiftCount"
               :header="t('grid.header.mandatoryShiftCount')"
             >
               <template #editor>

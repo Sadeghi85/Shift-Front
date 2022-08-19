@@ -117,12 +117,6 @@ const onRowEditSave = async (event: any) => {
 };
 
 function openNew() {
-  if (
-    shiftTabletConductorChanges.value!.filter((item) => item.id == 0).length > 0
-  ) {
-    return;
-  }
-
   // v$.value.oldProgramTitle.$model = "";
   // v$.value.newProgramTitle.$model = "";
   // v$.value.description.$model = "";
@@ -135,11 +129,16 @@ function openNew() {
     fieldValue.$model = "";
   });
 
-  shiftTabletConductorChanges.value?.unshift(
-    new ShiftTabletConductorChangeViewModel({
-      id: 0,
-    })
-  );
+  if (
+    shiftTabletConductorChanges.value!.filter((item) => item.id == 0).length ==
+    0
+  ) {
+    shiftTabletConductorChanges.value?.unshift(
+      new ShiftTabletConductorChangeViewModel({
+        id: 0,
+      })
+    );
+  }
 
   editingRows.value = [shiftTabletConductorChanges.value![0]];
 }

@@ -129,12 +129,6 @@ const onRowEditSave = async (event: any) => {
 };
 
 function openNew() {
-  if (
-    shiftTabletReviewProblems.value!.filter((item) => item.id == 0).length > 0
-  ) {
-    return;
-  }
-
   // reseting the state
   Object.entries(state).forEach(([key, value]) => {
     type mainKey = keyof typeof v$.value;
@@ -143,11 +137,15 @@ function openNew() {
     fieldValue.$model = "";
   });
 
-  shiftTabletReviewProblems.value?.unshift(
-    new ShiftTabletReviewProblemViewModel({
-      id: 0,
-    })
-  );
+  if (
+    shiftTabletReviewProblems.value!.filter((item) => item.id == 0).length == 0
+  ) {
+    shiftTabletReviewProblems.value?.unshift(
+      new ShiftTabletReviewProblemViewModel({
+        id: 0,
+      })
+    );
+  }
 
   editingRows.value = [shiftTabletReviewProblems.value![0]];
 }
