@@ -15,6 +15,7 @@ const generalStore = useGeneralStore();
 const { t } = useI18n();
 const toast = useToast();
 const confirm = useConfirm();
+const confirmGroup = uuidv4();
 
 const apiErrorStore = useApiErrorStore();
 
@@ -44,6 +45,7 @@ const gridTemplateOperationMenuItems = ref([
         icon: "pi pi-times",
         command: () => {
           confirm.require({
+            group: confirmGroup,
             message: t("confirm.message.delete"),
             header: t("confirm.header.confirmation"),
             icon: "pi pi-exclamation-triangle",
@@ -326,5 +328,7 @@ watch(
     :model="gridTemplateOperationMenuItems"
     :popup="true"
   />
+
+  <ConfirmDialog position="top-center" :group="confirmGroup" />
 </template>
 <style lang="scss" scoped></style>

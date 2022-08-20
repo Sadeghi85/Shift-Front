@@ -8,13 +8,10 @@ const generalStore = useGeneralStore();
 const apiErrorStore = useApiErrorStore();
 
 const { t } = useI18n();
-const toast = useToast();
-const confirm = useConfirm();
 const router = useRouter();
 const route = useRoute();
 
 const shiftTablet = ref<InstanceType<typeof ShiftTabletViewModel>>();
-
 const shiftTabletService = ref(new ShiftTabletService());
 
 const stepItems = ref([

@@ -13,6 +13,7 @@ const { can, cannot } = useAbility();
 const { t } = useI18n();
 const toast = useToast();
 const confirm = useConfirm();
+const confirmGroup = uuidv4();
 
 const apiErrorStore = useApiErrorStore();
 
@@ -68,6 +69,7 @@ const gridOperationMenuItems = ref([
         icon: "pi pi-times",
         command: () => {
           confirm.require({
+            group: confirmGroup,
             message: t("confirm.message.delete"),
             header: t("confirm.header.confirmation"),
             icon: "pi pi-exclamation-triangle",
@@ -439,7 +441,7 @@ onMounted(async () => {
   />
 
   <Toast position="top-center" group="br" />
-  <ConfirmDialog position="top-center"></ConfirmDialog>
+  <ConfirmDialog position="top-center" :group="confirmGroup"></ConfirmDialog>
 </template>
 
 <style lang="scss" scoped>

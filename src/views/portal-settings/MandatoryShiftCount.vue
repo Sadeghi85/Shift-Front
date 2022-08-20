@@ -11,6 +11,7 @@ const route = useRoute();
 const { t } = useI18n();
 const toast = useToast();
 const confirm = useConfirm();
+const confirmGroup = uuidv4();
 
 const apiErrorStore = useApiErrorStore();
 
@@ -142,6 +143,7 @@ function openNew() {
 
 const confirmDeleteSelected = () => {
   confirm.require({
+    group: confirmGroup,
     message: t("confirm.message.delete"),
     header: t("confirm.header.confirmation"),
     icon: "pi pi-exclamation-triangle",
@@ -420,7 +422,7 @@ onActivated(async () => {
     </div>
 
     <Toast position="top-center" group="br" />
-    <ConfirmDialog position="top-center"></ConfirmDialog>
+    <ConfirmDialog position="top-center" :group="confirmGroup"></ConfirmDialog>
   </div>
 </template>
 

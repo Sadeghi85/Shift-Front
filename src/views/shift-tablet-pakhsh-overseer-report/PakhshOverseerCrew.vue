@@ -9,7 +9,6 @@ const router = useRouter();
 const route = useRoute();
 const { t } = useI18n();
 const toast = useToast();
-const confirm = useConfirm();
 
 const apiErrorStore = useApiErrorStore();
 

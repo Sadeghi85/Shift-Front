@@ -306,6 +306,7 @@
     "useWindowFocus": true,
     "useWindowScroll": true,
     "useWindowSize": true,
+    "uuidv4": true,
     "watch": true,
     "watchArray": true,
     "watchAtMost": true,

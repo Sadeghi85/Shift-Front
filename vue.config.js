@@ -225,6 +225,7 @@ module.exports = defineConfig({
             //   // alias
             //   ["[from]", "[alias]"],
             // ],
+            uuid: [["v4", "uuidv4"]],
             "@vuelidate/core": ["useVuelidate"],
             "@vuelidate/validators": ["required", "numeric", "requiredUnless"],
             "primevue/usetoast": ["useToast"],
@@ -362,7 +363,7 @@ module.exports = defineConfig({
         onProxyReq: function (proxyReq) {
           proxyReq.setHeader(
             "Cookie",
-            "rtcookie=rui=1krFREj/0UVuMnfxv3FLR5+EuKVYbVwWTWo1TPx4PZixdlaVvdSC4cceLfenXeieq6nGa1F09US7QMgXIbgEJkyRVt3xoXJoLPszBLSCjqLxgPb2hjLPBdhUq4QYI2yL"
+            "rtcookie=rui=1krFREj/0UVuMnfxv3FLR5+EuKVYbVwWTWo1TPx4PZixdlaVvdSC4cceLfenXeieq6nGa1F09US7QMgXIbgEJr2C+EoyFfuH3XaLarlNY3hJq1L2qjbRZ1e1lI7S1wyN"
           );
         },
       },
