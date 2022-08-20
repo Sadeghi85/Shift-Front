@@ -30,6 +30,10 @@ const showSuccess = (detail: string) => {
   });
 };
 
+const filters = ref({
+  global: { value: null, matchMode: FilterMatchMode.CONTAINS },
+});
+
 const monetarySettingService = ref(new MonetarySettingService());
 const portalService = ref(new PortalService());
 const jobService = ref(new JobService());
@@ -129,6 +133,13 @@ function openNew() {
   v$.value.job.$model = undefined;
   v$.value.mandatoryShiftCount.$model = null;
   v$.value.nonMandatoryShiftWage.$model = null;
+
+  // not admin
+  if ((userStore.user?.portalId ?? 2147483647) > 1) {
+    v$.value.portal.$model = portals.value?.find(
+      (x) => x.id === userStore.user?.portalId
+    );
+  }
 
   if (monetarySettings.value!.filter((item) => item.id == 0).length == 0) {
     monetarySettings.value?.unshift(
@@ -309,6 +320,7 @@ onActivated(async () => {
             v-model:editing-rows="editingRows"
             v-model:selection="selectedRows"
             :value="monetarySettings"
+            :filters="filters"
             data-key="id"
             edit-mode="row"
             :loading="loading"
@@ -319,6 +331,19 @@ onActivated(async () => {
             @row-edit-save="onRowEditSave"
             @row-edit-init="onRowEditInit"
           >
+            <template #header>
+              <div
+                class="table-header flex flex-column md:flex-row md:justiify-content-between"
+              >
+                <span class="p-input-icon-right">
+                  <i class="pi pi-search" />
+                  <InputText
+                    v-model="filters['global'].value"
+                    :placeholder="t('input.search')"
+                  />
+                </span>
+              </div>
+            </template>
             <Column
               selection-mode="multiple"
               style="width: 3rem"
@@ -338,7 +363,11 @@ onActivated(async () => {
               </template></Column
             >
 
-            <Column field="portalTitle" :header="t('grid.header.portal')">
+            <Column
+              field="portalTitle"
+              :header="t('grid.header.portal')"
+              :hidden="(userStore.user?.portalId ?? 2147483647) > 1"
+            >
               <template #editor>
                 <Dropdown
                   v-model="v$.portal.$model"

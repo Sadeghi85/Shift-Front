@@ -2,6 +2,7 @@
   "_": "input",
   "input.fromDate": "از تاریخ",
   "input.toDate": "تا تاریخ",
+  "input.search": "جستجو...",
 
   "_": "buttons",
   "button.excel": "اکسل",

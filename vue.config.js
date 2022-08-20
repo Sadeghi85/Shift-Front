@@ -230,6 +230,7 @@ module.exports = defineConfig({
             "@vuelidate/validators": ["required", "numeric", "requiredUnless"],
             "primevue/usetoast": ["useToast"],
             "primevue/useconfirm": ["useConfirm"],
+            "primevue/api": ["FilterMatchMode"],
             "@casl/vue": ["useAbility"],
             axios: ["AxiosResponse"],
 
@@ -363,7 +364,7 @@ module.exports = defineConfig({
         onProxyReq: function (proxyReq) {
           proxyReq.setHeader(
             "Cookie",
-            "rtcookie=rui=1krFREj/0UVuMnfxv3FLR5+EuKVYbVwWTWo1TPx4PZixdlaVvdSC4cceLfenXeieq6nGa1F09US7QMgXIbgEJr2C+EoyFfuH3XaLarlNY3hJq1L2qjbRZ1e1lI7S1wyN"
+            "rtcookie=rui=1krFREj/0UVuMnfxv3FLR5+EuKVYbVwWTWo1TPx4PZixdlaVvdSC4cceLfenXeieq6nGa1F09US7QMgXIbgEJuQhzTf+mCSs8zNIysgmQ5jwViSQTbqVqBB+tWgx5ph1"
           );
         },
       },

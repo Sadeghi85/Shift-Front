@@ -50,13 +50,6 @@ const showError = (detail: string) => {
     |
     <router-link
       :to="{
-        name: 'portal-locations',
-      }"
-      >{{ t("route.portal-locations") }}</router-link
-    >
-    |
-    <router-link
-      :to="{
         name: 'shift-definition',
       }"
       >{{ t("route.shift-definition") }}</router-link

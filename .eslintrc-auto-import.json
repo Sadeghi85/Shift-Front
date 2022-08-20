@@ -9,6 +9,7 @@
     "CooperationTypeService": true,
     "CooperationTypeViewModel": true,
     "EffectScope": true,
+    "FilterMatchMode": true,
     "IApiResponseModel": true,
     "JobSearchModel": true,
     "JobService": true,

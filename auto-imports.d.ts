@@ -10,6 +10,7 @@ declare global {
   const CooperationTypeService: typeof import('@/services/CooperationTypeService')['CooperationTypeService']
   const CooperationTypeViewModel: typeof import('@/models/CooperationTypeModels')['CooperationTypeViewModel']
   const EffectScope: typeof import('vue')['EffectScope']
+  const FilterMatchMode: typeof import('primevue/api')['FilterMatchMode']
   const IApiResponseModel: typeof import('@/models/ApiResponseModel')['IApiResponseModel']
   const JobSearchModel: typeof import('@/models/JobModels')['JobSearchModel']
   const JobService: typeof import('@/services/JobService')['JobService']
