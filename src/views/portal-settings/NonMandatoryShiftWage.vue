@@ -66,8 +66,8 @@ const rules = {
       );
     }),
   },
-  mandatoryShiftCount: { required, numeric },
-  nonMandatoryShiftWage: {},
+  mandatoryShiftCount: {},
+  nonMandatoryShiftWage: { required, numeric },
 };
 
 const v$ = useVuelidate(rules, state);
@@ -107,8 +107,8 @@ const onRowEditSave = async (event: any) => {
     portalId: v$.value.portal.$model?.id,
     cooperationTypeId: v$.value.cooperationType.$model?.id,
     jobId: v$.value.job.$model?.id,
-    mandatoryShiftCount: v$.value.mandatoryShiftCount.$model,
-    //nonMandatoryShiftWage: v$.value.nonMandatoryShiftWage.$model,
+    //mandatoryShiftCount: v$.value.mandatoryShiftCount.$model,
+    nonMandatoryShiftWage: v$.value.nonMandatoryShiftWage.$model,
   });
 
   await monetarySettingService.value
@@ -199,6 +199,10 @@ const confirmDeleteSelected = () => {
   });
 };
 
+const formatCurrency = (value) => {
+  return value.toLocaleString("fa-IR", { style: "currency", currency: "IRR" });
+};
+
 async function loadMonetarySettings(
   searchParams?: InstanceType<typeof MonetarySettingSearchModel>
 ) {
@@ -212,7 +216,7 @@ async function loadMonetarySettings(
         orderKey: "portalId",
         desc: true,
 
-        mandatoryField: "MandatoryShiftCount",
+        mandatoryField: "NonMandatoryShiftWage",
       });
     }
 
@@ -243,7 +247,7 @@ const handleSearch = async () => {
       orderKey: "portalId",
       desc: true,
 
-      mandatoryField: "MandatoryShiftCount",
+      mandatoryField: "NonMandatoryShiftWage",
     })
   );
 };
@@ -424,16 +428,23 @@ onActivated(async () => {
             </Column>
 
             <Column
-              field="mandatoryShiftCount"
-              :header="t('grid.header.mandatoryShiftCount')"
+              field="nonMandatoryShiftWage"
+              :header="t('grid.header.nonMandatoryShiftWage')"
             >
+              <template #body="slotProps">
+                {{ formatCurrency(slotProps.data.nonMandatoryShiftWage) }}
+              </template>
               <template #editor>
                 <InputNumber
-                  v-model="v$.mandatoryShiftCount.$model"
+                  v-model="v$.nonMandatoryShiftWage.$model"
+                  mode="currency"
+                  currency="IRR"
+                  currency-display="symbol"
+                  locale="fa-IR"
                   :min="0"
-                  :max="100"
+                  :max="10000000000"
                   :class="{
-                    'p-invalid': v$.mandatoryShiftCount.$invalid,
+                    'p-invalid': v$.nonMandatoryShiftWage.$invalid,
                   }"
                 />
               </template>

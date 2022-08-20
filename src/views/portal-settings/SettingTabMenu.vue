@@ -25,13 +25,20 @@ const tabMenuItems = ref([
       name: "portal-settings-mandatory-shift-count",
     },
   },
-  // {
-  //   label: t("tabMenu.nonMandatoryShiftWage"),
-  //   icon: "pi pi-fw pi-cog",
-  //   to: {
-  //     name: "non-mandatory-shift-wage",
-  //   },
-  // },
+  {
+    label: t("tabMenu.nonMandatoryShiftWage"),
+    icon: "pi pi-fw pi-cog",
+    to: {
+      name: "portal-settings-non-mandatory-shift-wage",
+    },
+  },
+  {
+    label: t("tabMenu.monthStartDay"),
+    icon: "pi pi-fw pi-cog",
+    to: {
+      name: "portal-settings-month-start-day",
+    },
+  },
 ]);
 </script>
 

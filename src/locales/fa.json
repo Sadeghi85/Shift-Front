@@ -85,16 +85,18 @@
   "grid.header.problemDescription": "مورد اشکال",
   "grid.header.fileNumber": "شماره فایل",
   "grid.header.cooperationType": "نحوه همکاری",
-  "grid.header.mandatoryShiftCount": "تعداد شیفت موظفی",
+  "grid.header.mandatoryShiftCount": "تعداد شیفت‌های موظفی",
+  "grid.header.nonMandatoryShiftWage": "حق شیفت غیر موظفی",
 
   "_": "routes",
   "route.locations": "تعریف محل‌های پخش",
-  "route.portal-settings": "تنظیمات شبکه",
+  "route.portal-settings": "تنظیمات شیفت",
   "route.portal-locations": "انتصاب محل پخش به شبکه",
   "route.shift-production-type": "تعریف نوع تولید شیفت",
   "route.shift-definition": "تعریف شیفت",
   "route.shift-tablet": "لوح شیفت",
   "route.shift-tablet-crew": "تعریف کارکنان شیفت",
+  "route.shift-tablet-payment": "ثبت پرداخت عوامل پخش",
 
   "_": "toast",
   "toast.success.create": "ثبت با موفقیت انجام شد",
@@ -122,5 +124,7 @@
 
   "_": "tabMenu",
   "tabMenu.locations": "محل پخش",
-  "tabMenu.mandatoryShiftCount": "تعداد شیفت موظفی"
+  "tabMenu.mandatoryShiftCount": "تعداد شیفت‌های موظفی",
+  "tabMenu.nonMandatoryShiftWage": "حق شیفت‌ غیر موظفی",
+  "tabMenu.monthStartDay": "روز شروع ماه"
 }

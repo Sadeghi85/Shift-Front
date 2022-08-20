@@ -74,6 +74,17 @@ const routes: Array<RouteRecordRaw> = [
     },
   },
   {
+    path: "/shift-tablet-payment",
+    name: "shift-tablet-payment",
+    component: () =>
+      import(
+        /* webpackChunkName: "shift-tablet-payment" */ "../views/shift-tablet-payment/ShiftTabletPayment.vue"
+      ),
+    meta: {
+      requiresAuth: true,
+    },
+  },
+  {
     path: "/secretary-report/:shiftTabletId",
     component: () =>
       import(
@@ -203,6 +214,28 @@ const routes: Array<RouteRecordRaw> = [
         component: () =>
           import(
             /* webpackChunkName: "portal-settings-mandatory-shift-count" */ "../views/portal-settings/MandatoryShiftCount.vue"
+          ),
+        meta: {
+          requiresAuth: true,
+        },
+      },
+      {
+        path: "/portal-settings-non-mandatory-shift-wage",
+        name: "portal-settings-non-mandatory-shift-wage",
+        component: () =>
+          import(
+            /* webpackChunkName: "portal-settings-non-mandatory-shift-wage" */ "../views/portal-settings/NonMandatoryShiftWage.vue"
+          ),
+        meta: {
+          requiresAuth: true,
+        },
+      },
+      {
+        path: "/portal-settings-month-start-day",
+        name: "portal-settings-month-start-day",
+        component: () =>
+          import(
+            /* webpackChunkName: "portal-settings-month-start-day" */ "../views/portal-settings/MonthStartDay.vue"
           ),
         meta: {
           requiresAuth: true,
