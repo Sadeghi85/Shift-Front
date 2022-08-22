@@ -64,12 +64,17 @@ const showError = (detail: string) => {
     |
     <router-link
       :to="{
-        name: 'shift-tablet-payment',
+        name: 'payment',
       }"
-      >{{ t("route.shift-tablet-payment") }}</router-link
+      >{{ t("route.payment") }}</router-link
     >
   </nav>
-  <router-view />
+
+  <router-view v-slot="{ Component }">
+    <!-- <keep-alive> -->
+    <component :is="Component" />
+    <!-- </keep-alive> -->
+  </router-view>
 
   <!-- <Toast position="top-center" group="apiError" /> -->
 

@@ -1,4 +1,7 @@
 {
+  "_": "general",
+  "general.undefined": "نامشخص",
+
   "_": "input",
   "input.fromDate": "از تاریخ",
   "input.toDate": "تا تاریخ",
@@ -96,7 +99,7 @@
   "route.shift-definition": "تعریف شیفت",
   "route.shift-tablet": "لوح شیفت",
   "route.shift-tablet-crew": "تعریف کارکنان شیفت",
-  "route.shift-tablet-payment": "ثبت پرداخت عوامل پخش",
+  "route.payment": "ثبت پرداخت عوامل پخش",
 
   "_": "toast",
   "toast.success.create": "ثبت با موفقیت انجام شد",

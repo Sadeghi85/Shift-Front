@@ -32,13 +32,13 @@ const tabMenuItems = ref([
       name: "portal-settings-non-mandatory-shift-wage",
     },
   },
-  {
-    label: t("tabMenu.monthStartDay"),
-    icon: "pi pi-fw pi-cog",
-    to: {
-      name: "portal-settings-month-start-day",
-    },
-  },
+  // {
+  //   label: t("tabMenu.monthStartDay"),
+  //   icon: "pi pi-fw pi-cog",
+  //   to: {
+  //     name: "portal-settings-month-start-day",
+  //   },
+  // },
 ]);
 </script>
 

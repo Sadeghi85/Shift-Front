@@ -46,7 +46,7 @@ declare module '@vue/runtime-core' {
     ShiftTabletCrewCreate: typeof import('./src/views/shift-tablet-coordinator/ShiftTabletCrewCreate.vue')['default']
     ShiftTabletCrewRD: typeof import('./src/views/shift-tablet-coordinator/ShiftTabletCrewRD.vue')['default']
     ShiftTabletCU: typeof import('./src/views/shift-tablet/ShiftTabletCU.vue')['default']
-    ShiftTabletPayment: typeof import('./src/views/shift-tablet-payment/ShiftTabletPayment.vue')['default']
+    ShiftTabletPayment: typeof import('./src/views/payment/ShiftTabletPayment.vue')['default']
     ShiftTabletRD: typeof import('./src/views/shift-tablet/ShiftTabletRD.vue')['default']
     Steps: typeof import('primevue/steps')['default']
     TabMenu: typeof import('primevue/tabmenu')['default']

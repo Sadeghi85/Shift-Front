@@ -74,11 +74,11 @@ const routes: Array<RouteRecordRaw> = [
     },
   },
   {
-    path: "/shift-tablet-payment",
-    name: "shift-tablet-payment",
+    path: "/payment",
+    name: "payment",
     component: () =>
       import(
-        /* webpackChunkName: "shift-tablet-payment" */ "../views/shift-tablet-payment/ShiftTabletPayment.vue"
+        /* webpackChunkName: "payment" */ "../views/payment/ShiftTabletPayment.vue"
       ),
     meta: {
       requiresAuth: true,

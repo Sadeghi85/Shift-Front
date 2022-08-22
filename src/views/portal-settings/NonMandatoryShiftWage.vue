@@ -67,7 +67,7 @@ const rules = {
     }),
   },
   mandatoryShiftCount: {},
-  nonMandatoryShiftWage: { required, numeric },
+  nonMandatoryShiftWage: { required, numeric, maxLengthValue: maxLength(11) },
 };
 
 const v$ = useVuelidate(rules, state);
@@ -199,7 +199,10 @@ const confirmDeleteSelected = () => {
   });
 };
 
-const formatCurrency = (value) => {
+const formatCurrency = (value: number | null) => {
+  if (!value) {
+    return;
+  }
   return value.toLocaleString("fa-IR", { style: "currency", currency: "IRR" });
 };
 
@@ -437,15 +440,11 @@ onActivated(async () => {
               <template #editor>
                 <InputNumber
                   v-model="v$.nonMandatoryShiftWage.$model"
-                  mode="currency"
-                  currency="IRR"
-                  currency-display="symbol"
-                  locale="fa-IR"
                   :min="0"
-                  :max="10000000000"
                   :class="{
                     'p-invalid': v$.nonMandatoryShiftWage.$invalid,
                   }"
+                  @focus="v$.nonMandatoryShiftWage.$model = null"
                 />
               </template>
             </Column>
