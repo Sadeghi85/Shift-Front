@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import useApiErrorStore from "@/stores/api-error";
+import { useUserStore } from "@/stores/user";
 
 const props = defineProps({
   shiftDefinitionId: {
@@ -16,6 +17,7 @@ const submitted = ref(false);
 const submitButtonIsLoading = ref(false);
 
 const apiErrorStore = useApiErrorStore();
+const userStore = useUserStore();
 
 const portals = ref<InstanceType<typeof PortalViewModel>[]>();
 const shiftTypes = ref<InstanceType<typeof ShiftTypeViewModel>[]>([
@@ -219,7 +221,7 @@ watch(
             @submit.prevent="handleSubmit(!v$.$invalid)"
           >
             <div class="grid formgrid">
-              <div class="field col-12 mb-4 md:col-4">
+              <div class="field col-12 mb-4 md:col-3">
                 <div class="p-float-label">
                   <InputText
                     id="shiftTitle"
@@ -238,7 +240,10 @@ watch(
                   >
                 </div>
               </div>
-              <div class="field col-12 mb-4 md:col-4">
+              <div
+                v-show="(userStore.user?.portalId ?? 2147483647) == 1"
+                class="field col-12 mb-4 md:col-3"
+              >
                 <div class="p-float-label">
                   <Dropdown
                     id="portal"
@@ -263,7 +268,7 @@ watch(
                   >
                 </div>
               </div>
-              <div class="field col-12 mb-4 md:col-4">
+              <div class="field col-12 mb-4 md:col-3">
                 <div class="p-float-label">
                   <Dropdown
                     id="shiftType"
@@ -290,7 +295,7 @@ watch(
                 </div>
               </div>
 
-              <div class="field col-12 mb-4 md:col-4">
+              <div class="field col-12 mb-4 md:col-3">
                 <div class="p-float-label">
                   <PersianDatePicker
                     v-model="v$.startTime.$model"
@@ -311,7 +316,7 @@ watch(
                   />
                 </div>
               </div>
-              <div class="field col-12 mb-4 md:col-4">
+              <div class="field col-12 mb-4 md:col-3">
                 <div class="p-float-label">
                   <PersianDatePicker
                     v-model="v$.endTime.$model"

@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import useApiErrorStore from "@/stores/api-error";
+import { useUserStore } from "@/stores/user";
 
 // interface Props {
 //   shiftLocationId?: number;
@@ -18,21 +19,25 @@ const props = defineProps({
 const emit = defineEmits(["updateIsDone", "insertIsDone", "cuIsCanceled"]);
 
 const apiErrorStore = useApiErrorStore();
+const userStore = useUserStore();
 
 // reactive state
 const submitted = ref(false);
 const submitButtonIsLoading = ref(false);
 
+const portals = ref<InstanceType<typeof PortalViewModel>[]>();
 const shiftDefinitions = ref<InstanceType<typeof ShiftDefinitionViewModel>[]>();
 const portalLocations = ref<InstanceType<typeof PortalLocationViewModel>[]>();
 
 const state = reactive({
+  portal: ref<InstanceType<typeof PortalViewModel>>(),
   shiftDefinition: ref<InstanceType<typeof ShiftDefinitionViewModel>>(),
   portalLocation: ref<InstanceType<typeof PortalLocationViewModel>>(),
   shiftDate: "",
 });
 
 const rules = {
+  portal: { required },
   shiftDefinition: { required },
   portalLocation: { required },
   shiftDate: { required },
@@ -41,6 +46,8 @@ const rules = {
 ////////
 const { t } = useI18n();
 const v$ = useVuelidate(rules, state);
+
+const portalService = ref(new PortalService());
 
 const shiftTabletService = ref(new ShiftTabletService());
 const shiftDefinitionService = ref(new ShiftDefinitionService());
@@ -137,6 +144,11 @@ const resetForm = () => {
 
 const fillForm = async () => {
   try {
+    // portals
+    portals.value = (
+      await portalService.value.getAll(new PortalSearchModel({}))
+    ).data;
+
     // load shift definitions
     shiftDefinitions.value = (
       await shiftDefinitionService.value.getAll(
@@ -153,11 +165,16 @@ const fillForm = async () => {
     if (props.shiftTabletId == 0) {
       resetForm();
 
-      if (shiftDefinitions.value.length == 1) {
-        state.shiftDefinition = shiftDefinitions.value[0];
+      if (portals.value.length == 1) {
+        v$.value.portal.$model = portals.value[0];
       }
+
+      if (shiftDefinitions.value.length == 1) {
+        v$.value.shiftDefinition.$model = shiftDefinitions.value[0];
+      }
+
       if (portalLocations.value.length == 1) {
-        state.portalLocation = portalLocations.value[0];
+        v$.value.portalLocation.$model = portalLocations.value[0];
       }
     } else {
       const shiftTablet = (
@@ -168,15 +185,19 @@ const fillForm = async () => {
         )
       ).data[0];
 
-      state.shiftDefinition = shiftDefinitions.value.find(
+      v$.value.portal.$model = portals.value.find(
+        (p) => p.id == shiftTablet.portalId
+      );
+
+      v$.value.shiftDefinition.$model = shiftDefinitions.value.find(
         (p) => p.id == shiftTablet.shiftId
       );
 
-      state.portalLocation = portalLocations.value.find(
+      v$.value.portalLocation.$model = portalLocations.value.find(
         (p) => p.locationId == shiftTablet.locationId
       );
 
-      state.shiftDate = shiftTablet.shiftDate;
+      v$.value.shiftDate.$model = shiftTablet.shiftDate;
     }
   } catch (error: any) {
     if (typeof error.message === "object") {
@@ -189,6 +210,8 @@ const fillForm = async () => {
 
 const onDropdownShiftDefinitionChange = async (event: any) => {
   try {
+    v$.value.portalLocation.$model = undefined;
+    portalLocations.value = undefined;
     portalLocations.value = (
       await portalLocationService.value.getAll(
         new PortalLocationSearchModel({
@@ -198,8 +221,36 @@ const onDropdownShiftDefinitionChange = async (event: any) => {
     ).data;
 
     if (portalLocations.value.length == 1) {
-      state.portalLocation = portalLocations.value[0];
+      v$.value.portalLocation.$model = portalLocations.value[0];
     }
+  } catch (error: any) {
+    if (typeof error.message === "object") {
+      apiErrorStore.setApiErrorMessage(error.message.message);
+    } else {
+      console.log(error.message);
+    }
+  }
+};
+
+const onDropDownPortalChange = async (event: any) => {
+  try {
+    v$.value.shiftDefinition.$model = undefined;
+    shiftDefinitions.value = undefined;
+    shiftDefinitions.value = (
+      await shiftDefinitionService.value.getAll(
+        new ShiftDefinitionSearchModel({
+          portalId: event.value.id,
+        })
+      )
+    ).data;
+
+    if (shiftDefinitions.value.length == 1) {
+      v$.value.shiftDefinition.$model = shiftDefinitions.value[0];
+    }
+
+    await onDropdownShiftDefinitionChange(
+      Object.create({ value: v$.value.shiftDefinition.$model })
+    );
   } catch (error: any) {
     if (typeof error.message === "object") {
       apiErrorStore.setApiErrorMessage(error.message.message);
@@ -248,13 +299,44 @@ watch(
             @submit.prevent="handleSubmit(!v$.$invalid)"
           >
             <div class="grid formgrid">
+              <div
+                v-show="(userStore.user?.portalId ?? 2147483647) == 1"
+                class="field col-12 mb-4 md:col-3"
+              >
+                <div class="p-float-label">
+                  <Dropdown
+                    id="portal"
+                    v-model="v$.portal.$model"
+                    :options="portals"
+                    option-label="title"
+                    :filter="true"
+                    :show-clear="true"
+                    :class="{
+                      'p-invalid': v$.portal.$invalid && submitted,
+                    }"
+                    @change="onDropDownPortalChange"
+                    ><template #empty>
+                      {{ t("dropdown.slot.empty") }}
+                    </template></Dropdown
+                  >
+
+                  <label
+                    for="portal"
+                    :class="{
+                      'p-error': v$.portal.$invalid && submitted,
+                    }"
+                    >{{ t("portal.title")
+                    }}<span :style="{ color: 'var(--red-500)' }">*</span></label
+                  >
+                </div>
+              </div>
               <div class="field col-12 mb-4 md:col-3">
                 <div class="p-float-label">
                   <Dropdown
                     id="shiftDefinition"
                     v-model="v$.shiftDefinition.$model"
                     :options="shiftDefinitions"
-                    option-label="displayLabel"
+                    option-label="title"
                     :show-clear="true"
                     :class="{
                       'p-invalid': v$.shiftDefinition.$invalid && submitted,

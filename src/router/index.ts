@@ -77,9 +77,7 @@ const routes: Array<RouteRecordRaw> = [
     path: "/payment",
     name: "payment",
     component: () =>
-      import(
-        /* webpackChunkName: "payment" */ "../views/payment/ShiftTabletPayment.vue"
-      ),
+      import(/* webpackChunkName: "payment" */ "../views/payment/Payment.vue"),
     meta: {
       requiresAuth: true,
     },

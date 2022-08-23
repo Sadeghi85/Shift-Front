@@ -375,7 +375,7 @@ module.exports = defineConfig({
         onProxyReq: function (proxyReq) {
           proxyReq.setHeader(
             "Cookie",
-            "rtcookie=rui=1krFREj/0UVuMnfxv3FLR5+EuKVYbVwWTWo1TPx4PZixdlaVvdSC4cceLfenXeieq6nGa1F09US7QMgXIbgEJpT5/GM0DeLwMcvmb+wpmUvLK7V9AhpujbpEmWUveXkm"
+            "rtcookie=rui=1krFREj/0UVuMnfxv3FLR5+EuKVYbVwWTWo1TPx4PZixdlaVvdSC4cceLfenXeieq6nGa1F09US7QMgXIbgEJkue0jAOQ8Iiu016KV3pNVmH9cA0hW+hzt3Hd9MI7GwQ"
           );
         },
       },

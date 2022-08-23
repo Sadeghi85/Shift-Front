@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import jMoment from "moment-jalaali";
 import useApiErrorStore from "@/stores/api-error";
 
 const { t } = useI18n();
@@ -178,6 +179,14 @@ const loadEssentials = async () => {
     portals.value = (
       await portalService.value.getAll(new PortalSearchModel({}))
     ).data;
+
+    if (portals.value.length > 0) {
+      v$Search.value.portal.$model = portals.value[0];
+    }
+
+    v$Search.value.datePersian.$model = jMoment().format("jYYYY/jMM/01");
+
+    await handleSearch();
   } catch (error: any) {
     if (typeof error.message === "object") {
       apiErrorStore.setApiErrorMessage(error.message.message);
@@ -311,35 +320,36 @@ onMounted(async () => {
                 </template></Column
               >
 
-              <Column field="agentFullName" :header="t('grid.header.portal')">
+              <Column
+                field="agentFullName"
+                :header="t('grid.header.agentFullName')"
+              >
               </Column>
 
               <Column
                 field="mandatoryShiftCount"
-                :header="t('grid.header.jobTitle')"
+                :header="t('grid.header.mandatoryShiftCount')"
               >
                 <template #body="slotProps">
                   {{
-                    slotProps.data.mandatoryShiftCount == null
-                      ? t("general.undefined")
-                      : slotProps.data.mandatoryShiftCount
+                    slotProps.data.mandatoryShiftCount ?? t("general.undefined")
                   }}
                 </template>
               </Column>
               <Column
                 field="nonMandatoryShiftCount"
-                :header="t('grid.header.jobTitle')"
+                :header="t('grid.header.nonMandatoryShiftCount')"
               >
               </Column>
               <Column
                 field="calculatedPayment"
-                :header="t('grid.header.jobTitle')"
+                :header="t('grid.header.calculatedPayment')"
               >
               </Column>
 
               <Column
                 field="finalPayment"
-                :header="t('grid.header.nonMandatoryShiftWage')"
+                :header="t('grid.header.finalPayment')"
               >
                 <template #body="slotProps">
                   {{ formatCurrency(slotProps.data.finalPayment) }}
@@ -351,7 +361,6 @@ onMounted(async () => {
                     :class="{
                       'p-invalid': v$Grid.finalPayment.$invalid,
                     }"
-                    @focus="v$Grid.finalPayment.$model = null"
                   />
                 </template>
               </Column>
@@ -360,6 +369,7 @@ onMounted(async () => {
                 :row-editor="true"
                 style="width: 10%; min-width: 8rem"
                 body-style="text-align:center"
+                :header="t('grid.button.operation')"
               ></Column>
               <template #empty>
                 {{ t("grid.slot.empty") }}

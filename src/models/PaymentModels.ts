@@ -1,5 +1,3 @@
-import { useI18n } from "vue-i18n";
-
 interface IPaymentInputModel {
   id?: number;
   finalPayment?: number | null;
@@ -55,10 +53,10 @@ interface IPaymentViewModel {
   id?: number;
   agentId?: number;
   portalId?: number;
-  mandatoryShiftCount?: string;
+  mandatoryShiftCount?: number | null;
   nonMandatoryShiftCount?: number;
   calculatedPayment?: number;
-  finalPayment?: string;
+  finalPayment?: number | null;
 
   portalTitle?: string;
   firstName?: string;
@@ -69,10 +67,10 @@ export class PaymentViewModel implements IPaymentViewModel {
   id: number;
   agentId: number;
   portalId: number;
-  mandatoryShiftCount: string;
+  mandatoryShiftCount: number | null;
   nonMandatoryShiftCount: number;
   calculatedPayment: number;
-  finalPayment: string;
+  finalPayment: number | null;
 
   portalTitle: string;
   firstName: string;
@@ -80,17 +78,14 @@ export class PaymentViewModel implements IPaymentViewModel {
   agentFullName: string;
 
   constructor(params: IPaymentViewModel) {
-    const { t } = useI18n();
-
     this.id = params.id || 0;
     this.agentId = params.agentId || 0;
     this.portalId = params.portalId || 0;
 
-    this.mandatoryShiftCount =
-      params.mandatoryShiftCount || t("general.undefined");
+    this.mandatoryShiftCount = params.mandatoryShiftCount || null;
     this.nonMandatoryShiftCount = params.nonMandatoryShiftCount || 0;
     this.calculatedPayment = params.calculatedPayment || 0;
-    this.finalPayment = params.finalPayment || "";
+    this.finalPayment = params.finalPayment || null;
 
     this.portalTitle = params.portalTitle || "";
     this.firstName = params.firstName || "";

@@ -299,17 +299,15 @@ onActivated(async () => {
       <div class="col-12 md:col-12">
         <div class="card">
           <Toolbar class="mb-4">
-            <template #start>
+            <template #end>
               <Button
-                :label="t('button.new')"
                 icon="pi pi-plus"
-                class="p-button-success ml-2"
+                class="p-button-success p-button-rounded ml-2"
                 @click.prevent="openNew"
               />
               <Button
-                :label="t('button.delete')"
                 icon="pi pi-trash"
-                class="p-button-danger"
+                class="p-button-danger p-button-rounded"
                 :disabled="!selectedRows || !selectedRows.length"
                 @click.prevent="confirmDeleteSelected"
               />
@@ -443,6 +441,7 @@ onActivated(async () => {
               :row-editor="true"
               style="width: 10%; min-width: 8rem"
               body-style="text-align:center"
+              :header="t('grid.button.operation')"
             ></Column>
             <template #empty>
               {{ t("grid.slot.empty") }}

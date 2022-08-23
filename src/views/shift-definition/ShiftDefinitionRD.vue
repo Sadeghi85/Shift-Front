@@ -1,8 +1,10 @@
 <script lang="ts" setup>
 import useApiErrorStore from "@/stores/api-error";
 import { useGeneralStore } from "@/stores/general";
+import { useUserStore } from "@/stores/user";
 
 const generalStore = useGeneralStore();
+const userStore = useUserStore();
 
 const router = useRouter();
 
@@ -299,7 +301,10 @@ onMounted(async () => {
                       <label for="shiftTitle">{{ t("shift.title") }}</label>
                     </div>
                   </div>
-                  <div class="field col-12 mb-2 md:col-4">
+                  <div
+                    v-show="(userStore.user?.portalId ?? 2147483647) == 1"
+                    class="field col-12 mb-2 md:col-4"
+                  >
                     <div class="p-float-label">
                       <Dropdown
                         id="portal"

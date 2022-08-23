@@ -1,9 +1,12 @@
 <script lang="ts" setup>
 import useApiErrorStore from "@/stores/api-error";
 import { useGeneralStore } from "@/stores/general";
+import { useUserStore } from "@/stores/user";
+
 import { pdate } from "@/helpers/utilities";
 
 const generalStore = useGeneralStore();
+const userStore = useUserStore();
 
 const router = useRouter();
 
@@ -226,6 +229,10 @@ const showSuccess = (detail: string) => {
   });
 };
 
+const portals = ref<InstanceType<typeof PortalViewModel>[]>();
+const portal = ref<InstanceType<typeof PortalViewModel>>();
+const portalService = ref(new PortalService());
+
 const shiftDefinition = ref<InstanceType<typeof ShiftDefinitionViewModel>>();
 const shiftTabletFromDate = ref("");
 const shiftTabletToDate = ref("");
@@ -317,14 +324,53 @@ const updateIsDone = async () => {
   await handleSearch();
 };
 
-const loadEssentials = async () => {
+const onDropDownPortalChange = async (event: any) => {
   try {
-    // shiftDefinitions
+    shiftDefinition.value = undefined;
+    shiftDefinitions.value = undefined;
     shiftDefinitions.value = (
       await shiftDefinitionService.value.getAll(
-        new ShiftDefinitionSearchModel({})
+        new ShiftDefinitionSearchModel({
+          portalId: event.value.id,
+        })
       )
     ).data;
+
+    if (shiftDefinitions.value.length == 1) {
+      shiftDefinition.value = shiftDefinitions.value[0];
+    }
+  } catch (error: any) {
+    if (typeof error.message === "object") {
+      apiErrorStore.setApiErrorMessage(error.message.message);
+    } else {
+      console.log(error.message);
+    }
+  }
+};
+
+const shiftTabletReportIcon = computed(() => {
+  return shiftTabletReportMenu.value?.overlayVisible
+    ? "pi-chevron-up"
+    : "pi-chevron-down";
+});
+
+const loadEssentials = async () => {
+  try {
+    // portals
+    portals.value = (
+      await portalService.value.getAll(new PortalSearchModel({}))
+    ).data;
+
+    if (portals.value.length == 1) {
+      portal.value = portals.value[0];
+    }
+
+    // shiftDefinitions
+    // shiftDefinitions.value = (
+    //   await shiftDefinitionService.value.getAll(
+    //     new ShiftDefinitionSearchModel({})
+    //   )
+    // ).data;
 
     // shiftTablets
     await handleSearch();
@@ -393,13 +439,36 @@ onMounted(async () => {
                 @submit.prevent="handleSearch()"
               >
                 <div class="grid formgrid">
-                  <div class="field col-12 mb-4 md:col-4">
+                  <div
+                    v-show="(userStore.user?.portalId ?? 2147483647) == 1"
+                    class="field col-12 mb-4 md:col-3"
+                  >
+                    <div class="p-float-label">
+                      <Dropdown
+                        id="portal"
+                        v-model="portal"
+                        :options="portals"
+                        option-label="title"
+                        :filter="true"
+                        :show-clear="true"
+                        @change="onDropDownPortalChange"
+                        ><template #empty>
+                          {{ t("dropdown.slot.empty") }}
+                        </template></Dropdown
+                      >
+
+                      <label for="portal">{{ t("portal.title") }}</label>
+                    </div>
+                  </div>
+
+                  <div class="field col-12 mb-4 md:col-3">
                     <div class="p-float-label">
                       <Dropdown
                         id="shiftDefinition"
                         v-model="shiftDefinition"
                         :options="shiftDefinitions"
-                        option-label="displayLabel"
+                        option-label="title"
+                        :filter="true"
                         :show-clear="true"
                         ><template #empty>
                           {{ t("dropdown.slot.empty") }}
@@ -412,7 +481,7 @@ onMounted(async () => {
                     </div>
                   </div>
 
-                  <div class="field col-12 mb-4 md:col-4">
+                  <div class="field col-12 mb-4 md:col-3">
                     <div class="p-float-label">
                       <PersianDatePicker
                         v-model="shiftTabletFromDate"
@@ -428,7 +497,7 @@ onMounted(async () => {
                     </div>
                   </div>
 
-                  <div class="field col-12 mb-4 md:col-4">
+                  <div class="field col-12 mb-4 md:col-3">
                     <div class="p-float-label">
                       <PersianDatePicker
                         v-model="shiftTabletToDate"
@@ -465,6 +534,7 @@ onMounted(async () => {
 
                   <div class="col-12 mb-2 md:col-2">
                     <Button
+                      :icon="'pi ' + shiftTabletReportIcon"
                       type="button"
                       class="mt-4 p-button-help"
                       :label="t('button.shiftTablet.report')"
@@ -507,6 +577,7 @@ onMounted(async () => {
               <Column
                 field="portalTitle"
                 :header="t('grid.header.portal')"
+                :hidden="(userStore.user?.portalId ?? 2147483647) > 1"
               ></Column>
               <Column
                 field="shiftTitle"

@@ -18,6 +18,7 @@
   "button.new": "جدید",
   "button.delete": "حذف",
   "button.shiftTablet.report": "گزارشات لوح شیفت",
+  "button.calculatePayment": "محاسبه",
 
   "_": "entities",
   "portal.title": "شبکه",
@@ -89,7 +90,10 @@
   "grid.header.fileNumber": "شماره فایل",
   "grid.header.cooperationType": "نحوه همکاری",
   "grid.header.mandatoryShiftCount": "تعداد شیفت‌های موظفی",
+  "grid.header.nonMandatoryShiftCount": "تعداد شیفت‌های غیر موظفی",
   "grid.header.nonMandatoryShiftWage": "حق شیفت غیر موظفی",
+  "grid.header.calculatedPayment": "مبلغ محاسبه شده",
+  "grid.header.finalPayment": "مبلغ نهایی",
 
   "_": "routes",
   "route.locations": "تعریف محل‌های پخش",
