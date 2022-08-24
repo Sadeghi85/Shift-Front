@@ -170,7 +170,14 @@ const handleSearch = async () => {
 };
 
 const calculatePayment = () => {
-  alert("calculatePayment");
+  calculateButtonIsLoading.value = true;
+
+  if (v$Search.value.$invalid) {
+    calculateButtonIsLoading.value = false;
+    return;
+  }
+
+  calculateButtonIsLoading.value = false;
 };
 
 const loadEssentials = async () => {
@@ -345,6 +352,9 @@ onMounted(async () => {
                 field="calculatedPayment"
                 :header="t('grid.header.calculatedPayment')"
               >
+                <template #body="slotProps">
+                  {{ formatCurrency(slotProps.data.calculatedPayment) }}
+                </template>
               </Column>
 
               <Column

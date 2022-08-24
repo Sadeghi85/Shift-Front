@@ -282,17 +282,15 @@ watch(
       <div class="col-12 md:col-12">
         <div class="card">
           <Toolbar class="mb-4">
-            <template #start>
+            <template #end>
               <Button
-                :label="t('button.new')"
                 icon="pi pi-plus"
-                class="p-button-success ml-2"
+                class="p-button-success p-button-rounded ml-2"
                 @click="openNew"
               />
               <Button
-                :label="t('button.delete')"
                 icon="pi pi-trash"
-                class="p-button-danger"
+                class="p-button-danger p-button-rounded"
                 :disabled="!selectedRows || !selectedRows.length"
                 @click="confirmDeleteSelected"
               />
