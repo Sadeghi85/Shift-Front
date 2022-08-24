@@ -7,7 +7,7 @@ export const useGeneralStore = defineStore({
     rowPerPage: useStorage<number>("rowPerPage", 10),
 
     // dropdown
-    dropdownItemsCount: 20,
+    dropdownItemsCount: 50,
   }),
   getters: {},
   actions: {},
