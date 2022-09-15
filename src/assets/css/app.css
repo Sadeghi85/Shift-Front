@@ -56,7 +56,7 @@
 }
 
 html {
-  font-size: 12px; /* the rest of elements are sized relative to this */
+  font-size: 13px !important; /* the rest of elements are sized relative to this */
 }
 
 * {
@@ -184,4 +184,8 @@ Persian Datepicker
 pre {
   white-space: pre-wrap;
   word-wrap: break-word;
+}
+
+label {
+  margin: 0;
 }
