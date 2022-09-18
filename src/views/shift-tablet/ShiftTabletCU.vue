@@ -33,14 +33,14 @@ const state = reactive({
   portal: ref<InstanceType<typeof PortalViewModel>>(),
   shiftDefinition: ref<InstanceType<typeof ShiftDefinitionViewModel>>(),
   portalLocation: ref<InstanceType<typeof PortalLocationViewModel>>(),
-  shiftDate: "",
+  shiftDateRange: ref<string[]>([]),
 });
 
 const rules = {
   portal: { required },
   shiftDefinition: { required },
   portalLocation: { required },
-  shiftDate: { required },
+  shiftDateRange: { required },
 };
 
 ////////
@@ -79,7 +79,12 @@ const handleSubmit = (isFormValid: boolean) => {
           new ShiftTabletInputModel({
             shiftId: v$.value.shiftDefinition.$model?.id,
             locationId: v$.value.portalLocation.$model?.locationId,
-            shiftDate: v$.value.shiftDate.$model,
+            shiftDateFrom: v$.value.shiftDateRange.$model
+              ? v$.value.shiftDateRange.$model[0]
+              : "",
+            shiftDateTo: v$.value.shiftDateRange.$model
+              ? v$.value.shiftDateRange.$model[1]
+              : "",
           })
         )
         .then((response) => {
@@ -108,7 +113,8 @@ const handleSubmit = (isFormValid: boolean) => {
             id: props.shiftTabletId,
             shiftId: v$.value.shiftDefinition.$model?.id,
             locationId: v$.value.portalLocation.$model?.locationId,
-            shiftDate: v$.value.shiftDate.$model,
+            shiftDateFrom: v$.value.shiftDateRange.$model[0],
+            shiftDateTo: v$.value.shiftDateRange.$model[1],
           })
         )
         .then((response) => {
@@ -135,7 +141,7 @@ const handleSubmit = (isFormValid: boolean) => {
 };
 
 const resetForm = () => {
-  state.shiftDate = "";
+  state.shiftDateRange = [];
   state.shiftDefinition = undefined;
   state.portalLocation = undefined;
 
@@ -189,6 +195,12 @@ const fillForm = async () => {
         (p) => p.id == shiftTablet.portalId
       );
 
+      await onDropDownPortalChange(
+        Object.create({
+          value: portals.value.find((x) => x.id == shiftTablet.portalId),
+        })
+      );
+
       v$.value.shiftDefinition.$model = shiftDefinitions.value.find(
         (p) => p.id == shiftTablet.shiftId
       );
@@ -197,7 +209,10 @@ const fillForm = async () => {
         (p) => p.locationId == shiftTablet.locationId
       );
 
-      v$.value.shiftDate.$model = shiftTablet.shiftDate;
+      v$.value.shiftDateRange.$model = [
+        shiftTablet.shiftDate,
+        shiftTablet.shiftDate,
+      ];
     }
   } catch (error: any) {
     if (typeof error.message === "object") {
@@ -249,7 +264,7 @@ const onDropDownPortalChange = async (event: any) => {
     }
 
     await onDropdownShiftDefinitionChange(
-      Object.create({ value: v$.value.shiftDefinition.$model })
+      Object.create({ value: shiftDefinitions.value[0] })
     );
   } catch (error: any) {
     if (typeof error.message === "object") {
@@ -388,16 +403,17 @@ watch(
               <div class="field col-12 mb-4 md:col-3">
                 <div class="p-float-label">
                   <PersianDatePicker
-                    v-model="v$.shiftDate.$model"
-                    :placeholder="t('shift.shiftDate') + '*'"
+                    v-model="v$.shiftDateRange.$model"
+                    :placeholder="t('shift.shiftDateRange') + '*'"
                     type="date"
                     format="YYYY-MM-DD"
                     display-format="jYYYY/jMM/jDD"
                     :input-class="
-                      v$.shiftDate.$invalid && submitted
+                      v$.shiftDateRange.$invalid && submitted
                         ? 'p-inputtext p-component p-invalid'
                         : 'p-inputtext p-component '
                     "
+                    :range="true"
                     :clearable="true"
                     :auto-submit="true"
                     :popover="true"

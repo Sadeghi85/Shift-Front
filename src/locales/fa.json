@@ -3,6 +3,7 @@
   "general.undefined": "نامشخص",
 
   "_": "input",
+  "input.dateRange": "بازه تاریخ",
   "input.fromDate": "از تاریخ",
   "input.toDate": "تا تاریخ",
   "input.search": "جستجو...",
@@ -32,6 +33,7 @@
   "shift.type.coordinator": "هماهنگی",
   "shiftDefinition.title": "شیفت",
   "shift.shiftDate": "تاریخ شیفت",
+  "shift.shiftDateRange": "بازه تاریخ",
   "shiftWorthPercent.title": "درصد ارزش شیفت",
   "shiftTablet.title": "شیفت",
   "shiftTabletCrew.agentFullname": "نام کارمند",

@@ -4,9 +4,11 @@ import { useGeneralStore } from "@/stores/general";
 import { useUserStore } from "@/stores/user";
 
 import { pdate } from "@/helpers/utilities";
+import { useGridFiltersStore } from "@/stores/gridFilters";
 
 const generalStore = useGeneralStore();
 const userStore = useUserStore();
+const gridFiltersStore = useGridFiltersStore();
 
 const router = useRouter();
 
@@ -69,8 +71,12 @@ const getShiftTabletReportPdf = () => {
         pageSize: 2147483647, // Int32.MaxValue
         orderKey: "id",
         desc: true,
-        fromDate: shiftTabletFromDate.value ?? "",
-        toDate: shiftTabletToDate.value ?? "",
+        fromDate: shiftTabletDateRange.value
+          ? shiftTabletDateRange.value[0]
+          : "",
+        toDate: shiftTabletDateRange.value ? shiftTabletDateRange.value[1] : "",
+        //fromDate: shiftTabletFromDate.value ?? "",
+        //toDate: shiftTabletToDate.value ?? "",
         isReplaced: null,
         isDeleted: false,
       })
@@ -105,8 +111,12 @@ const getShiftTabletReportExcel = () => {
         pageSize: 2147483647, // Int32.MaxValue
         orderKey: "id",
         desc: true,
-        fromDate: shiftTabletFromDate.value ?? "",
-        toDate: shiftTabletToDate.value ?? "",
+        fromDate: shiftTabletDateRange.value
+          ? shiftTabletDateRange.value[0]
+          : "",
+        toDate: shiftTabletDateRange.value ? shiftTabletDateRange.value[1] : "",
+        //fromDate: shiftTabletFromDate.value ?? "",
+        //toDate: shiftTabletToDate.value ?? "",
         isReplaced: null,
         isDeleted: false,
       })
@@ -234,8 +244,11 @@ const portal = ref<InstanceType<typeof PortalViewModel>>();
 const portalService = ref(new PortalService());
 
 const shiftDefinition = ref<InstanceType<typeof ShiftDefinitionViewModel>>();
-const shiftTabletFromDate = ref("");
-const shiftTabletToDate = ref("");
+//const shiftTabletFromDate = ref("");
+//const shiftTabletToDate = ref("");
+const shiftTabletDateRange = ref<string[]>(
+  gridFiltersStore.shiftTabletGridFilter.dateRange
+);
 
 const shiftTablets = ref<InstanceType<typeof ShiftTabletViewModel>[]>();
 const shiftDefinitions = ref<InstanceType<typeof ShiftDefinitionViewModel>[]>();
@@ -286,14 +299,20 @@ const onPage = async (event: any) => {
 const handleSearch = async () => {
   submitButtonIsLoading.value = true;
 
+  gridFiltersStore.setShiftTabletGridFilter({
+    dateRange: shiftTabletDateRange.value,
+  });
+
   await loadShiftTablets(
     new ShiftTabletSearchModel({
       pageSize: pageSize.value,
       pageNo: pageNumber.value,
 
       shiftId: shiftDefinition.value?.id ?? 0,
-      fromDate: shiftTabletFromDate.value ?? "",
-      toDate: shiftTabletToDate.value ?? "",
+      //fromDate: shiftTabletFromDate.value ?? "",
+      //toDate: shiftTabletToDate.value ?? "",
+      fromDate: shiftTabletDateRange.value ? shiftTabletDateRange.value[0] : "",
+      toDate: shiftTabletDateRange.value ? shiftTabletDateRange.value[1] : "",
 
       orderKey: "id",
       desc: true,
@@ -306,8 +325,13 @@ const handleSearch = async () => {
 
 const resetSearchForm = async () => {
   shiftDefinition.value = undefined;
-  shiftTabletFromDate.value = "";
-  shiftTabletToDate.value = "";
+  //shiftTabletFromDate.value = "";
+  //shiftTabletToDate.value = "";
+  shiftTabletDateRange.value = [];
+
+  gridFiltersStore.setShiftTabletGridFilter({
+    dateRange: shiftTabletDateRange.value,
+  });
 
   searchFormIsVisible.value = false;
 
@@ -484,28 +508,13 @@ onMounted(async () => {
                   <div class="field col-12 mb-4 md:col-3">
                     <div class="p-float-label">
                       <PersianDatePicker
-                        v-model="shiftTabletFromDate"
-                        :placeholder="t('input.fromDate')"
+                        v-model="shiftTabletDateRange"
+                        :placeholder="t('input.dateRange')"
                         type="date"
                         format="YYYY-MM-DD"
                         display-format="jYYYY/jMM/jDD"
                         input-class="p-inputtext p-component"
-                        :clearable="true"
-                        :auto-submit="true"
-                        :popover="true"
-                      />
-                    </div>
-                  </div>
-
-                  <div class="field col-12 mb-4 md:col-3">
-                    <div class="p-float-label">
-                      <PersianDatePicker
-                        v-model="shiftTabletToDate"
-                        :placeholder="t('input.toDate')"
-                        type="date"
-                        format="YYYY-MM-DD"
-                        display-format="jYYYY/jMM/jDD"
-                        input-class="p-inputtext p-component"
+                        :range="true"
                         :clearable="true"
                         :auto-submit="true"
                         :popover="true"

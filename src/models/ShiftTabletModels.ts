@@ -2,7 +2,8 @@ interface IShiftTabletInputModel {
   id?: number;
   shiftId?: number;
   locationId?: number;
-  shiftDate?: string;
+  shiftDateFrom?: string;
+  shiftDateTo?: string;
   shiftWorthPercent?: string;
   hasLivePrograms?: boolean;
 }
@@ -10,7 +11,8 @@ export class ShiftTabletInputModel implements IShiftTabletInputModel {
   id: number;
   shiftId: number;
   locationId: number;
-  shiftDate: string;
+  shiftDateFrom: string;
+  shiftDateTo: string;
   shiftWorthPercent: string;
   hasLivePrograms: boolean;
 
@@ -18,7 +20,8 @@ export class ShiftTabletInputModel implements IShiftTabletInputModel {
     this.id = input.id || 0;
     this.shiftId = input.shiftId || 0;
     this.locationId = input.locationId || 0;
-    this.shiftDate = input.shiftDate || "";
+    this.shiftDateFrom = input.shiftDateFrom || "";
+    this.shiftDateTo = input.shiftDateTo || "";
     this.shiftWorthPercent = input.shiftWorthPercent || "0";
     this.hasLivePrograms = input.hasLivePrograms || false;
   }
