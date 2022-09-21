@@ -241,6 +241,15 @@ const routes: Array<RouteRecordRaw> = [
       },
     ],
   },
+  {
+    path: "/test",
+    name: "test",
+    component: () =>
+      import(/* webpackChunkName: "test" */ "../views/test/Test.vue"),
+    meta: {
+      requiresAuth: false,
+    },
+  },
 ];
 
 const router = createRouter({
