@@ -76,7 +76,7 @@ const handleSubmit = (isFormValid: boolean) => {
     if (props.shiftTabletId == 0) {
       shiftTabletService.value
         .create(
-          new ShiftTabletInputModel({
+          new ShiftTabletCreateModel({
             shiftId: v$.value.shiftDefinition.$model?.id,
             locationId: v$.value.portalLocation.$model?.locationId,
             shiftDateFrom: v$.value.shiftDateRange.$model
@@ -109,12 +109,11 @@ const handleSubmit = (isFormValid: boolean) => {
     } else {
       shiftTabletService.value
         .update(
-          new ShiftTabletInputModel({
+          new ShiftTabletUpdateModel({
             id: props.shiftTabletId,
             shiftId: v$.value.shiftDefinition.$model?.id,
             locationId: v$.value.portalLocation.$model?.locationId,
-            shiftDateFrom: v$.value.shiftDateRange.$model[0],
-            shiftDateTo: v$.value.shiftDateRange.$model[1],
+            shiftDate: v$.value.shiftDateRange.$model[0],
           })
         )
         .then((response) => {

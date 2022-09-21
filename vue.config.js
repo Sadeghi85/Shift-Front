@@ -289,7 +289,8 @@ module.exports = defineConfig({
             ],
             "@/models/ShiftTabletModels": [
               "ShiftTabletViewModel",
-              "ShiftTabletInputModel",
+              "ShiftTabletCreateModel",
+              "ShiftTabletUpdateModel",
               "ShiftTabletSearchModel",
             ],
             "@/models/ShiftTabletCrewModels": [
@@ -375,7 +376,7 @@ module.exports = defineConfig({
         onProxyReq: function (proxyReq) {
           proxyReq.setHeader(
             "Cookie",
-            "rtcookie=rui=1krFREj/0UVuMnfxv3FLR5+EuKVYbVwWTWo1TPx4PZixdlaVvdSC4cceLfenXeieq6nGa1F09US7QMgXIbgEJoQeaOsQtm/sZZugwC+o3pL3wR7T5Pl6l8u2pvzrVzPH"
+            "rtcookie=rui=1krFREj/0UVuMnfxv3FLR5+EuKVYbVwWTWo1TPx4PZixdlaVvdSC4cceLfenXeieq6nGa1F09US7QMgXIbgEJhAi4OJCPoPWtb4RTEFwOkyxIDYjG9jb0g5yEAxNIaTy"
           );
         },
       },

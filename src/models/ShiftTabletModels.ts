@@ -2,12 +2,18 @@ interface IShiftTabletInputModel {
   id?: number;
   shiftId?: number;
   locationId?: number;
-  shiftDateFrom?: string;
-  shiftDateTo?: string;
   shiftWorthPercent?: string;
   hasLivePrograms?: boolean;
 }
-export class ShiftTabletInputModel implements IShiftTabletInputModel {
+interface IShiftTabletCreateModel extends IShiftTabletInputModel {
+  shiftDateFrom?: string;
+  shiftDateTo?: string;
+}
+interface IShiftTabletUpdateModel extends IShiftTabletInputModel {
+  shiftDate?: string;
+}
+
+export class ShiftTabletCreateModel implements IShiftTabletCreateModel {
   id: number;
   shiftId: number;
   locationId: number;
@@ -16,7 +22,7 @@ export class ShiftTabletInputModel implements IShiftTabletInputModel {
   shiftWorthPercent: string;
   hasLivePrograms: boolean;
 
-  constructor(input: IShiftTabletInputModel) {
+  constructor(input: IShiftTabletCreateModel) {
     this.id = input.id || 0;
     this.shiftId = input.shiftId || 0;
     this.locationId = input.locationId || 0;
@@ -27,9 +33,28 @@ export class ShiftTabletInputModel implements IShiftTabletInputModel {
   }
 }
 
+export class ShiftTabletUpdateModel implements IShiftTabletUpdateModel {
+  id: number;
+  shiftId: number;
+  locationId: number;
+  shiftDate: string;
+  shiftWorthPercent: string;
+  hasLivePrograms: boolean;
+
+  constructor(input: IShiftTabletUpdateModel) {
+    this.id = input.id || 0;
+    this.shiftId = input.shiftId || 0;
+    this.locationId = input.locationId || 0;
+    this.shiftDate = input.shiftDate || "";
+    this.shiftWorthPercent = input.shiftWorthPercent || "0";
+    this.hasLivePrograms = input.hasLivePrograms || false;
+  }
+}
+
 interface IShiftTabletSearchModel {
   id?: number;
   shiftId?: number;
+  agentId?: number;
   locationId?: number;
   pageNo?: number;
   pageSize?: number;
@@ -42,6 +67,7 @@ interface IShiftTabletSearchModel {
 export class ShiftTabletSearchModel implements IShiftTabletSearchModel {
   id: number;
   shiftId: number;
+  agentId: number;
   locationId: number;
   pageNo: number;
   pageSize: number;
@@ -54,6 +80,7 @@ export class ShiftTabletSearchModel implements IShiftTabletSearchModel {
   constructor(input: IShiftTabletSearchModel) {
     this.id = input.id || 0;
     this.shiftId = input.shiftId || 0;
+    this.agentId = input.agentId || 0;
     this.locationId = input.locationId || 0;
     this.pageNo = input.pageNo || 0;
     this.pageSize = input.pageSize || 10;

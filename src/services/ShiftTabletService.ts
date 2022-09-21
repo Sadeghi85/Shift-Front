@@ -2,9 +2,10 @@ import { Api } from "@/http-client/api";
 import { AxiosInstance } from "axios";
 import { IApiResponseModel } from "@/models/ApiResponseModel";
 import {
-  ShiftTabletViewModel,
+  ShiftTabletCreateModel,
   ShiftTabletSearchModel,
-  ShiftTabletInputModel,
+  ShiftTabletUpdateModel,
+  ShiftTabletViewModel,
 } from "@/models/ShiftTabletModels";
 
 export class ShiftTabletService {
@@ -30,11 +31,11 @@ export class ShiftTabletService {
       });
   }
 
-  public create(body: ShiftTabletInputModel) {
-    return this.api.post("/ShiftTablet/Register", body);
+  public create(body: ShiftTabletCreateModel) {
+    return this.api.post("/ShiftTablet/Create", body);
   }
 
-  public update(body: ShiftTabletInputModel) {
+  public update(body: ShiftTabletUpdateModel) {
     return this.api.post("/ShiftTablet/Update", body);
   }
 
