@@ -198,23 +198,25 @@ watch(
                               padding: 0;
                             "
                           >
-                            <div style="min-height: 100px">
+                            <div style="min-height: 120px">
                               <div :class="dayClass(calendarDay)">
                                 <a style="padding: 4px">{{
                                   calendarDay.jDate()
                                 }}</a>
                               </div>
-                              <span
-                                v-for="(event, eventIndex) in dayEvents(
-                                  calendarDay
-                                )"
-                                :key="eventIndex"
-                              >
-                                <slot
-                                  :event="event"
-                                  :eventIndex="eventIndex"
-                                ></slot>
-                              </span>
+                              <div class="event-content">
+                                <span
+                                  v-for="(event, eventIndex) in dayEvents(
+                                    calendarDay
+                                  )"
+                                  :key="eventIndex"
+                                >
+                                  <slot
+                                    :event="event"
+                                    :eventIndex="eventIndex"
+                                  ></slot>
+                                </span>
+                              </div>
                             </div>
                           </td>
                         </tr>
@@ -266,6 +268,10 @@ watch(
   justify-items: center;
   align-items: center;
   display: inline-grid;
+}
+
+.event-content {
+  padding: 5px 0 5px 0;
 }
 
 .current-month {

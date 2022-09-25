@@ -309,10 +309,10 @@ onMounted(async () => {
                 >
                   <div class="event-title" :class="eventClass(slotProps.event)">
                     {{ slotProps.event.title }}
-                    ({{ slotProps.event.meta.templateCount }})
-                    <span class="badge badge-info">{{
-                      slotProps.event.meta.crewCount
-                    }}</span>
+                    <span v-if="slotProps.event.meta.templateCount > 0">
+                      ({{ slotProps.event.meta.templateCount }})
+                      {{ slotProps.event.meta.crewCount }}
+                    </span>
                   </div>
                 </MyFullCalendar>
               </div>
@@ -326,21 +326,26 @@ onMounted(async () => {
 
 <style lang="scss" scoped>
 .event-title {
-  padding: 4px;
-  border-radius: 2px solid #696969;
+  padding: 1px;
+  margin: 1px;
+  font-size: 0.85em;
+  border-radius: 3px;
 }
 
 .event-title-ok {
-  background-color: #0b0;
-  color: #fff;
+  background-color: #54c354;
+  border: 1px solid #13bd13;
+  color: #eee;
 }
 .event-title-nok {
-  background-color: #b00 !important;
-  color: #fff;
+  background-color: #e46464;
+  border: 1px solid #d22020;
+  color: #eee;
 }
 
 .event-title-warning {
-  background-color: rgb(255, 243, 16);
-  color: #000;
+  background-color: rgb(255 227 118);
+  border: 1px solid rgb(230 183 1);
+  color: #777;
 }
 </style>
