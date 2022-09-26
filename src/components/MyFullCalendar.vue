@@ -60,20 +60,21 @@ const render = (props: any) => {
   today.value = jMoment(props.date, "jYYYY/jMM/jDD");
   startMonth.value = today.value.clone().startOf("jMonth");
   endMonth.value = today.value.clone().endOf("jMonth");
+
   // day() starts from 0:sunday, we want 0:saturday, hence the -1
   startCalendar.value = startMonth.value
     .clone()
-    .add(-startMonth.value.day() - 1, "day");
+    .add(startMonth.value.day() == 6 ? 0 : -startMonth.value.day() - 1, "day");
   endCalendar.value = endMonth.value
     .clone()
-    .add(6 - endMonth.value.day() - 1, "day");
+    .add(endMonth.value.day() == 6 ? 6 : 6 - endMonth.value.day() - 1, "day");
 
-  const calendarDiff = endCalendar.value.diff(startCalendar.value, "days") + 1;
+  calendarDiff.value = endCalendar.value.diff(startCalendar.value, "days") + 1;
 
   calendarDays.value = [];
   calendarWeeks.value = [];
 
-  for (let i = 0; i < calendarDiff; i++) {
+  for (let i = 0; i < calendarDiff.value; i++) {
     calendarDays.value.push(startCalendar.value.clone().add(i, "day"));
 
     if (i % 7 == 6) {
@@ -83,171 +84,100 @@ const render = (props: any) => {
   }
 };
 
-watch(
-  () => props,
-  (newProps, oldProps) => {
-    console.log(newProps);
+// watch(
+//   () => props,
+//   (newProps, oldProps) => {
+//     //console.log(newProps);
 
-    if (newProps.date && newProps.events && newProps.loading == false) {
-      render(newProps);
-    }
+//     if (newProps.date && newProps.events && newProps.loading == false) {
+//       render(newProps);
+//     }
+//   },
+//   { immediate: true, deep: true }
+// );
+
+watch(
+  () => props.events,
+  (newEvents, oldEvents) => {
+    //console.log(newProps);
+
+    render(props);
   },
   { immediate: true, deep: true }
 );
 </script>
 <template>
-  <div class="layout-content">
-    <div class="content-section">
-      <div class="grid">
-        <div class="col-12 md:col-12 p-fluid">
-          <div class="card info">
-            <div class="grid">
-              <div class="col-12 md:col-12 p-fluid">
-                <div class="fc_container">
-                  <div v-if="props.loading" class="fc_overlay">
-                    <span class="pi pi-spinner" style="font-size: 6rem"></span>
-                  </div>
-                  <div class="fc_component">
-                    <table
-                      style="
-                        width: 100%;
-                        border-spacing: 0;
-                        border-collapse: collapse;
-                        border: 1px solid #ddd;
-                        table-layout: fixed;
-                      "
+  <div class="grid">
+    <div class="col-12 md:col-12 p-fluid">
+      <div class="fc_container">
+        <div v-if="props.loading" class="fc_overlay">
+          <span class="pi pi-spinner" style="font-size: 6rem"></span>
+        </div>
+        <div class="fc_component">
+          <table
+            style="
+              width: 100%;
+              border-spacing: 0;
+              border-collapse: collapse;
+              border: 1px solid #ddd;
+              table-layout: fixed;
+            "
+          >
+            <thead>
+              <tr style="background-color: #f8f9fa">
+                <th style="border: 1px solid #ddd; margin: 0; padding: 0">
+                  <div>شنبه</div>
+                </th>
+                <th style="border: 1px solid #ddd; margin: 0; padding: 0">
+                  <div>یک‌شنبه</div>
+                </th>
+                <th style="border: 1px solid #ddd; margin: 0; padding: 0">
+                  <div>دوشنبه</div>
+                </th>
+                <th style="border: 1px solid #ddd; margin: 0; padding: 0">
+                  <div>سه‌شنبه</div>
+                </th>
+                <th style="border: 1px solid #ddd; margin: 0; padding: 0">
+                  <div>چهارشنبه</div>
+                </th>
+                <th style="border: 1px solid #ddd; margin: 0; padding: 0">
+                  <div>پنج‌شنبه</div>
+                </th>
+                <th style="border: 1px solid #ddd; margin: 0; padding: 0">
+                  <div>جمعه</div>
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr
+                v-for="(calendarWeek, weekIndex) in calendarWeeks"
+                :key="weekIndex"
+              >
+                <td
+                  v-for="(calendarDay, dayIndex) in calendarWeek"
+                  :key="dayIndex"
+                  style="border: 1px solid #ddd; margin: 0; padding: 0"
+                >
+                  <div style="min-height: 120px">
+                    <div :class="dayClass(calendarDay)">
+                      <a style="padding: 4px">{{ calendarDay.jDate() }}</a>
+                    </div>
+                    <div
+                      v-if="today.jMonth() == calendarDay.jMonth()"
+                      class="event-content"
                     >
-                      <thead>
-                        <tr style="background-color: #f8f9fa">
-                          <th
-                            style="
-                              border: 1px solid #ddd;
-                              margin: 0;
-                              padding: 0;
-                            "
-                          >
-                            <div>شنبه</div>
-                          </th>
-                          <th
-                            style="
-                              border: 1px solid #ddd;
-                              margin: 0;
-                              padding: 0;
-                            "
-                          >
-                            <div>یک‌شنبه</div>
-                          </th>
-                          <th
-                            style="
-                              border: 1px solid #ddd;
-                              margin: 0;
-                              padding: 0;
-                            "
-                          >
-                            <div>دوشنبه</div>
-                          </th>
-                          <th
-                            style="
-                              border: 1px solid #ddd;
-                              margin: 0;
-                              padding: 0;
-                            "
-                          >
-                            <div>سه‌شنبه</div>
-                          </th>
-                          <th
-                            style="
-                              border: 1px solid #ddd;
-                              margin: 0;
-                              padding: 0;
-                            "
-                          >
-                            <div>چهارشنبه</div>
-                          </th>
-                          <th
-                            style="
-                              border: 1px solid #ddd;
-                              margin: 0;
-                              padding: 0;
-                            "
-                          >
-                            <div>پنج‌شنبه</div>
-                          </th>
-                          <th
-                            style="
-                              border: 1px solid #ddd;
-                              margin: 0;
-                              padding: 0;
-                            "
-                          >
-                            <div>جمعه</div>
-                          </th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <tr
-                          v-for="(calendarWeek, weekIndex) in calendarWeeks"
-                          :key="weekIndex"
-                        >
-                          <td
-                            v-for="(calendarDay, dayIndex) in calendarWeek"
-                            :key="dayIndex"
-                            style="
-                              border: 1px solid #ddd;
-                              margin: 0;
-                              padding: 0;
-                            "
-                          >
-                            <div style="min-height: 120px">
-                              <div :class="dayClass(calendarDay)">
-                                <a style="padding: 4px">{{
-                                  calendarDay.jDate()
-                                }}</a>
-                              </div>
-                              <div class="event-content">
-                                <span
-                                  v-for="(event, eventIndex) in dayEvents(
-                                    calendarDay
-                                  )"
-                                  :key="eventIndex"
-                                >
-                                  <slot
-                                    :event="event"
-                                    :eventIndex="eventIndex"
-                                  ></slot>
-                                </span>
-                              </div>
-                            </div>
-                          </td>
-                        </tr>
-                      </tbody>
-                    </table>
+                      <span
+                        v-for="(event, eventIndex) in dayEvents(calendarDay)"
+                        :key="eventIndex"
+                      >
+                        <slot :event="event" :eventIndex="eventIndex"></slot>
+                      </span>
+                    </div>
                   </div>
-                </div>
-
-                <div>today: {{ today.format("jYYYY/jMM/jDD") }}</div>
-                <div>
-                  start of month: {{ startMonth.format("jYYYY/jMM/jDD") }}
-                </div>
-                <div>end of month: {{ endMonth.format("jYYYY/jMM/jDD") }}</div>
-                <div>
-                  start of calendar: {{ startCalendar.format("jYYYY/jMM/jDD") }}
-                </div>
-                <div>
-                  end of calendar: {{ endCalendar.format("jYYYY/jMM/jDD") }}
-                </div>
-                <ul>
-                  <li
-                    v-for="calendarDay in calendarDays"
-                    :key="calendarDay.dayOfYear"
-                  >
-                    {{ calendarDay.format("jYYYY/jMM/jDD") }}
-                  </li>
-                </ul>
-                <div>{{ calendarDiff }}</div>
-              </div>
-            </div>
-          </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
         </div>
       </div>
     </div>
