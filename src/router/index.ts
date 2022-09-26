@@ -242,12 +242,14 @@ const routes: Array<RouteRecordRaw> = [
     ],
   },
   {
-    path: "/test",
-    name: "test",
+    path: "/shift-tablet-full-calendar",
+    name: "shift-tablet-full-calendar",
     component: () =>
-      import(/* webpackChunkName: "test" */ "../views/test/Test.vue"),
+      import(
+        /* webpackChunkName: "shift-tablet-full-calendar" */ "../views/reports/ShiftTabletFullCalendar.vue"
+      ),
     meta: {
-      requiresAuth: false,
+      requiresAuth: true,
     },
   },
 ];

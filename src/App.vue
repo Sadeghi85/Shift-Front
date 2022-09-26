@@ -68,6 +68,13 @@ const showError = (detail: string) => {
       }"
       >{{ t("route.payment") }}</router-link
     >
+    |
+    <router-link
+      :to="{
+        name: 'shift-tablet-full-calendar',
+      }"
+      >{{ t("route.shift-tablet-full-calendar") }}</router-link
+    >
   </nav>
 
   <router-view v-slot="{ Component }">

@@ -92,6 +92,11 @@ const v$Search = useVuelidate(rulesSearch, stateSearch);
 //const agents = ref<InstanceType<typeof AgentViewModel>[]>();
 //const agentService = ref(new AgentService());
 
+// const shiftDefinitions = ref<InstanceType<typeof ShiftDefinitionViewModel>[]>();
+// const shiftDefinitionService = ref(new ShiftDefinitionService());
+
+const shiftDefinitions = ref();
+
 const portals = ref<InstanceType<typeof PortalViewModel>[]>();
 const portalService = ref(new PortalService());
 
@@ -104,14 +109,14 @@ const shiftTabletFullCalendars =
 const reportService = ref(new ReportService());
 
 const eventClass = (event: any) => {
-  console.log(event);
+  //console.log(event);
   if (
-    event.meta.templateCount > 0 &&
+    event.meta.shiftTabletId > 0 &&
     event.meta.crewCount >= event.meta.templateCount
   ) {
     return "event-title-ok";
   } else if (
-    event.meta.templateCount > 0 &&
+    event.meta.shiftTabletId > 0 &&
     event.meta.crewCount < event.meta.templateCount
   ) {
     return "event-title-warning";
@@ -148,6 +153,15 @@ async function loadShiftTabletFullCalendar() {
         })
       )
     ).data;
+
+    shiftDefinitions.value = [
+      ...new Map(
+        shiftTabletFullCalendars.value.map((item) => [
+          item["title"],
+          { title: item.title, templateCount: item.templateCount },
+        ])
+      ).values(),
+    ];
 
     events.value = shiftTabletFullCalendars.value.map(
       (s: ShiftTabletFullCalendarViewModel) => {
@@ -301,6 +315,31 @@ onMounted(async () => {
           <div class="card info">
             <div class="grid">
               <div class="col-12 md:col-12 p-fluid">
+                <div class="grid">
+                  <div
+                    v-for="(shiftDefinition, index) in shiftDefinitions"
+                    :key="index"
+                    class="col"
+                    style="
+                      display: flex;
+                      justify-content: center;
+                      background-color: #0fd2d2;
+                      color: #000;
+                      border-radius: 3px;
+                      padding: 5px;
+                      margin: 1px;
+                    "
+                  >
+                    {{ shiftDefinition.title }} ({{
+                      shiftDefinition.templateCount
+                    }})
+                  </div>
+                </div>
+
+                <div class="grid">
+                  <div class="col">&nbsp;</div>
+                </div>
+
                 <MyFullCalendar
                   v-slot="slotProps"
                   :loading="loading"
@@ -309,9 +348,8 @@ onMounted(async () => {
                 >
                   <div class="event-title" :class="eventClass(slotProps.event)">
                     {{ slotProps.event.title }}
-                    <span v-if="slotProps.event.meta.templateCount > 0">
-                      ({{ slotProps.event.meta.templateCount }})
-                      {{ slotProps.event.meta.crewCount }}
+                    <span v-if="slotProps.event.meta.shiftTabletId > 0">
+                      ({{ slotProps.event.meta.crewCount }})
                     </span>
                   </div>
                 </MyFullCalendar>
