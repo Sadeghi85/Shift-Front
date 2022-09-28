@@ -46,6 +46,7 @@ declare module '@vue/runtime-core' {
     ShiftDefinitionTemplate: typeof import('./src/views/shift-definition/ShiftDefinitionTemplate.vue')['default']
     ShiftTabletCrewAgentReplacement: typeof import('./src/views/shift-tablet-coordinator/ShiftTabletCrewAgentReplacement.vue')['default']
     ShiftTabletCrewCreate: typeof import('./src/views/shift-tablet-coordinator/ShiftTabletCrewCreate.vue')['default']
+    ShiftTabletCrewFullCalendar: typeof import('./src/views/reports/ShiftTabletCrewFullCalendar.vue')['default']
     ShiftTabletCrewRD: typeof import('./src/views/shift-tablet-coordinator/ShiftTabletCrewRD.vue')['default']
     ShiftTabletCU: typeof import('./src/views/shift-tablet/ShiftTabletCU.vue')['default']
     ShiftTabletFullCalendar: typeof import('./src/views/reports/ShiftTabletFullCalendar.vue')['default']

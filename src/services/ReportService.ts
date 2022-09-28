@@ -2,6 +2,8 @@ import { Api } from "@/http-client/api";
 import { AxiosInstance } from "axios";
 import { IApiResponseModel } from "@/models/ApiResponseModel";
 import {
+  ShiftTabletCrewFullCalendarInputModel,
+  ShiftTabletCrewFullCalendarViewModel,
   ShiftTabletFullCalendarInputModel,
   ShiftTabletFullCalendarViewModel,
 } from "@/models/ReportModel";
@@ -16,6 +18,25 @@ export class ReportService {
     return this.api
       .post<IApiResponseModel<ShiftTabletFullCalendarViewModel>>(
         "/Report/GetShiftTabletFullCalendar",
+        body
+      )
+      .then((response) => {
+        if (response.data.success == false) {
+          throw {
+            message: response.data,
+          };
+        }
+
+        return response.data;
+      });
+  }
+
+  public getShiftTabletCrewFullCalendar(
+    body: ShiftTabletCrewFullCalendarInputModel
+  ) {
+    return this.api
+      .post<IApiResponseModel<ShiftTabletCrewFullCalendarViewModel>>(
+        "/Report/GetShiftTabletCrewFullCalendar",
         body
       )
       .then((response) => {

@@ -1,7 +1,10 @@
 <script lang="ts" setup>
 import jMoment from "moment-jalaali";
 import useApiErrorStore from "@/stores/api-error";
+import { useGeneralStore } from "@/stores/general";
 import {
+  ShiftTabletCrewFullCalendarInputModel,
+  ShiftTabletCrewFullCalendarViewModel,
   ShiftTabletFullCalendarInputModel,
   ShiftTabletFullCalendarViewModel,
 } from "@/models/ReportModel";
@@ -13,20 +16,29 @@ const toast = useToast();
 const confirm = useConfirm();
 const confirmGroup = uuidv4();
 
+const generalStore = useGeneralStore();
 const apiErrorStore = useApiErrorStore();
 
 const loading = ref(true);
 const searchButtonIsLoading = ref(false);
 
 const stateSearch = reactive({
+  agent: ref<InstanceType<typeof AgentViewModel>>(),
   portal: ref<InstanceType<typeof PortalViewModel>>(),
   datePersian: ref(""),
 });
 const rulesSearch = {
+  agent: { required },
   portal: { required },
   datePersian: { required },
 };
 const v$Search = useVuelidate(rulesSearch, stateSearch);
+
+const agents = ref<InstanceType<typeof AgentViewModel>[]>();
+const agentService = ref(new AgentService());
+
+// const shiftDefinitions = ref<InstanceType<typeof ShiftDefinitionViewModel>[]>();
+// const shiftDefinitionService = ref(new ShiftDefinitionService());
 
 const shiftDefinitions = ref();
 
@@ -37,21 +49,34 @@ const shiftTablets = ref<InstanceType<typeof ShiftTabletViewModel>[]>();
 const shiftTabletService = ref(new ShiftTabletService());
 
 const events = ref<Events>();
-const shiftTabletFullCalendars =
-  ref<InstanceType<typeof ShiftTabletFullCalendarViewModel>[]>();
+const shiftTabletCrewFullCalendars =
+  ref<InstanceType<typeof ShiftTabletCrewFullCalendarViewModel>[]>();
 const reportService = ref(new ReportService());
 
+const onDropdownAgentFilter = async (event: any) => {
+  try {
+    agents.value = (
+      await agentService.value.getAll(
+        new AgentSearchModel({
+          pageSize: generalStore.dropdownItemsCount,
+          orderKey: "id",
+          desc: true,
+          name: event.value,
+        })
+      )
+    ).data;
+  } catch (error: any) {
+    if (typeof error.message === "object") {
+      apiErrorStore.setApiErrorMessage(error.message.message);
+    } else {
+      console.log(error.message);
+    }
+  }
+};
+
 const eventClass = (event: any) => {
-  if (
-    event.meta.shiftTabletId > 0 &&
-    event.meta.crewCount >= event.meta.templateCount
-  ) {
+  if (event.meta.shiftTabletId > 0) {
     return "event-title-ok";
-  } else if (
-    event.meta.shiftTabletId > 0 &&
-    event.meta.crewCount < event.meta.templateCount
-  ) {
-    return "event-title-warning";
   } else {
     return "event-title-nok";
   }
@@ -66,26 +91,27 @@ async function loadShiftTabletFullCalendar() {
       return;
     }
 
-    shiftTabletFullCalendars.value = (
-      await reportService.value.getShiftTabletFullCalendar(
-        new ShiftTabletFullCalendarInputModel({
+    shiftTabletCrewFullCalendars.value = (
+      await reportService.value.getShiftTabletCrewFullCalendar(
+        new ShiftTabletCrewFullCalendarInputModel({
           datePersian: v$Search.value.datePersian.$model,
           portalId: v$Search.value.portal.$model?.id,
+          agentId: v$Search.value.agent.$model?.id,
         })
       )
     ).data;
 
     shiftDefinitions.value = [
       ...new Map(
-        shiftTabletFullCalendars.value.map((item) => [
+        shiftTabletCrewFullCalendars.value.map((item) => [
           item["title"],
-          { title: item.title, templateCount: item.templateCount },
+          { title: item.title },
         ])
       ).values(),
     ];
 
-    events.value = shiftTabletFullCalendars.value.map(
-      (s: ShiftTabletFullCalendarViewModel) => {
+    events.value = shiftTabletCrewFullCalendars.value.map(
+      (s: ShiftTabletCrewFullCalendarViewModel) => {
         return {
           id: s.id,
           start: s.shiftDate,
@@ -148,6 +174,21 @@ const loadEssentials = async () => {
       v$Search.value.portal.$model = portals.value[0];
     }
 
+    // agents
+    agents.value = (
+      await agentService.value.getAll(
+        new AgentSearchModel({
+          pageSize: generalStore.dropdownItemsCount,
+          orderKey: "id",
+          desc: true,
+        })
+      )
+    ).data;
+
+    if (agents.value.length > 0) {
+      v$Search.value.agent.$model = agents.value[0];
+    }
+
     v$Search.value.datePersian.$model = jMoment().format("jYYYY/jMM/01");
 
     await handleSearch();
@@ -194,6 +235,27 @@ onMounted(async () => {
                     >
 
                     <label for="portal">{{ t("portal.title") }}</label>
+                  </div>
+                </div>
+                <div class="field col-12 mb-4 md:col-3">
+                  <div class="p-float-label">
+                    <Dropdown
+                      id="agent"
+                      v-model="v$Search.agent.$model"
+                      :options="agents"
+                      option-label="fullname"
+                      :filter="true"
+                      :show-clear="true"
+                      :class="{ 'p-invalid': v$Search.agent.$invalid }"
+                      @filter="onDropdownAgentFilter"
+                      ><template #empty>
+                        {{ t("dropdown.slot.empty") }}
+                      </template></Dropdown
+                    >
+
+                    <label for="agent">{{
+                      t("shiftTabletCrew.agentFullname")
+                    }}</label>
                   </div>
                 </div>
                 <div class="field col-12 mb-4 md:col-3">
@@ -251,9 +313,7 @@ onMounted(async () => {
                       margin: 1px;
                     "
                   >
-                    {{ shiftDefinition.title }} ({{
-                      shiftDefinition.templateCount
-                    }})
+                    {{ shiftDefinition.title }}
                   </div>
                 </div>
 
@@ -269,9 +329,6 @@ onMounted(async () => {
                 >
                   <div class="event-title" :class="eventClass(slotProps.event)">
                     {{ slotProps.event.title }}
-                    <span v-if="slotProps.event.meta.shiftTabletId > 0">
-                      ({{ slotProps.event.meta.crewCount }})
-                    </span>
                   </div>
                 </MyFullCalendar>
               </div>

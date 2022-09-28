@@ -55,43 +55,61 @@ export class ShiftTabletFullCalendarViewModel
   }
 }
 
-// interface ContactDTO {
-//   uuid: string;
-//   firstName: string;
-//   middleName: string;
-//   lastName: string;
-//   phoneNumber: string;
-//   emailAddress: string;
-//   homeAddress: string;
-// }
-// export class Contact implements ContactDTO {
-//   uuid: string;
-//   firstName: string;
-//   middleName: string;
-//   lastName: string;
-//   phoneNumber: string;
-//   emailAddress: string;
-//   homeAddress: string;
+interface IShiftTabletCrewFullCalendarInputModel {
+  agentId?: number;
+  portalId?: number;
+  datePersian?: string;
+}
+export class ShiftTabletCrewFullCalendarInputModel
+  implements IShiftTabletCrewFullCalendarInputModel
+{
+  agentId: number;
+  portalId: number;
+  datePersian: string;
 
-//   constructor(params: ContactDTO) {
-//       this.uuid = params.uuid
-//       this.firstName = params.firstName
-//       this.middleName = params.middleName
-//       this.lastName = params.lastName
-//       this.phoneNumber = params.phoneNumber
-//       this.emailAddress = params.emailAddress
-//       this.homeAddress = params.homeAddress
-//   }
+  constructor(params: IShiftTabletCrewFullCalendarInputModel) {
+    this.agentId = params.agentId || 0;
+    this.portalId = params.portalId || 0;
+    this.datePersian = params.datePersian || "";
+  }
+}
 
-//   toJSON() {
-//       return {
-//           uuid: this.uuid,
-//           firstName: this.firstName,
-//           middleName: this.middleName,
-//           lastName: this.lastName,
-//           phoneNumber: this.phoneNumber,
-//           emailAddress: this.emailAddress,
-//           homeAddress: this.homeAddress
-//       }
-//   }
-// }
+interface IShiftTabletCrewFullCalendarViewModel {
+  id?: number;
+  title?: string;
+  portalId?: number;
+  shiftId?: number;
+  shiftTabletId?: number;
+  shiftTabletCrewId?: number;
+  agentId?: number;
+  portalTitle?: string;
+  shiftDate?: string;
+}
+
+export class ShiftTabletCrewFullCalendarViewModel
+  implements IShiftTabletCrewFullCalendarViewModel
+{
+  id: number;
+  title: string;
+  portalId: number;
+  shiftId: number;
+  shiftTabletId: number;
+  shiftTabletCrewId: number;
+  agentId: number;
+  portalTitle: string;
+  shiftDate: string;
+
+  constructor(params: IShiftTabletCrewFullCalendarViewModel) {
+    this.id = params.id || 0;
+    this.title = params.title || "";
+
+    this.portalId = params.portalId || 0;
+    this.shiftId = params.shiftId || 0;
+    this.shiftTabletId = params.shiftTabletId || 0;
+    this.shiftTabletCrewId = params.shiftTabletCrewId || 0;
+    this.agentId = params.agentId || 0;
+
+    this.portalTitle = params.portalTitle || "";
+    this.shiftDate = params.shiftDate || "";
+  }
+}

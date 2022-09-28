@@ -107,6 +107,7 @@
   "route.shift-tablet-crew": "تعریف کارکنان شیفت",
   "route.payment": "ثبت پرداخت عوامل پخش",
   "route.shift-tablet-full-calendar": "تقویم لوح شیفت",
+  "route.shift-tablet-crew-full-calendar": "تقویم کارکنان لوح شیفت",
 
   "_": "toast",
   "toast.success.create": "ثبت با موفقیت انجام شد",
