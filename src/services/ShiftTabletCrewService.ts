@@ -30,18 +30,6 @@ export class ShiftTabletCrewService {
       });
   }
 
-  public getExcel(body: ShiftTabletCrewSearchModel) {
-    return this.api.post("/ShiftTabletCrew/GetExcel", body, {
-      responseType: "blob",
-    });
-  }
-
-  public getPdf(body: ShiftTabletCrewSearchModel) {
-    return this.api.post("/ShiftTabletCrew/Getpdf", body, {
-      responseType: "blob",
-    });
-  }
-
   public create(body: ShiftTabletCrewInputModel) {
     return this.api.post("/ShiftTabletCrew/Register", body);
   }

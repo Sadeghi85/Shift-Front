@@ -42,6 +42,7 @@ interface IShiftTabletCrewSearchModel {
   jobId?: number;
   roleTypeId?: number;
   shiftTabletId?: number;
+  shiftId?: number;
   isReplaced?: boolean | null;
   isDeleted?: boolean | null;
 }
@@ -60,6 +61,7 @@ export class ShiftTabletCrewSearchModel implements IShiftTabletCrewSearchModel {
   jobId: number;
   roleTypeId: number;
   shiftTabletId: number;
+  shiftId: number;
   isReplaced: boolean | null;
   isDeleted: boolean | null;
 
@@ -78,6 +80,7 @@ export class ShiftTabletCrewSearchModel implements IShiftTabletCrewSearchModel {
     this.jobId = params.jobId || 0;
     this.roleTypeId = params.roleTypeId || 0;
     this.shiftTabletId = params.shiftTabletId || 0;
+    this.shiftId = params.shiftId || 0;
     this.isReplaced = params.isReplaced || null;
     this.isDeleted = params.isDeleted || false;
   }

@@ -64,21 +64,21 @@ const toggleSearchForm = () => {
 const getShiftTabletReportPdf = () => {
   blockedDocument.value = true;
 
-  shiftTabletCrewService.value
+  shiftTabletService.value
     .getPdf(
-      new ShiftTabletCrewSearchModel({
+      new ShiftTabletSearchModel({
         pageNo: 0,
         pageSize: 2147483647, // Int32.MaxValue
         orderKey: "id",
         desc: true,
+        portalId: portal.value?.id,
+        shiftId: shiftDefinition.value?.id,
         fromDate: shiftTabletDateRange.value
           ? shiftTabletDateRange.value[0]
           : "",
         toDate: shiftTabletDateRange.value ? shiftTabletDateRange.value[1] : "",
         //fromDate: shiftTabletFromDate.value ?? "",
         //toDate: shiftTabletToDate.value ?? "",
-        isReplaced: null,
-        isDeleted: false,
       })
     )
     .then((response) => {
@@ -104,21 +104,21 @@ const getShiftTabletReportPdf = () => {
 const getShiftTabletReportExcel = () => {
   blockedDocument.value = true;
 
-  shiftTabletCrewService.value
+  shiftTabletService.value
     .getExcel(
-      new ShiftTabletCrewSearchModel({
+      new ShiftTabletSearchModel({
         pageNo: 0,
         pageSize: 2147483647, // Int32.MaxValue
         orderKey: "id",
         desc: true,
+        portalId: portal.value?.id,
+        shiftId: shiftDefinition.value?.id,
         fromDate: shiftTabletDateRange.value
           ? shiftTabletDateRange.value[0]
           : "",
         toDate: shiftTabletDateRange.value ? shiftTabletDateRange.value[1] : "",
         //fromDate: shiftTabletFromDate.value ?? "",
         //toDate: shiftTabletToDate.value ?? "",
-        isReplaced: null,
-        isDeleted: false,
       })
     )
     .then((response) => {
@@ -308,6 +308,7 @@ const handleSearch = async () => {
       pageSize: pageSize.value,
       pageNo: pageNumber.value,
 
+      portalId: portal.value?.id ?? 0,
       shiftId: shiftDefinition.value?.id ?? 0,
       //fromDate: shiftTabletFromDate.value ?? "",
       //toDate: shiftTabletToDate.value ?? "",
@@ -324,6 +325,11 @@ const handleSearch = async () => {
 };
 
 const resetSearchForm = async () => {
+  portal.value = undefined;
+  if (portals.value?.length == 1) {
+    portal.value = portals.value[0];
+  }
+
   shiftDefinition.value = undefined;
   //shiftTabletFromDate.value = "";
   //shiftTabletToDate.value = "";

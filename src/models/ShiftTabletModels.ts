@@ -54,6 +54,7 @@ export class ShiftTabletUpdateModel implements IShiftTabletUpdateModel {
 interface IShiftTabletSearchModel {
   id?: number;
   shiftId?: number;
+  portalId?: number;
   agentId?: number;
   locationId?: number;
   pageNo?: number;
@@ -67,6 +68,7 @@ interface IShiftTabletSearchModel {
 export class ShiftTabletSearchModel implements IShiftTabletSearchModel {
   id: number;
   shiftId: number;
+  portalId: number;
   agentId: number;
   locationId: number;
   pageNo: number;
@@ -80,6 +82,7 @@ export class ShiftTabletSearchModel implements IShiftTabletSearchModel {
   constructor(input: IShiftTabletSearchModel) {
     this.id = input.id || 0;
     this.shiftId = input.shiftId || 0;
+    this.portalId = input.portalId || 0;
     this.agentId = input.agentId || 0;
     this.locationId = input.locationId || 0;
     this.pageNo = input.pageNo || 0;

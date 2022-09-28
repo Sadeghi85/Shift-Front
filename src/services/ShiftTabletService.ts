@@ -31,6 +31,18 @@ export class ShiftTabletService {
       });
   }
 
+  public getExcel(body: ShiftTabletSearchModel) {
+    return this.api.post("/ShiftTablet/GetExcel", body, {
+      responseType: "blob",
+    });
+  }
+
+  public getPdf(body: ShiftTabletSearchModel) {
+    return this.api.post("/ShiftTablet/Getpdf", body, {
+      responseType: "blob",
+    });
+  }
+
   public create(body: ShiftTabletCreateModel) {
     return this.api.post("/ShiftTablet/Create", body);
   }
