@@ -108,6 +108,7 @@
   "route.payment": "ثبت پرداخت عوامل پخش",
   "route.shift-tablet-full-calendar": "تقویم لوح شیفت",
   "route.shift-tablet-crew-full-calendar": "تقویم کارکنان لوح شیفت",
+  "route.reports": "گزارشات",
 
   "_": "toast",
   "toast.success.create": "ثبت با موفقیت انجام شد",
@@ -137,5 +138,8 @@
   "tabMenu.locations": "محل پخش",
   "tabMenu.mandatoryShiftCount": "تعداد شیفت‌های موظفی",
   "tabMenu.nonMandatoryShiftWage": "حق شیفت‌ غیر موظفی",
-  "tabMenu.monthStartDay": "روز شروع ماه"
+  "tabMenu.monthStartDay": "روز شروع ماه",
+  "tabMenu.reports": "گزارشات لوح شیفت",
+  "tabMenu.shiftTabletFullCalendar": "تقویم وضعیت لوح شیفت",
+  "tabMenu.shiftTabletCrewFullCalendar": "تقویم کارکنان لوح شیفت"
 }

@@ -242,27 +242,67 @@ const routes: Array<RouteRecordRaw> = [
     ],
   },
   {
-    path: "/shift-tablet-full-calendar",
-    name: "shift-tablet-full-calendar",
+    path: "/reports",
     component: () =>
-      import(
-        /* webpackChunkName: "shift-tablet-full-calendar" */ "../views/reports/ShiftTabletFullCalendar.vue"
-      ),
-    meta: {
-      requiresAuth: true,
-    },
+      import(/* webpackChunkName: "reports" */ "../views/reports/Reports.vue"),
+    children: [
+      {
+        path: "",
+        name: "reports",
+        component: () =>
+          import(
+            /* webpackChunkName: "shift-tablet-reports" */ "../views/reports/ShiftTabletReport.vue"
+          ),
+        meta: {
+          requiresAuth: true,
+        },
+      },
+      {
+        path: "/shift-tablet-full-calendar",
+        name: "shift-tablet-full-calendar",
+        component: () =>
+          import(
+            /* webpackChunkName: "shift-tablet-full-calendar" */ "../views/reports/ShiftTabletFullCalendar.vue"
+          ),
+        meta: {
+          requiresAuth: true,
+        },
+      },
+      {
+        path: "/shift-tablet-crew-full-calendar",
+        name: "shift-tablet-crew-full-calendar",
+        component: () =>
+          import(
+            /* webpackChunkName: "shift-tablet-crew-full-calendar" */ "../views/reports/ShiftTabletCrewFullCalendar.vue"
+          ),
+        meta: {
+          requiresAuth: true,
+        },
+      },
+    ],
   },
-  {
-    path: "/shift-tablet-crew-full-calendar",
-    name: "shift-tablet-crew-full-calendar",
-    component: () =>
-      import(
-        /* webpackChunkName: "shift-tablet-crew-full-calendar" */ "../views/reports/ShiftTabletCrewFullCalendar.vue"
-      ),
-    meta: {
-      requiresAuth: true,
-    },
-  },
+  // {
+  //   path: "/shift-tablet-full-calendar",
+  //   name: "shift-tablet-full-calendar",
+  //   component: () =>
+  //     import(
+  //       /* webpackChunkName: "shift-tablet-full-calendar" */ "../views/reports/ShiftTabletFullCalendar.vue"
+  //     ),
+  //   meta: {
+  //     requiresAuth: true,
+  //   },
+  // },
+  // {
+  //   path: "/shift-tablet-crew-full-calendar",
+  //   name: "shift-tablet-crew-full-calendar",
+  //   component: () =>
+  //     import(
+  //       /* webpackChunkName: "shift-tablet-crew-full-calendar" */ "../views/reports/ShiftTabletCrewFullCalendar.vue"
+  //     ),
+  //   meta: {
+  //     requiresAuth: true,
+  //   },
+  // },
 ];
 
 const router = createRouter({

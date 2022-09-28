@@ -61,26 +61,22 @@ const showError = (detail: string) => {
       }"
       >{{ t("route.shift-tablet") }}</router-link
     >
-    |
+
+    <!-- phase 2 -->
+    <!-- |
     <router-link
       :to="{
         name: 'payment',
       }"
       >{{ t("route.payment") }}</router-link
-    >
+    > -->
+
     |
     <router-link
       :to="{
-        name: 'shift-tablet-full-calendar',
+        name: 'reports',
       }"
-      >{{ t("route.shift-tablet-full-calendar") }}</router-link
-    >
-    |
-    <router-link
-      :to="{
-        name: 'shift-tablet-crew-full-calendar',
-      }"
-      >{{ t("route.shift-tablet-crew-full-calendar") }}</router-link
+      >{{ t("route.reports") }}</router-link
     >
   </nav>
 
