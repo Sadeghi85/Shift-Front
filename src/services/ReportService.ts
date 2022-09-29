@@ -6,12 +6,31 @@ import {
   ShiftTabletCrewFullCalendarViewModel,
   ShiftTabletFullCalendarInputModel,
   ShiftTabletFullCalendarViewModel,
+  ShiftTabletFullReportInputModel,
+  ShiftTabletFullReportViewModel,
 } from "@/models/ReportModel";
 
 export class ReportService {
   private api: AxiosInstance;
   constructor() {
     this.api = Api.getInstance();
+  }
+
+  public getShiftTabletFullReport(body: ShiftTabletFullReportInputModel) {
+    return this.api
+      .post<IApiResponseModel<ShiftTabletFullReportViewModel>>(
+        "/Report/GetShiftTabletFullReport",
+        body
+      )
+      .then((response) => {
+        if (response.data.success == false) {
+          throw {
+            message: response.data,
+          };
+        }
+
+        return response.data;
+      });
   }
 
   public getShiftTabletFullCalendar(body: ShiftTabletFullCalendarInputModel) {

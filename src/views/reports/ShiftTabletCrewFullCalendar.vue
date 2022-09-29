@@ -19,7 +19,7 @@ const confirmGroup = uuidv4();
 const generalStore = useGeneralStore();
 const apiErrorStore = useApiErrorStore();
 
-const loading = ref(true);
+const loading = ref(false);
 const searchButtonIsLoading = ref(false);
 
 const stateSearch = reactive({
@@ -48,7 +48,7 @@ const portalService = ref(new PortalService());
 const shiftTablets = ref<InstanceType<typeof ShiftTabletViewModel>[]>();
 const shiftTabletService = ref(new ShiftTabletService());
 
-const events = ref<Events>();
+const events = ref<Events>([]);
 const shiftTabletCrewFullCalendars =
   ref<InstanceType<typeof ShiftTabletCrewFullCalendarViewModel>[]>();
 const reportService = ref(new ReportService());
@@ -185,9 +185,9 @@ const loadEssentials = async () => {
       )
     ).data;
 
-    if (agents.value.length > 0) {
-      v$Search.value.agent.$model = agents.value[0];
-    }
+    // if (agents.value.length > 0) {
+    //   v$Search.value.agent.$model = agents.value[0];
+    // }
 
     v$Search.value.datePersian.$model = jMoment().format("jYYYY/jMM/01");
 

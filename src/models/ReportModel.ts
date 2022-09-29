@@ -1,3 +1,42 @@
+interface IShiftTabletFullReportInputModel {
+  portalId?: number;
+  datePersian?: string;
+}
+export class ShiftTabletFullReportInputModel
+  implements IShiftTabletFullReportInputModel
+{
+  portalId: number;
+  datePersian: string;
+
+  constructor(params: IShiftTabletFullReportInputModel) {
+    this.portalId = params.portalId || 0;
+    this.datePersian = params.datePersian || "";
+  }
+}
+
+interface IShiftTabletFullReportViewModel {
+  portalId?: number;
+
+  fromDate?: string;
+  toDate?: string;
+}
+
+export class ShiftTabletFullReportViewModel
+  implements IShiftTabletFullReportViewModel
+{
+  portalId: number;
+
+  fromDate: string;
+  toDate: string;
+
+  constructor(params: IShiftTabletFullReportViewModel) {
+    this.portalId = params.portalId || 0;
+
+    this.fromDate = params.fromDate || "";
+    this.toDate = params.toDate || "";
+  }
+}
+
 interface IShiftTabletFullCalendarInputModel {
   portalId?: number;
   datePersian?: string;

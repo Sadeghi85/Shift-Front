@@ -15,7 +15,7 @@ const confirmGroup = uuidv4();
 
 const apiErrorStore = useApiErrorStore();
 
-const loading = ref(true);
+const loading = ref(false);
 const searchButtonIsLoading = ref(false);
 
 const stateSearch = reactive({
@@ -36,7 +36,7 @@ const portalService = ref(new PortalService());
 const shiftTablets = ref<InstanceType<typeof ShiftTabletViewModel>[]>();
 const shiftTabletService = ref(new ShiftTabletService());
 
-const events = ref<Events>();
+const events = ref<Events>([]);
 const shiftTabletFullCalendars =
   ref<InstanceType<typeof ShiftTabletFullCalendarViewModel>[]>();
 const reportService = ref(new ReportService());

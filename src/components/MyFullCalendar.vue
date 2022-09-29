@@ -193,7 +193,7 @@ watch(
   grid-area: 1 / 1;
 }
 .fc_overlay {
-  z-index: 100000;
+  z-index: 10050;
   background-color: rgba(250, 250, 250, 0.75);
   justify-items: center;
   align-items: center;
