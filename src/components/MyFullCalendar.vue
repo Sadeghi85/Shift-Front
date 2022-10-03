@@ -166,12 +166,14 @@ watch(
                       v-if="today.jMonth() == calendarDay.jMonth()"
                       class="event-content"
                     >
-                      <span
+                      <slot :events="dayEvents(calendarDay)"></slot>
+
+                      <!-- <span
                         v-for="(event, eventIndex) in dayEvents(calendarDay)"
                         :key="eventIndex"
                       >
                         <slot :event="event" :eventIndex="eventIndex"></slot>
-                      </span>
+                      </span> -->
                     </div>
                   </div>
                 </td>
