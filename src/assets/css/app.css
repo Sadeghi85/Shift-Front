@@ -143,6 +143,19 @@ nav a.router-link-active {
   display: inline-flex;
 }
 
+/* sticky table header */
+.p-datatable.p-datatable-gridlines .p-datatable-thead > tr > th {
+  border-width: 1px 1px 1px 1px;
+  position: sticky;
+  top: -1px;
+  z-index: 10100;
+}
+
+.p-datatable-responsive-scroll > .p-datatable-wrapper {
+  overflow-x: visible !important;
+}
+/* sticky table header */
+
 /*
 Persian Datepicker
 */
@@ -188,4 +201,19 @@ pre {
 
 label {
   margin: 0;
+}
+
+.shift-base-class {
+  display: flex;
+  justify-content: center;
+  background-color: #0fd2d2;
+  color: #000;
+  border-radius: 3px;
+  padding: 5px;
+  margin: 1px;
+}
+
+.shift-type-event {
+  padding: 5px;
+  margin-bottom: 4px;
 }

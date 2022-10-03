@@ -251,7 +251,7 @@ const routes: Array<RouteRecordRaw> = [
         name: "reports",
         component: () =>
           import(
-            /* webpackChunkName: "shift-tablet-reports" */ "../views/reports/ShiftTabletReport.vue"
+            /* webpackChunkName: "shift-tablet-full-reports" */ "../views/reports/ShiftTabletFullReport.vue"
           ),
         meta: {
           requiresAuth: true,

@@ -20,21 +20,26 @@ const searchButtonIsLoading = ref(false);
 
 const stateSearch = reactive({
   portal: ref<InstanceType<typeof PortalViewModel>>(),
+  shiftType: ref<InstanceType<typeof ShiftTypeViewModel>>(),
   datePersian: ref(""),
 });
 const rulesSearch = {
   portal: { required },
+  shiftType: { required },
   datePersian: { required },
 };
 const v$Search = useVuelidate(rulesSearch, stateSearch);
 
 const shiftDefinitions = ref();
 
+const shiftTypes = ref<InstanceType<typeof ShiftTypeViewModel>[]>([
+  { id: 0, title: t("shift.type.all") },
+  { id: 1, title: t("shift.type.regie") },
+  { id: 2, title: t("shift.type.coordinator") },
+]);
+
 const portals = ref<InstanceType<typeof PortalViewModel>[]>();
 const portalService = ref(new PortalService());
-
-const shiftTablets = ref<InstanceType<typeof ShiftTabletViewModel>[]>();
-const shiftTabletService = ref(new ShiftTabletService());
 
 const events = ref<Events>([]);
 const shiftTabletFullCalendars =
@@ -71,6 +76,7 @@ async function loadShiftTabletFullCalendar() {
         new ShiftTabletFullCalendarInputModel({
           datePersian: v$Search.value.datePersian.$model,
           portalId: v$Search.value.portal.$model?.id,
+          shiftTypeId: v$Search.value.shiftType.$model?.id,
         })
       )
     ).data;
@@ -148,6 +154,7 @@ const loadEssentials = async () => {
       v$Search.value.portal.$model = portals.value[0];
     }
 
+    v$Search.value.shiftType.$model = shiftTypes.value[0];
     v$Search.value.datePersian.$model = jMoment().format("jYYYY/jMM/01");
 
     await handleSearch();
@@ -196,6 +203,27 @@ onMounted(async () => {
                     <label for="portal">{{ t("portal.title") }}</label>
                   </div>
                 </div>
+
+                <div class="field col-12 mb-4 md:col-3">
+                  <div class="p-float-label">
+                    <Dropdown
+                      id="shiftType"
+                      v-model="v$Search.shiftType.$model"
+                      :options="shiftTypes"
+                      option-label="title"
+                      :show-clear="true"
+                      :class="{
+                        'p-invalid': v$Search.shiftType.$invalid,
+                      }"
+                      ><template #empty>
+                        {{ t("dropdown.slot.empty") }}
+                      </template></Dropdown
+                    >
+
+                    <label for="shiftType">{{ t("shiftType.title") }}</label>
+                  </div>
+                </div>
+
                 <div class="field col-12 mb-4 md:col-3">
                   <div class="p-float-label">
                     <PersianDatePicker
@@ -240,16 +268,7 @@ onMounted(async () => {
                   <div
                     v-for="(shiftDefinition, index) in shiftDefinitions"
                     :key="index"
-                    class="col"
-                    style="
-                      display: flex;
-                      justify-content: center;
-                      background-color: #0fd2d2;
-                      color: #000;
-                      border-radius: 3px;
-                      padding: 5px;
-                      margin: 1px;
-                    "
+                    class="col shift-base-class"
                   >
                     {{ shiftDefinition.title }} ({{
                       shiftDefinition.templateCount
@@ -267,10 +286,35 @@ onMounted(async () => {
                   :date="v$Search.datePersian.$model"
                   :events="events"
                 >
-                  <div class="event-title" :class="eventClass(slotProps.event)">
-                    {{ slotProps.event.title }}
-                    <span v-if="slotProps.event.meta.shiftTabletId > 0">
-                      ({{ slotProps.event.meta.crewCount }})
+                  <div class="shift-type-event">
+                    <span
+                      v-for="(event, eventIndex) in slotProps.events.filter(
+                        (x) => x.meta.shiftTypeId == 1
+                      )"
+                      :key="eventIndex"
+                    >
+                      <div class="event-title" :class="eventClass(event)">
+                        {{ event.title }}
+                        <span v-if="event.meta.shiftTabletId > 0">
+                          ({{ event.meta.crewCount }})
+                        </span>
+                      </div>
+                    </span>
+                  </div>
+
+                  <div class="shift-type-event">
+                    <span
+                      v-for="(event, eventIndex) in slotProps.events.filter(
+                        (x) => x.meta.shiftTypeId == 2
+                      )"
+                      :key="eventIndex"
+                    >
+                      <div class="event-title" :class="eventClass(event)">
+                        {{ event.title }}
+                        <span v-if="event.meta.shiftTabletId > 0">
+                          ({{ event.meta.crewCount }})
+                        </span>
+                      </div>
                     </span>
                   </div>
                 </MyFullCalendar>
